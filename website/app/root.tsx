@@ -9,6 +9,7 @@ import {
 
 import type { Route } from "./+types/root";
 import "./app.css";
+import "./chem.css";
 import { Nav } from "./components/Nav";
 import { getUser } from "./auth.server";
 import { database } from "~/database/context";

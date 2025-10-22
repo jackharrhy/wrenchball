@@ -28,6 +28,9 @@ export function PlayerIcon({
         "object-fit drop-shadow-sm",
         player === null && "filter brightness-0 opacity-20"
       )}
+      onMouseOver={(event)=>{document.body.dataset.player=player?.name}}
+      onMouseLeave={(event)=>{delete document.body.dataset.player}}
+      data-player={player?.name}
     />
   );
 }

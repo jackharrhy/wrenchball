@@ -2,10 +2,13 @@ import { redirect, Form } from "react-router";
 import type { Route } from "./+types/admin";
 import { requireUser } from "~/auth.server";
 import { database } from "~/database/context";
-import { players, teams, teamLineups } from "~/database/schema";
-import { eq, isNull } from "drizzle-orm";
-import { TEAM_SIZE, LINEUP_SIZE } from "~/consts";
-import { randomAssignTeams, wipeTeams } from "~/utils/admin";
+import { seasonStates, type SeasonStateValue } from "~/database/schema";
+import {
+  randomAssignTeams,
+  wipeTeams,
+  getSeasonState,
+  setSeasonState,
+} from "~/utils/admin";
 
 export async function loader({ request }: Route.LoaderArgs) {
   const user = await requireUser(request);
@@ -14,7 +17,10 @@ export async function loader({ request }: Route.LoaderArgs) {
     throw redirect("/");
   }
 
-  return { user };
+  const db = database();
+  const currentState = await getSeasonState(db);
+
+  return { user, seasonState: currentState };
 }
 
 export async function action({ request }: Route.ActionArgs) {
@@ -54,6 +60,28 @@ export async function action({ request }: Route.ActionArgs) {
     }
   }
 
+  if (intent === "set-season-state") {
+    const state = formData.get("state") as SeasonStateValue;
+
+    if (
+      !state ||
+      !(seasonStates.enumValues as readonly string[]).includes(state)
+    ) {
+      return { success: false, message: "Invalid season state" };
+    }
+
+    try {
+      await setSeasonState(db, state);
+      return {
+        success: true,
+        message: `Season state updated to: ${state}`,
+      };
+    } catch (error) {
+      console.error("Error setting season state:", error);
+      return { success: false, message: "Failed to update season state" };
+    }
+  }
+
   return { success: false, message: "Invalid action" };
 }
 
@@ -62,9 +90,8 @@ export default function Admin({
   actionData,
 }: Route.ComponentProps) {
   return (
-    <div>
-      <h1>Admin Panel</h1>
-      <p>Welcome, {loaderData.user.name}</p>
+    <div className="flex flex-col gap-4">
+      <h1 className="text-2xl font-bold">Admin Panel</h1>
 
       {actionData?.message && (
         <div
@@ -75,6 +102,34 @@ export default function Admin({
       )}
 
       <div className="space-y-4">
+        <div>
+          <h2 className="text-xl font-semibold mb-2">Season State</h2>
+          <p className="mb-2">
+            Current state:{" "}
+            <span className="font-semibold">
+              {loaderData.seasonState?.state || "Not set"}
+            </span>
+          </p>
+          <div className="flex gap-2 flex-wrap">
+            {seasonStates.enumValues.map((state) => (
+              <Form key={state} method="post" className="inline-block">
+                <input type="hidden" name="intent" value="set-season-state" />
+                <input type="hidden" name="state" value={state} />
+                <button
+                  type="submit"
+                  className={`px-4 py-2 rounded ${
+                    loaderData.seasonState?.state === state
+                      ? "bg-gray-700 text-white"
+                      : "bg-gray-500 hover:bg-gray-600 text-white"
+                  }`}
+                >
+                  Set to {state}
+                </button>
+              </Form>
+            ))}
+          </div>
+        </div>
+
         <div>
           <h2 className="text-xl font-semibold mb-2">Team Management</h2>
 

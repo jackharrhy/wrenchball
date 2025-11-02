@@ -2,6 +2,7 @@ CREATE TYPE "public"."ability" AS ENUM('Enlarge', 'Super Jump', 'Clamber', 'Quic
 CREATE TYPE "public"."direction" AS ENUM('Left', 'Right');--> statement-breakpoint
 CREATE TYPE "public"."fielding_positions" AS ENUM('C', '1B', '2B', '3B', 'SS', 'LF', 'CF', 'RF', 'P');--> statement-breakpoint
 CREATE TYPE "public"."hitting_trajectory" AS ENUM('Low', 'Medium', 'High');--> statement-breakpoint
+CREATE TYPE "public"."season_state_value" AS ENUM('pre-season', 'drafting', 'playing', 'finished');--> statement-breakpoint
 CREATE TYPE "public"."user_role" AS ENUM('admin', 'user');--> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "players" (
 	"id" integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY (sequence name "players_id_seq" INCREMENT BY 1 MINVALUE 1 MAXVALUE 2147483647 START WITH 1 CACHE 1),
@@ -10,6 +11,11 @@ CREATE TABLE IF NOT EXISTS "players" (
 	"image_url" text,
 	"stats_character" text,
 	CONSTRAINT "players_name_unique" UNIQUE("name")
+);
+--> statement-breakpoint
+CREATE TABLE IF NOT EXISTS "season_state" (
+	"id" integer PRIMARY KEY DEFAULT 1 NOT NULL,
+	"state" "season_state_value" DEFAULT 'pre-season' NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "stat" (
@@ -49,7 +55,7 @@ CREATE TABLE IF NOT EXISTS "team_lineup" (
 CREATE TABLE IF NOT EXISTS "team" (
 	"id" integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY (sequence name "team_id_seq" INCREMENT BY 1 MINVALUE 1 MAXVALUE 2147483647 START WITH 1 CACHE 1),
 	"name" text NOT NULL,
-	"color" text NOT NULL,
+	"color" text,
 	"user_id" integer NOT NULL,
 	"abbreviation" text NOT NULL,
 	CONSTRAINT "team_name_unique" UNIQUE("name"),

@@ -1,7 +1,14 @@
 import { eq, isNull } from "drizzle-orm";
 import { LINEUP_SIZE, TEAM_SIZE } from "~/consts";
 import { database } from "~/database/context";
-import { players, teamLineups, teams } from "~/database/schema";
+import {
+  players,
+  seasonState,
+  teamLineups,
+  teams,
+  type SeasonState as SeasonStateType,
+  type SeasonStateValue,
+} from "~/database/schema";
 
 export const wipeTeams = async (db: ReturnType<typeof database>) => {
   await db.transaction(async (tx) => {
@@ -111,4 +118,34 @@ export const randomAssignTeams = async (db: ReturnType<typeof database>) => {
       }
     }
   });
+};
+
+export const getSeasonState = async (
+  db: ReturnType<typeof database>
+): Promise<SeasonStateType | null> => {
+  const state = await db
+    .select()
+    .from(seasonState)
+    .where(eq(seasonState.id, 1))
+    .limit(1);
+
+  return state[0] || null;
+};
+
+export const setSeasonState = async (
+  db: ReturnType<typeof database>,
+  newState: SeasonStateValue
+) => {
+  const currentState = await getSeasonState(db);
+
+  if (currentState) {
+    await db
+      .update(seasonState)
+      .set({ state: newState })
+      .where(eq(seasonState.id, 1));
+  } else {
+    await db.insert(seasonState).values({ id: 1, state: newState });
+  }
+
+  return { success: true, state: newState };
 };

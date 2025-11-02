@@ -132,6 +132,22 @@ export const fieldingPositions = pgEnum("fielding_positions", [
 
 export type FieldingPosition = (typeof fieldingPositions.enumValues)[number];
 
+export const seasonStates = pgEnum("season_state_value", [
+  "pre-season",
+  "drafting",
+  "playing",
+  "finished",
+]);
+
+export type SeasonStateValue = (typeof seasonStates.enumValues)[number];
+
+export const seasonState = pgTable("season_state", {
+  id: integer().primaryKey().default(1).notNull(),
+  state: seasonStates("state").notNull().default("pre-season"),
+});
+
+export type SeasonState = typeof seasonState.$inferSelect;
+
 export const teamLineups = pgTable("team_lineup", {
   playerId: integer("player_id")
     .primaryKey()

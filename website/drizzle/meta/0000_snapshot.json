@@ -1,5 +1,5 @@
 {
-  "id": "3ba94a87-68b0-44f0-bb86-5371d7e3724b",
+  "id": "81495884-d1e8-4e52-9f2e-7734ca00cda2",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -89,6 +89,34 @@
           ]
         }
       },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.season_state": {
+      "name": "season_state",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "default": 1
+        },
+        "state": {
+          "name": "state",
+          "type": "season_state_value",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'pre-season'"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false
@@ -338,7 +366,7 @@
           "name": "color",
           "type": "text",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
         "user_id": {
           "name": "user_id",
@@ -504,6 +532,16 @@
         "Low",
         "Medium",
         "High"
+      ]
+    },
+    "public.season_state_value": {
+      "name": "season_state_value",
+      "schema": "public",
+      "values": [
+        "pre-season",
+        "drafting",
+        "playing",
+        "finished"
       ]
     },
     "public.user_role": {

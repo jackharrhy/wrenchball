@@ -1,600 +1,600 @@
-[data-player="Mario"] [data-player="Luigi"] {background-color: red;}
-[data-player="Mario"] [data-player="Peach"] {background-color: red;}
-[data-player="Mario"] [data-player="Yoshi"] {background-color: red;}
-[data-player="Mario"] [data-player="Blue Pianta"] {background-color: red;}
-[data-player="Mario"] [data-player="Red Pianta"] {background-color: red;}
-[data-player="Mario"] [data-player="Yellow Pianta"] {background-color: red;}
-[data-player="Mario"] [data-player="Blue Noki"] {background-color: red;}
-[data-player="Mario"] [data-player="Red Noki"] {background-color: red;}
-[data-player="Mario"] [data-player="Green Noki"] {background-color: red;}
-[data-player="Mario"] [data-player="Red Yoshi"] {background-color: red;}
-[data-player="Mario"] [data-player="Blue Yoshi"] {background-color: red;}
-[data-player="Mario"] [data-player="Yellow Yoshi"] {background-color: red;}
-[data-player="Mario"] [data-player="Light Blue Yoshi"] {background-color: red;}
-[data-player="Mario"] [data-player="Pink Yoshi"] {background-color: red;}
-[data-player="Luigi"] [data-player="Mario"] {background-color: red;}
-[data-player="Luigi"] [data-player="Daisy"] {background-color: red;}
-[data-player="Donkey Kong"] [data-player="Diddy Kong"] {background-color: red;}
-[data-player="Donkey Kong"] [data-player="Dixie Kong"] {background-color: red;}
-[data-player="Donkey Kong"] [data-player="Funky Kong"] {background-color: red;}
-[data-player="Donkey Kong"] [data-player="Tiny Kong"] {background-color: red;}
-[data-player="Diddy Kong"] [data-player="Donkey Kong"] {background-color: red;}
-[data-player="Diddy Kong"] [data-player="Dixie Kong"] {background-color: red;}
-[data-player="Diddy Kong"] [data-player="Funky Kong"] {background-color: red;}
-[data-player="Diddy Kong"] [data-player="Tiny Kong"] {background-color: red;}
-[data-player="Peach"] [data-player="Mario"] {background-color: red;}
-[data-player="Peach"] [data-player="Daisy"] {background-color: red;}
-[data-player="Peach"] [data-player="Red Toad"] {background-color: red;}
-[data-player="Peach"] [data-player="Toadette"] {background-color: red;}
-[data-player="Peach"] [data-player="Toadsworth"] {background-color: red;}
-[data-player="Peach"] [data-player="Blue Toad"] {background-color: red;}
-[data-player="Peach"] [data-player="Yellow Toad"] {background-color: red;}
-[data-player="Peach"] [data-player="Green Toad"] {background-color: red;}
-[data-player="Peach"] [data-player="Purple Toad"] {background-color: red;}
-[data-player="Daisy"] [data-player="Luigi"] {background-color: red;}
-[data-player="Daisy"] [data-player="Peach"] {background-color: red;}
-[data-player="Daisy"] [data-player="Birdo"] {background-color: red;}
-[data-player="Yoshi"] [data-player="Mario"] {background-color: red;}
-[data-player="Yoshi"] [data-player="Baby Mario"] {background-color: red;}
-[data-player="Yoshi"] [data-player="Baby Luigi"] {background-color: red;}
-[data-player="Yoshi"] [data-player="Birdo"] {background-color: red;}
-[data-player="Yoshi"] [data-player="Baby Daisy"] {background-color: red;}
-[data-player="Yoshi"] [data-player="Baby DK"] {background-color: red;}
-[data-player="Baby Mario"] [data-player="Yoshi"] {background-color: red;}
-[data-player="Baby Mario"] [data-player="Baby Luigi"] {background-color: red;}
-[data-player="Baby Mario"] [data-player="Baby Daisy"] {background-color: red;}
-[data-player="Baby Mario"] [data-player="Baby DK"] {background-color: red;}
-[data-player="Baby Mario"] [data-player="Red Yoshi"] {background-color: red;}
-[data-player="Baby Mario"] [data-player="Blue Yoshi"] {background-color: red;}
-[data-player="Baby Mario"] [data-player="Yellow Yoshi"] {background-color: red;}
-[data-player="Baby Mario"] [data-player="Light Blue Yoshi"] {background-color: red;}
-[data-player="Baby Mario"] [data-player="Pink Yoshi"] {background-color: red;}
-[data-player="Baby Luigi"] [data-player="Yoshi"] {background-color: red;}
-[data-player="Baby Luigi"] [data-player="Baby Mario"] {background-color: red;}
-[data-player="Baby Luigi"] [data-player="Baby Daisy"] {background-color: red;}
-[data-player="Baby Luigi"] [data-player="Baby DK"] {background-color: red;}
-[data-player="Baby Luigi"] [data-player="Red Yoshi"] {background-color: red;}
-[data-player="Baby Luigi"] [data-player="Blue Yoshi"] {background-color: red;}
-[data-player="Baby Luigi"] [data-player="Yellow Yoshi"] {background-color: red;}
-[data-player="Baby Luigi"] [data-player="Light Blue Yoshi"] {background-color: red;}
-[data-player="Baby Luigi"] [data-player="Pink Yoshi"] {background-color: red;}
-[data-player="Bowser"] [data-player="Koopa Troopa"] {background-color: red;}
-[data-player="Bowser"] [data-player="Bowser Jr."] {background-color: red;}
-[data-player="Bowser"] [data-player="Koopa Paratroopa"] {background-color: red;}
-[data-player="Bowser"] [data-player="Hammer Bro."] {background-color: red;}
-[data-player="Bowser"] [data-player="Magikoopa"] {background-color: red;}
-[data-player="Bowser"] [data-player="Red Magikoopa"] {background-color: red;}
-[data-player="Bowser"] [data-player="Green Magikoopa"] {background-color: red;}
-[data-player="Bowser"] [data-player="Yellow Magikoopa"] {background-color: red;}
-[data-player="Bowser"] [data-player="Red Koopa Troopa"] {background-color: red;}
-[data-player="Bowser"] [data-player="Green Koopa Paratroopa"] {background-color: red;}
-[data-player="Bowser"] [data-player="Dry Bones"] {background-color: red;}
-[data-player="Bowser"] [data-player="Green Dry Bones"] {background-color: red;}
-[data-player="Bowser"] [data-player="Dark Bones"] {background-color: red;}
-[data-player="Bowser"] [data-player="Blue Dry Bones"] {background-color: red;}
-[data-player="Bowser"] [data-player="Fire Bro."] {background-color: red;}
-[data-player="Bowser"] [data-player="Boomerang Bro."] {background-color: red;}
-[data-player="Wario"] [data-player="Waluigi"] {background-color: red;}
-[data-player="Waluigi"] [data-player="Wario"] {background-color: red;}
-[data-player="Koopa Troopa"] [data-player="Bowser"] {background-color: red;}
-[data-player="Koopa Troopa"] [data-player="Bowser Jr."] {background-color: red;}
-[data-player="Koopa Troopa"] [data-player="Koopa Paratroopa"] {background-color: red;}
-[data-player="Koopa Troopa"] [data-player="Goomba"] {background-color: red;}
-[data-player="Koopa Troopa"] [data-player="Green Koopa Paratroopa"] {background-color: red;}
-[data-player="Koopa Troopa"] [data-player="Dry Bones"] {background-color: red;}
-[data-player="Koopa Troopa"] [data-player="Green Dry Bones"] {background-color: red;}
-[data-player="Koopa Troopa"] [data-player="Dark Bones"] {background-color: red;}
-[data-player="Koopa Troopa"] [data-player="Blue Dry Bones"] {background-color: red;}
-[data-player="Red Toad"] [data-player="Peach"] {background-color: red;}
-[data-player="Red Toad"] [data-player="Toadette"] {background-color: red;}
-[data-player="Red Toad"] [data-player="Blue Pianta"] {background-color: red;}
-[data-player="Red Toad"] [data-player="Red Pianta"] {background-color: red;}
-[data-player="Red Toad"] [data-player="Yellow Pianta"] {background-color: red;}
-[data-player="Red Toad"] [data-player="Toadsworth"] {background-color: red;}
-[data-player="Boo"] [data-player="Shy Guy"] {background-color: red;}
-[data-player="Boo"] [data-player="Magikoopa"] {background-color: red;}
-[data-player="Boo"] [data-player="Red Magikoopa"] {background-color: red;}
-[data-player="Boo"] [data-player="Green Magikoopa"] {background-color: red;}
-[data-player="Boo"] [data-player="Yellow Magikoopa"] {background-color: red;}
-[data-player="Boo"] [data-player="King Boo"] {background-color: red;}
-[data-player="Boo"] [data-player="Blue Shy Guy"] {background-color: red;}
-[data-player="Boo"] [data-player="Yellow Shy Guy"] {background-color: red;}
-[data-player="Boo"] [data-player="Green Shy Guy"] {background-color: red;}
-[data-player="Boo"] [data-player="Gray Shy Guy"] {background-color: red;}
-[data-player="Boo"] [data-player="Blooper"] {background-color: red;}
-[data-player="Toadette"] [data-player="Peach"] {background-color: red;}
-[data-player="Toadette"] [data-player="Red Toad"] {background-color: red;}
-[data-player="Toadette"] [data-player="Birdo"] {background-color: red;}
-[data-player="Toadette"] [data-player="Blue Noki"] {background-color: red;}
-[data-player="Toadette"] [data-player="Red Noki"] {background-color: red;}
-[data-player="Toadette"] [data-player="Green Noki"] {background-color: red;}
-[data-player="Toadette"] [data-player="Toadsworth"] {background-color: red;}
-[data-player="Toadette"] [data-player="Blue Toad"] {background-color: red;}
-[data-player="Toadette"] [data-player="Yellow Toad"] {background-color: red;}
-[data-player="Toadette"] [data-player="Green Toad"] {background-color: red;}
-[data-player="Toadette"] [data-player="Purple Toad"] {background-color: red;}
-[data-player="Shy Guy"] [data-player="Boo"] {background-color: red;}
-[data-player="Shy Guy"] [data-player="Birdo"] {background-color: red;}
-[data-player="Shy Guy"] [data-player="Monty Mole"] {background-color: red;}
-[data-player="Birdo"] [data-player="Daisy"] {background-color: red;}
-[data-player="Birdo"] [data-player="Yoshi"] {background-color: red;}
-[data-player="Birdo"] [data-player="Toadette"] {background-color: red;}
-[data-player="Birdo"] [data-player="Shy Guy"] {background-color: red;}
-[data-player="Birdo"] [data-player="Petey Piranha"] {background-color: red;}
-[data-player="Birdo"] [data-player="Blue Shy Guy"] {background-color: red;}
-[data-player="Birdo"] [data-player="Yellow Shy Guy"] {background-color: red;}
-[data-player="Birdo"] [data-player="Green Shy Guy"] {background-color: red;}
-[data-player="Birdo"] [data-player="Gray Shy Guy"] {background-color: red;}
-[data-player="Birdo"] [data-player="Red Yoshi"] {background-color: red;}
-[data-player="Birdo"] [data-player="Blue Yoshi"] {background-color: red;}
-[data-player="Birdo"] [data-player="Yellow Yoshi"] {background-color: red;}
-[data-player="Birdo"] [data-player="Light Blue Yoshi"] {background-color: red;}
-[data-player="Birdo"] [data-player="Pink Yoshi"] {background-color: red;}
-[data-player="Monty Mole"] [data-player="Shy Guy"] {background-color: red;}
-[data-player="Monty Mole"] [data-player="Goomba"] {background-color: red;}
-[data-player="Monty Mole"] [data-player="Paragoomba"] {background-color: red;}
-[data-player="Monty Mole"] [data-player="Blue Shy Guy"] {background-color: red;}
-[data-player="Monty Mole"] [data-player="Yellow Shy Guy"] {background-color: red;}
-[data-player="Monty Mole"] [data-player="Green Shy Guy"] {background-color: red;}
-[data-player="Monty Mole"] [data-player="Gray Shy Guy"] {background-color: red;}
-[data-player="Bowser Jr."] [data-player="Bowser"] {background-color: red;}
-[data-player="Bowser Jr."] [data-player="Koopa Troopa"] {background-color: red;}
-[data-player="Bowser Jr."] [data-player="Hammer Bro."] {background-color: red;}
-[data-player="Bowser Jr."] [data-player="Magikoopa"] {background-color: red;}
-[data-player="Bowser Jr."] [data-player="Red Magikoopa"] {background-color: red;}
-[data-player="Bowser Jr."] [data-player="Green Magikoopa"] {background-color: red;}
-[data-player="Bowser Jr."] [data-player="Yellow Magikoopa"] {background-color: red;}
-[data-player="Bowser Jr."] [data-player="Red Koopa Troopa"] {background-color: red;}
-[data-player="Bowser Jr."] [data-player="Fire Bro."] {background-color: red;}
-[data-player="Bowser Jr."] [data-player="Boomerang Bro."] {background-color: red;}
-[data-player="Koopa Paratroopa"] [data-player="Bowser"] {background-color: red;}
-[data-player="Koopa Paratroopa"] [data-player="Koopa Troopa"] {background-color: red;}
-[data-player="Koopa Paratroopa"] [data-player="Paragoomba"] {background-color: red;}
-[data-player="Koopa Paratroopa"] [data-player="Red Koopa Troopa"] {background-color: red;}
-[data-player="Blue Pianta"] [data-player="Mario"] {background-color: red;}
-[data-player="Blue Pianta"] [data-player="Red Toad"] {background-color: red;}
-[data-player="Blue Pianta"] [data-player="Blue Noki"] {background-color: red;}
-[data-player="Blue Pianta"] [data-player="Red Noki"] {background-color: red;}
-[data-player="Blue Pianta"] [data-player="Green Noki"] {background-color: red;}
-[data-player="Blue Pianta"] [data-player="Toadsworth"] {background-color: red;}
-[data-player="Blue Pianta"] [data-player="Blue Toad"] {background-color: red;}
-[data-player="Blue Pianta"] [data-player="Yellow Toad"] {background-color: red;}
-[data-player="Blue Pianta"] [data-player="Green Toad"] {background-color: red;}
-[data-player="Blue Pianta"] [data-player="Purple Toad"] {background-color: red;}
-[data-player="Red Pianta"] [data-player="Mario"] {background-color: red;}
-[data-player="Red Pianta"] [data-player="Red Toad"] {background-color: red;}
-[data-player="Red Pianta"] [data-player="Blue Noki"] {background-color: red;}
-[data-player="Red Pianta"] [data-player="Red Noki"] {background-color: red;}
-[data-player="Red Pianta"] [data-player="Green Noki"] {background-color: red;}
-[data-player="Red Pianta"] [data-player="Toadsworth"] {background-color: red;}
-[data-player="Red Pianta"] [data-player="Blue Toad"] {background-color: red;}
-[data-player="Red Pianta"] [data-player="Yellow Toad"] {background-color: red;}
-[data-player="Red Pianta"] [data-player="Green Toad"] {background-color: red;}
-[data-player="Red Pianta"] [data-player="Purple Toad"] {background-color: red;}
-[data-player="Yellow Pianta"] [data-player="Mario"] {background-color: red;}
-[data-player="Yellow Pianta"] [data-player="Red Toad"] {background-color: red;}
-[data-player="Yellow Pianta"] [data-player="Blue Noki"] {background-color: red;}
-[data-player="Yellow Pianta"] [data-player="Red Noki"] {background-color: red;}
-[data-player="Yellow Pianta"] [data-player="Green Noki"] {background-color: red;}
-[data-player="Yellow Pianta"] [data-player="Toadsworth"] {background-color: red;}
-[data-player="Yellow Pianta"] [data-player="Blue Toad"] {background-color: red;}
-[data-player="Yellow Pianta"] [data-player="Yellow Toad"] {background-color: red;}
-[data-player="Yellow Pianta"] [data-player="Green Toad"] {background-color: red;}
-[data-player="Yellow Pianta"] [data-player="Purple Toad"] {background-color: red;}
-[data-player="Blue Noki"] [data-player="Mario"] {background-color: red;}
-[data-player="Blue Noki"] [data-player="Toadette"] {background-color: red;}
-[data-player="Blue Noki"] [data-player="Blue Pianta"] {background-color: red;}
-[data-player="Blue Noki"] [data-player="Red Pianta"] {background-color: red;}
-[data-player="Blue Noki"] [data-player="Yellow Pianta"] {background-color: red;}
-[data-player="Red Noki"] [data-player="Mario"] {background-color: red;}
-[data-player="Red Noki"] [data-player="Toadette"] {background-color: red;}
-[data-player="Red Noki"] [data-player="Blue Pianta"] {background-color: red;}
-[data-player="Red Noki"] [data-player="Red Pianta"] {background-color: red;}
-[data-player="Red Noki"] [data-player="Yellow Pianta"] {background-color: red;}
-[data-player="Green Noki"] [data-player="Mario"] {background-color: red;}
-[data-player="Green Noki"] [data-player="Toadette"] {background-color: red;}
-[data-player="Green Noki"] [data-player="Blue Pianta"] {background-color: red;}
-[data-player="Green Noki"] [data-player="Red Pianta"] {background-color: red;}
-[data-player="Green Noki"] [data-player="Yellow Pianta"] {background-color: red;}
-[data-player="Hammer Bro."] [data-player="Bowser"] {background-color: red;}
-[data-player="Hammer Bro."] [data-player="Bowser Jr."] {background-color: red;}
-[data-player="Hammer Bro."] [data-player="Magikoopa"] {background-color: red;}
-[data-player="Hammer Bro."] [data-player="Red Magikoopa"] {background-color: red;}
-[data-player="Hammer Bro."] [data-player="Green Magikoopa"] {background-color: red;}
-[data-player="Hammer Bro."] [data-player="Yellow Magikoopa"] {background-color: red;}
-[data-player="Toadsworth"] [data-player="Peach"] {background-color: red;}
-[data-player="Toadsworth"] [data-player="Red Toad"] {background-color: red;}
-[data-player="Toadsworth"] [data-player="Toadette"] {background-color: red;}
-[data-player="Toadsworth"] [data-player="Blue Pianta"] {background-color: red;}
-[data-player="Toadsworth"] [data-player="Red Pianta"] {background-color: red;}
-[data-player="Toadsworth"] [data-player="Yellow Pianta"] {background-color: red;}
-[data-player="Toadsworth"] [data-player="Blue Toad"] {background-color: red;}
-[data-player="Toadsworth"] [data-player="Yellow Toad"] {background-color: red;}
-[data-player="Toadsworth"] [data-player="Green Toad"] {background-color: red;}
-[data-player="Toadsworth"] [data-player="Purple Toad"] {background-color: red;}
-[data-player="Blue Toad"] [data-player="Peach"] {background-color: red;}
-[data-player="Blue Toad"] [data-player="Toadette"] {background-color: red;}
-[data-player="Blue Toad"] [data-player="Blue Pianta"] {background-color: red;}
-[data-player="Blue Toad"] [data-player="Red Pianta"] {background-color: red;}
-[data-player="Blue Toad"] [data-player="Yellow Pianta"] {background-color: red;}
-[data-player="Blue Toad"] [data-player="Toadsworth"] {background-color: red;}
-[data-player="Yellow Toad"] [data-player="Peach"] {background-color: red;}
-[data-player="Yellow Toad"] [data-player="Toadette"] {background-color: red;}
-[data-player="Yellow Toad"] [data-player="Blue Pianta"] {background-color: red;}
-[data-player="Yellow Toad"] [data-player="Red Pianta"] {background-color: red;}
-[data-player="Yellow Toad"] [data-player="Yellow Pianta"] {background-color: red;}
-[data-player="Yellow Toad"] [data-player="Toadsworth"] {background-color: red;}
-[data-player="Green Toad"] [data-player="Peach"] {background-color: red;}
-[data-player="Green Toad"] [data-player="Toadette"] {background-color: red;}
-[data-player="Green Toad"] [data-player="Blue Pianta"] {background-color: red;}
-[data-player="Green Toad"] [data-player="Red Pianta"] {background-color: red;}
-[data-player="Green Toad"] [data-player="Yellow Pianta"] {background-color: red;}
-[data-player="Green Toad"] [data-player="Toadsworth"] {background-color: red;}
-[data-player="Purple Toad"] [data-player="Peach"] {background-color: red;}
-[data-player="Purple Toad"] [data-player="Toadette"] {background-color: red;}
-[data-player="Purple Toad"] [data-player="Blue Pianta"] {background-color: red;}
-[data-player="Purple Toad"] [data-player="Red Pianta"] {background-color: red;}
-[data-player="Purple Toad"] [data-player="Yellow Pianta"] {background-color: red;}
-[data-player="Purple Toad"] [data-player="Toadsworth"] {background-color: red;}
-[data-player="Magikoopa"] [data-player="Bowser"] {background-color: red;}
-[data-player="Magikoopa"] [data-player="Boo"] {background-color: red;}
-[data-player="Magikoopa"] [data-player="Bowser Jr."] {background-color: red;}
-[data-player="Magikoopa"] [data-player="Hammer Bro."] {background-color: red;}
-[data-player="Magikoopa"] [data-player="Fire Bro."] {background-color: red;}
-[data-player="Magikoopa"] [data-player="Boomerang Bro."] {background-color: red;}
-[data-player="Red Magikoopa"] [data-player="Bowser"] {background-color: red;}
-[data-player="Red Magikoopa"] [data-player="Boo"] {background-color: red;}
-[data-player="Red Magikoopa"] [data-player="Bowser Jr."] {background-color: red;}
-[data-player="Red Magikoopa"] [data-player="Hammer Bro."] {background-color: red;}
-[data-player="Red Magikoopa"] [data-player="Fire Bro."] {background-color: red;}
-[data-player="Red Magikoopa"] [data-player="Boomerang Bro."] {background-color: red;}
-[data-player="Green Magikoopa"] [data-player="Bowser"] {background-color: red;}
-[data-player="Green Magikoopa"] [data-player="Boo"] {background-color: red;}
-[data-player="Green Magikoopa"] [data-player="Bowser Jr."] {background-color: red;}
-[data-player="Green Magikoopa"] [data-player="Hammer Bro."] {background-color: red;}
-[data-player="Green Magikoopa"] [data-player="Fire Bro."] {background-color: red;}
-[data-player="Green Magikoopa"] [data-player="Boomerang Bro."] {background-color: red;}
-[data-player="Yellow Magikoopa"] [data-player="Bowser"] {background-color: red;}
-[data-player="Yellow Magikoopa"] [data-player="Boo"] {background-color: red;}
-[data-player="Yellow Magikoopa"] [data-player="Bowser Jr."] {background-color: red;}
-[data-player="Yellow Magikoopa"] [data-player="Hammer Bro."] {background-color: red;}
-[data-player="Yellow Magikoopa"] [data-player="Fire Bro."] {background-color: red;}
-[data-player="Yellow Magikoopa"] [data-player="Boomerang Bro."] {background-color: red;}
-[data-player="King Boo"] [data-player="Boo"] {background-color: red;}
-[data-player="King Boo"] [data-player="Petey Piranha"] {background-color: red;}
-[data-player="King Boo"] [data-player="Wiggler"] {background-color: red;}
-[data-player="King Boo"] [data-player="King K. Rool"] {background-color: red;}
-[data-player="Petey Piranha"] [data-player="Birdo"] {background-color: red;}
-[data-player="Petey Piranha"] [data-player="King Boo"] {background-color: red;}
-[data-player="Petey Piranha"] [data-player="Wiggler"] {background-color: red;}
-[data-player="Petey Piranha"] [data-player="Blooper"] {background-color: red;}
-[data-player="Dixie Kong"] [data-player="Donkey Kong"] {background-color: red;}
-[data-player="Dixie Kong"] [data-player="Diddy Kong"] {background-color: red;}
-[data-player="Dixie Kong"] [data-player="Funky Kong"] {background-color: red;}
-[data-player="Dixie Kong"] [data-player="Tiny Kong"] {background-color: red;}
-[data-player="Dixie Kong"] [data-player="Baby DK"] {background-color: red;}
-[data-player="Goomba"] [data-player="Koopa Troopa"] {background-color: red;}
-[data-player="Goomba"] [data-player="Monty Mole"] {background-color: red;}
-[data-player="Goomba"] [data-player="Paragoomba"] {background-color: red;}
-[data-player="Goomba"] [data-player="Red Koopa Troopa"] {background-color: red;}
-[data-player="Paragoomba"] [data-player="Monty Mole"] {background-color: red;}
-[data-player="Paragoomba"] [data-player="Koopa Paratroopa"] {background-color: red;}
-[data-player="Paragoomba"] [data-player="Goomba"] {background-color: red;}
-[data-player="Paragoomba"] [data-player="Green Koopa Paratroopa"] {background-color: red;}
-[data-player="Red Koopa Troopa"] [data-player="Bowser"] {background-color: red;}
-[data-player="Red Koopa Troopa"] [data-player="Bowser Jr."] {background-color: red;}
-[data-player="Red Koopa Troopa"] [data-player="Koopa Paratroopa"] {background-color: red;}
-[data-player="Red Koopa Troopa"] [data-player="Goomba"] {background-color: red;}
-[data-player="Red Koopa Troopa"] [data-player="Green Koopa Paratroopa"] {background-color: red;}
-[data-player="Red Koopa Troopa"] [data-player="Dry Bones"] {background-color: red;}
-[data-player="Red Koopa Troopa"] [data-player="Green Dry Bones"] {background-color: red;}
-[data-player="Red Koopa Troopa"] [data-player="Dark Bones"] {background-color: red;}
-[data-player="Red Koopa Troopa"] [data-player="Blue Dry Bones"] {background-color: red;}
-[data-player="Green Koopa Paratroopa"] [data-player="Bowser"] {background-color: red;}
-[data-player="Green Koopa Paratroopa"] [data-player="Koopa Troopa"] {background-color: red;}
-[data-player="Green Koopa Paratroopa"] [data-player="Paragoomba"] {background-color: red;}
-[data-player="Green Koopa Paratroopa"] [data-player="Red Koopa Troopa"] {background-color: red;}
-[data-player="Blue Shy Guy"] [data-player="Boo"] {background-color: red;}
-[data-player="Blue Shy Guy"] [data-player="Birdo"] {background-color: red;}
-[data-player="Blue Shy Guy"] [data-player="Monty Mole"] {background-color: red;}
-[data-player="Yellow Shy Guy"] [data-player="Boo"] {background-color: red;}
-[data-player="Yellow Shy Guy"] [data-player="Birdo"] {background-color: red;}
-[data-player="Yellow Shy Guy"] [data-player="Monty Mole"] {background-color: red;}
-[data-player="Green Shy Guy"] [data-player="Boo"] {background-color: red;}
-[data-player="Green Shy Guy"] [data-player="Birdo"] {background-color: red;}
-[data-player="Green Shy Guy"] [data-player="Monty Mole"] {background-color: red;}
-[data-player="Gray Shy Guy"] [data-player="Boo"] {background-color: red;}
-[data-player="Gray Shy Guy"] [data-player="Birdo"] {background-color: red;}
-[data-player="Gray Shy Guy"] [data-player="Monty Mole"] {background-color: red;}
-[data-player="Dry Bones"] [data-player="Bowser"] {background-color: red;}
-[data-player="Dry Bones"] [data-player="Koopa Troopa"] {background-color: red;}
-[data-player="Dry Bones"] [data-player="Red Koopa Troopa"] {background-color: red;}
-[data-player="Green Dry Bones"] [data-player="Bowser"] {background-color: red;}
-[data-player="Green Dry Bones"] [data-player="Koopa Troopa"] {background-color: red;}
-[data-player="Green Dry Bones"] [data-player="Red Koopa Troopa"] {background-color: red;}
-[data-player="Dark Bones"] [data-player="Bowser"] {background-color: red;}
-[data-player="Dark Bones"] [data-player="Koopa Troopa"] {background-color: red;}
-[data-player="Dark Bones"] [data-player="Red Koopa Troopa"] {background-color: red;}
-[data-player="Blue Dry Bones"] [data-player="Bowser"] {background-color: red;}
-[data-player="Blue Dry Bones"] [data-player="Koopa Troopa"] {background-color: red;}
-[data-player="Blue Dry Bones"] [data-player="Red Koopa Troopa"] {background-color: red;}
-[data-player="Fire Bro."] [data-player="Bowser"] {background-color: red;}
-[data-player="Fire Bro."] [data-player="Bowser Jr."] {background-color: red;}
-[data-player="Fire Bro."] [data-player="Magikoopa"] {background-color: red;}
-[data-player="Fire Bro."] [data-player="Red Magikoopa"] {background-color: red;}
-[data-player="Fire Bro."] [data-player="Green Magikoopa"] {background-color: red;}
-[data-player="Fire Bro."] [data-player="Yellow Magikoopa"] {background-color: red;}
-[data-player="Boomerang Bro."] [data-player="Bowser"] {background-color: red;}
-[data-player="Boomerang Bro."] [data-player="Bowser Jr."] {background-color: red;}
-[data-player="Boomerang Bro."] [data-player="Magikoopa"] {background-color: red;}
-[data-player="Boomerang Bro."] [data-player="Red Magikoopa"] {background-color: red;}
-[data-player="Boomerang Bro."] [data-player="Green Magikoopa"] {background-color: red;}
-[data-player="Boomerang Bro."] [data-player="Yellow Magikoopa"] {background-color: red;}
-[data-player="Wiggler"] [data-player="King Boo"] {background-color: red;}
-[data-player="Wiggler"] [data-player="Petey Piranha"] {background-color: red;}
-[data-player="Wiggler"] [data-player="Blooper"] {background-color: red;}
-[data-player="Blooper"] [data-player="Boo"] {background-color: red;}
-[data-player="Blooper"] [data-player="Petey Piranha"] {background-color: red;}
-[data-player="Blooper"] [data-player="Wiggler"] {background-color: red;}
-[data-player="Funky Kong"] [data-player="Donkey Kong"] {background-color: red;}
-[data-player="Funky Kong"] [data-player="Diddy Kong"] {background-color: red;}
-[data-player="Funky Kong"] [data-player="Dixie Kong"] {background-color: red;}
-[data-player="Funky Kong"] [data-player="Tiny Kong"] {background-color: red;}
-[data-player="Funky Kong"] [data-player="Baby DK"] {background-color: red;}
-[data-player="Tiny Kong"] [data-player="Donkey Kong"] {background-color: red;}
-[data-player="Tiny Kong"] [data-player="Diddy Kong"] {background-color: red;}
-[data-player="Tiny Kong"] [data-player="Dixie Kong"] {background-color: red;}
-[data-player="Tiny Kong"] [data-player="Funky Kong"] {background-color: red;}
-[data-player="Tiny Kong"] [data-player="Baby DK"] {background-color: red;}
-[data-player="Kritter"] [data-player="King K. Rool"] {background-color: red;}
-[data-player="Blue Kritter"] [data-player="King K. Rool"] {background-color: red;}
-[data-player="Red Kritter"] [data-player="King K. Rool"] {background-color: red;}
-[data-player="Brown Kritter"] [data-player="King K. Rool"] {background-color: red;}
-[data-player="King K. Rool"] [data-player="King Boo"] {background-color: red;}
-[data-player="King K. Rool"] [data-player="Kritter"] {background-color: red;}
-[data-player="King K. Rool"] [data-player="Blue Kritter"] {background-color: red;}
-[data-player="King K. Rool"] [data-player="Red Kritter"] {background-color: red;}
-[data-player="King K. Rool"] [data-player="Brown Kritter"] {background-color: red;}
-[data-player="Baby Peach"] [data-player="Yoshi"] {background-color: red;}
-[data-player="Baby Peach"] [data-player="Baby Mario"] {background-color: red;}
-[data-player="Baby Peach"] [data-player="Baby Luigi"] {background-color: red;}
-[data-player="Baby Peach"] [data-player="Red Toad"] {background-color: red;}
-[data-player="Baby Peach"] [data-player="Toadsworth"] {background-color: red;}
-[data-player="Baby Peach"] [data-player="Blue Toad"] {background-color: red;}
-[data-player="Baby Peach"] [data-player="Yellow Toad"] {background-color: red;}
-[data-player="Baby Peach"] [data-player="Green Toad"] {background-color: red;}
-[data-player="Baby Peach"] [data-player="Purple Toad"] {background-color: red;}
-[data-player="Baby Peach"] [data-player="Baby Daisy"] {background-color: red;}
-[data-player="Baby Peach"] [data-player="Baby DK"] {background-color: red;}
-[data-player="Baby Peach"] [data-player="Red Yoshi"] {background-color: red;}
-[data-player="Baby Peach"] [data-player="Blue Yoshi"] {background-color: red;}
-[data-player="Baby Peach"] [data-player="Yellow Yoshi"] {background-color: red;}
-[data-player="Baby Peach"] [data-player="Light Blue Yoshi"] {background-color: red;}
-[data-player="Baby Peach"] [data-player="Pink Yoshi"] {background-color: red;}
-[data-player="Baby Daisy"] [data-player="Yoshi"] {background-color: red;}
-[data-player="Baby Daisy"] [data-player="Baby Mario"] {background-color: red;}
-[data-player="Baby Daisy"] [data-player="Baby Luigi"] {background-color: red;}
-[data-player="Baby Daisy"] [data-player="Baby DK"] {background-color: red;}
-[data-player="Baby Daisy"] [data-player="Red Yoshi"] {background-color: red;}
-[data-player="Baby Daisy"] [data-player="Blue Yoshi"] {background-color: red;}
-[data-player="Baby Daisy"] [data-player="Yellow Yoshi"] {background-color: red;}
-[data-player="Baby Daisy"] [data-player="Light Blue Yoshi"] {background-color: red;}
-[data-player="Baby Daisy"] [data-player="Pink Yoshi"] {background-color: red;}
-[data-player="Baby DK"] [data-player="Yoshi"] {background-color: red;}
-[data-player="Baby DK"] [data-player="Baby Mario"] {background-color: red;}
-[data-player="Baby DK"] [data-player="Baby Luigi"] {background-color: red;}
-[data-player="Baby DK"] [data-player="Dixie Kong"] {background-color: red;}
-[data-player="Baby DK"] [data-player="Funky Kong"] {background-color: red;}
-[data-player="Baby DK"] [data-player="Tiny Kong"] {background-color: red;}
-[data-player="Baby DK"] [data-player="Baby Daisy"] {background-color: red;}
-[data-player="Baby DK"] [data-player="Red Yoshi"] {background-color: red;}
-[data-player="Baby DK"] [data-player="Blue Yoshi"] {background-color: red;}
-[data-player="Baby DK"] [data-player="Yellow Yoshi"] {background-color: red;}
-[data-player="Baby DK"] [data-player="Light Blue Yoshi"] {background-color: red;}
-[data-player="Baby DK"] [data-player="Pink Yoshi"] {background-color: red;}
-[data-player="Red Yoshi"] [data-player="Mario"] {background-color: red;}
-[data-player="Red Yoshi"] [data-player="Baby Mario"] {background-color: red;}
-[data-player="Red Yoshi"] [data-player="Baby Luigi"] {background-color: red;}
-[data-player="Red Yoshi"] [data-player="Birdo"] {background-color: red;}
-[data-player="Red Yoshi"] [data-player="Baby Daisy"] {background-color: red;}
-[data-player="Red Yoshi"] [data-player="Baby DK"] {background-color: red;}
-[data-player="Blue Yoshi"] [data-player="Mario"] {background-color: red;}
-[data-player="Blue Yoshi"] [data-player="Baby Mario"] {background-color: red;}
-[data-player="Blue Yoshi"] [data-player="Baby Luigi"] {background-color: red;}
-[data-player="Blue Yoshi"] [data-player="Birdo"] {background-color: red;}
-[data-player="Blue Yoshi"] [data-player="Baby Daisy"] {background-color: red;}
-[data-player="Blue Yoshi"] [data-player="Baby DK"] {background-color: red;}
-[data-player="Yellow Yoshi"] [data-player="Mario"] {background-color: red;}
-[data-player="Yellow Yoshi"] [data-player="Baby Mario"] {background-color: red;}
-[data-player="Yellow Yoshi"] [data-player="Baby Luigi"] {background-color: red;}
-[data-player="Yellow Yoshi"] [data-player="Birdo"] {background-color: red;}
-[data-player="Yellow Yoshi"] [data-player="Baby Daisy"] {background-color: red;}
-[data-player="Yellow Yoshi"] [data-player="Baby DK"] {background-color: red;}
-[data-player="Light Blue Yoshi"] [data-player="Mario"] {background-color: red;}
-[data-player="Light Blue Yoshi"] [data-player="Baby Mario"] {background-color: red;}
-[data-player="Light Blue Yoshi"] [data-player="Baby Luigi"] {background-color: red;}
-[data-player="Light Blue Yoshi"] [data-player="Birdo"] {background-color: red;}
-[data-player="Light Blue Yoshi"] [data-player="Baby Daisy"] {background-color: red;}
-[data-player="Light Blue Yoshi"] [data-player="Baby DK"] {background-color: red;}
-[data-player="Pink Yoshi"] [data-player="Mario"] {background-color: red;}
-[data-player="Pink Yoshi"] [data-player="Baby Mario"] {background-color: red;}
-[data-player="Pink Yoshi"] [data-player="Baby Luigi"] {background-color: red;}
-[data-player="Pink Yoshi"] [data-player="Birdo"] {background-color: red;}
-[data-player="Pink Yoshi"] [data-player="Baby Daisy"] {background-color: red;}
-[data-player="Pink Yoshi"] [data-player="Baby DK"] {background-color: red;}
-[data-player="Unused Yoshi (Orange?)"] [data-player="Mario"] {background-color: red;}
-[data-player="Unused Yoshi (Orange?)"] [data-player="Baby Mario"] {background-color: red;}
-[data-player="Unused Yoshi (Orange?)"] [data-player="Baby Luigi"] {background-color: red;}
-[data-player="Unused Yoshi (Orange?)"] [data-player="Birdo"] {background-color: red;}
-[data-player="Unused Yoshi (Orange?)"] [data-player="Baby Daisy"] {background-color: red;}
-[data-player="Unused Yoshi (Orange?)"] [data-player="Baby DK"] {background-color: red;}
-[data-player="Unused Yoshi"] [data-player="Mario"] {background-color: red;}
-[data-player="Unused Yoshi"] [data-player="Baby Mario"] {background-color: red;}
-[data-player="Unused Yoshi"] [data-player="Baby Luigi"] {background-color: red;}
-[data-player="Unused Yoshi"] [data-player="Birdo"] {background-color: red;}
-[data-player="Unused Yoshi"] [data-player="Baby Daisy"] {background-color: red;}
-[data-player="Unused Yoshi"] [data-player="Baby DK"] {background-color: red;}
-[data-player="Unused Toad"] [data-player="Peach"] {background-color: red;}
-[data-player="Unused Toad"] [data-player="Toadette"] {background-color: red;}
-[data-player="Unused Toad"] [data-player="Blue Pianta"] {background-color: red;}
-[data-player="Unused Toad"] [data-player="Red Pianta"] {background-color: red;}
-[data-player="Unused Toad"] [data-player="Yellow Pianta"] {background-color: red;}
-[data-player="Unused Toad"] [data-player="Toadsworth"] {background-color: red;}
-[data-player="Unused Pianta"] [data-player="Mario"] {background-color: red;}
-[data-player="Unused Pianta"] [data-player="Red Toad"] {background-color: red;}
-[data-player="Unused Pianta"] [data-player="Blue Noki"] {background-color: red;}
-[data-player="Unused Pianta"] [data-player="Red Noki"] {background-color: red;}
-[data-player="Unused Pianta"] [data-player="Green Noki"] {background-color: red;}
-[data-player="Unused Pianta"] [data-player="Toadsworth"] {background-color: red;}
-[data-player="Unused Pianta"] [data-player="Blue Toad"] {background-color: red;}
-[data-player="Unused Pianta"] [data-player="Yellow Toad"] {background-color: red;}
-[data-player="Unused Pianta"] [data-player="Green Toad"] {background-color: red;}
-[data-player="Unused Pianta"] [data-player="Purple Toad"] {background-color: red;}
-[data-player="Unused Kritter"] [data-player="King K. Rool"] {background-color: red;}
-[data-player="Unused Koopa"] [data-player="Bowser"] {background-color: red;}
-[data-player="Unused Koopa"] [data-player="Bowser Jr."] {background-color: red;}
-[data-player="Unused Koopa"] [data-player="Koopa Paratroopa"] {background-color: red;}
-[data-player="Unused Koopa"] [data-player="Goomba"] {background-color: red;}
-[data-player="Unused Koopa"] [data-player="Green Koopa Paratroopa"] {background-color: red;}
-[data-player="Unused Koopa"] [data-player="Dry Bones"] {background-color: red;}
-[data-player="Unused Koopa"] [data-player="Green Dry Bones"] {background-color: red;}
-[data-player="Unused Koopa"] [data-player="Dark Bones"] {background-color: red;}
-[data-player="Unused Koopa"] [data-player="Blue Dry Bones"] {background-color: red;}
-[data-player="Red Mii"] [data-player="Mario"] {background-color: red;}
-[data-player="Red Mii"] [data-player="Baby Mario"] {background-color: red;}
-[data-player="Red Mii"] [data-player="Red Toad"] {background-color: red;}
-[data-player="Red Mii"] [data-player="Shy Guy"] {background-color: red;}
-[data-player="Red Mii"] [data-player="Koopa Paratroopa"] {background-color: red;}
-[data-player="Red Mii"] [data-player="Red Pianta"] {background-color: red;}
-[data-player="Red Mii"] [data-player="Red Noki"] {background-color: red;}
-[data-player="Red Mii"] [data-player="Red Magikoopa"] {background-color: red;}
-[data-player="Red Mii"] [data-player="Red Koopa Troopa"] {background-color: red;}
-[data-player="Red Mii"] [data-player="Dark Bones"] {background-color: red;}
-[data-player="Red Mii"] [data-player="Fire Bro."] {background-color: red;}
-[data-player="Red Mii"] [data-player="Red Kritter"] {background-color: red;}
-[data-player="Red Mii"] [data-player="Red Yoshi"] {background-color: red;}
-[data-player="Orange Mii"] [data-player="Daisy"] {background-color: red;}
-[data-player="Orange Mii"] [data-player="Baby Daisy"] {background-color: red;}
-[data-player="Yellow Mii"] [data-player="Wario"] {background-color: red;}
-[data-player="Yellow Mii"] [data-player="Yellow Pianta"] {background-color: red;}
-[data-player="Yellow Mii"] [data-player="Yellow Toad"] {background-color: red;}
-[data-player="Yellow Mii"] [data-player="Yellow Magikoopa"] {background-color: red;}
-[data-player="Yellow Mii"] [data-player="Yellow Shy Guy"] {background-color: red;}
-[data-player="Yellow Mii"] [data-player="Wiggler"] {background-color: red;}
-[data-player="Yellow Mii"] [data-player="Yellow Yoshi"] {background-color: red;}
-[data-player="Light Green Mii"] [data-player="Yoshi"] {background-color: red;}
-[data-player="Light Green Mii"] [data-player="Petey Piranha"] {background-color: red;}
-[data-player="Green Mii"] [data-player="Luigi"] {background-color: red;}
-[data-player="Green Mii"] [data-player="Baby Luigi"] {background-color: red;}
-[data-player="Green Mii"] [data-player="Koopa Troopa"] {background-color: red;}
-[data-player="Green Mii"] [data-player="Green Noki"] {background-color: red;}
-[data-player="Green Mii"] [data-player="Hammer Bro."] {background-color: red;}
-[data-player="Green Mii"] [data-player="Green Toad"] {background-color: red;}
-[data-player="Green Mii"] [data-player="Green Magikoopa"] {background-color: red;}
-[data-player="Green Mii"] [data-player="Green Koopa Paratroopa"] {background-color: red;}
-[data-player="Green Mii"] [data-player="Green Shy Guy"] {background-color: red;}
-[data-player="Green Mii"] [data-player="Green Dry Bones"] {background-color: red;}
-[data-player="Green Mii"] [data-player="Kritter"] {background-color: red;}
-[data-player="Green Mii"] [data-player="King K. Rool"] {background-color: red;}
-[data-player="Blue Mii"] [data-player="Blue Pianta"] {background-color: red;}
-[data-player="Blue Mii"] [data-player="Blue Noki"] {background-color: red;}
-[data-player="Blue Mii"] [data-player="Blue Toad"] {background-color: red;}
-[data-player="Blue Mii"] [data-player="Magikoopa"] {background-color: red;}
-[data-player="Blue Mii"] [data-player="Blue Shy Guy"] {background-color: red;}
-[data-player="Blue Mii"] [data-player="Blue Dry Bones"] {background-color: red;}
-[data-player="Blue Mii"] [data-player="Boomerang Bro."] {background-color: red;}
-[data-player="Blue Mii"] [data-player="Blue Kritter"] {background-color: red;}
-[data-player="Blue Mii"] [data-player="Blue Yoshi"] {background-color: red;}
-[data-player="Light Blue Mii"] [data-player="Funky Kong"] {background-color: red;}
-[data-player="Light Blue Mii"] [data-player="Tiny Kong"] {background-color: red;}
-[data-player="Light Blue Mii"] [data-player="Light Blue Yoshi"] {background-color: red;}
-[data-player="Pink Mii"] [data-player="Peach"] {background-color: red;}
-[data-player="Pink Mii"] [data-player="Toadette"] {background-color: red;}
-[data-player="Pink Mii"] [data-player="Birdo"] {background-color: red;}
-[data-player="Pink Mii"] [data-player="Dixie Kong"] {background-color: red;}
-[data-player="Pink Mii"] [data-player="Pink Yoshi"] {background-color: red;}
-[data-player="Purple Mii"] [data-player="Waluigi"] {background-color: red;}
-[data-player="Purple Mii"] [data-player="Purple Toad"] {background-color: red;}
-[data-player="Brown Mii"] [data-player="Donkey Kong"] {background-color: red;}
-[data-player="Brown Mii"] [data-player="Monty Mole"] {background-color: red;}
-[data-player="Brown Mii"] [data-player="Toadsworth"] {background-color: red;}
-[data-player="Brown Mii"] [data-player="Goomba"] {background-color: red;}
-[data-player="Brown Mii"] [data-player="Paragoomba"] {background-color: red;}
-[data-player="Brown Mii"] [data-player="Brown Kritter"] {background-color: red;}
-[data-player="Brown Mii"] [data-player="Baby DK"] {background-color: red;}
-[data-player="White Mii"] [data-player="Boo"] {background-color: red;}
-[data-player="White Mii"] [data-player="King Boo"] {background-color: red;}
-[data-player="White Mii"] [data-player="Dry Bones"] {background-color: red;}
-[data-player="White Mii"] [data-player="Blooper"] {background-color: red;}
-[data-player="Black Mii"] [data-player="Bowser"] {background-color: red;}
-[data-player="Black Mii"] [data-player="Bowser Jr."] {background-color: red;}
-[data-player="Black Mii"] [data-player="Gray Shy Guy"] {background-color: red;}
-[data-player="Red Mii (F)"] [data-player="Mario"] {background-color: red;}
-[data-player="Red Mii (F)"] [data-player="Baby Mario"] {background-color: red;}
-[data-player="Red Mii (F)"] [data-player="Red Toad"] {background-color: red;}
-[data-player="Red Mii (F)"] [data-player="Shy Guy"] {background-color: red;}
-[data-player="Red Mii (F)"] [data-player="Koopa Paratroopa"] {background-color: red;}
-[data-player="Red Mii (F)"] [data-player="Red Pianta"] {background-color: red;}
-[data-player="Red Mii (F)"] [data-player="Red Noki"] {background-color: red;}
-[data-player="Red Mii (F)"] [data-player="Red Magikoopa"] {background-color: red;}
-[data-player="Red Mii (F)"] [data-player="Red Koopa Troopa"] {background-color: red;}
-[data-player="Red Mii (F)"] [data-player="Dark Bones"] {background-color: red;}
-[data-player="Red Mii (F)"] [data-player="Fire Bro."] {background-color: red;}
-[data-player="Red Mii (F)"] [data-player="Red Kritter"] {background-color: red;}
-[data-player="Red Mii (F)"] [data-player="Red Yoshi"] {background-color: red;}
-[data-player="Orange Mii (F)"] [data-player="Daisy"] {background-color: red;}
-[data-player="Orange Mii (F)"] [data-player="Baby Daisy"] {background-color: red;}
-[data-player="Yellow Mii (F)"] [data-player="Wario"] {background-color: red;}
-[data-player="Yellow Mii (F)"] [data-player="Yellow Pianta"] {background-color: red;}
-[data-player="Yellow Mii (F)"] [data-player="Yellow Toad"] {background-color: red;}
-[data-player="Yellow Mii (F)"] [data-player="Yellow Magikoopa"] {background-color: red;}
-[data-player="Yellow Mii (F)"] [data-player="Yellow Shy Guy"] {background-color: red;}
-[data-player="Yellow Mii (F)"] [data-player="Wiggler"] {background-color: red;}
-[data-player="Yellow Mii (F)"] [data-player="Yellow Yoshi"] {background-color: red;}
-[data-player="Light Green Mii (F)"] [data-player="Yoshi"] {background-color: red;}
-[data-player="Light Green Mii (F)"] [data-player="Petey Piranha"] {background-color: red;}
-[data-player="Green Mii (F)"] [data-player="Luigi"] {background-color: red;}
-[data-player="Green Mii (F)"] [data-player="Baby Luigi"] {background-color: red;}
-[data-player="Green Mii (F)"] [data-player="Koopa Troopa"] {background-color: red;}
-[data-player="Green Mii (F)"] [data-player="Green Noki"] {background-color: red;}
-[data-player="Green Mii (F)"] [data-player="Hammer Bro."] {background-color: red;}
-[data-player="Green Mii (F)"] [data-player="Green Toad"] {background-color: red;}
-[data-player="Green Mii (F)"] [data-player="Green Magikoopa"] {background-color: red;}
-[data-player="Green Mii (F)"] [data-player="Green Koopa Paratroopa"] {background-color: red;}
-[data-player="Green Mii (F)"] [data-player="Green Shy Guy"] {background-color: red;}
-[data-player="Green Mii (F)"] [data-player="Green Dry Bones"] {background-color: red;}
-[data-player="Green Mii (F)"] [data-player="Kritter"] {background-color: red;}
-[data-player="Green Mii (F)"] [data-player="King K. Rool"] {background-color: red;}
-[data-player="Blue Mii (F)"] [data-player="Blue Pianta"] {background-color: red;}
-[data-player="Blue Mii (F)"] [data-player="Blue Noki"] {background-color: red;}
-[data-player="Blue Mii (F)"] [data-player="Blue Toad"] {background-color: red;}
-[data-player="Blue Mii (F)"] [data-player="Magikoopa"] {background-color: red;}
-[data-player="Blue Mii (F)"] [data-player="Blue Shy Guy"] {background-color: red;}
-[data-player="Blue Mii (F)"] [data-player="Blue Dry Bones"] {background-color: red;}
-[data-player="Blue Mii (F)"] [data-player="Boomerang Bro."] {background-color: red;}
-[data-player="Blue Mii (F)"] [data-player="Blue Kritter"] {background-color: red;}
-[data-player="Blue Mii (F)"] [data-player="Blue Yoshi"] {background-color: red;}
-[data-player="Light Blue Mii (F)"] [data-player="Funky Kong"] {background-color: red;}
-[data-player="Light Blue Mii (F)"] [data-player="Tiny Kong"] {background-color: red;}
-[data-player="Light Blue Mii (F)"] [data-player="Light Blue Yoshi"] {background-color: red;}
-[data-player="Pink Mii (F)"] [data-player="Peach"] {background-color: red;}
-[data-player="Pink Mii (F)"] [data-player="Toadette"] {background-color: red;}
-[data-player="Pink Mii (F)"] [data-player="Birdo"] {background-color: red;}
-[data-player="Pink Mii (F)"] [data-player="Dixie Kong"] {background-color: red;}
-[data-player="Pink Mii (F)"] [data-player="Pink Yoshi"] {background-color: red;}
-[data-player="Purple Mii (F)"] [data-player="Waluigi"] {background-color: red;}
-[data-player="Purple Mii (F)"] [data-player="Purple Toad"] {background-color: red;}
-[data-player="Brown Mii (F)"] [data-player="Donkey Kong"] {background-color: red;}
-[data-player="Brown Mii (F)"] [data-player="Monty Mole"] {background-color: red;}
-[data-player="Brown Mii (F)"] [data-player="Toadsworth"] {background-color: red;}
-[data-player="Brown Mii (F)"] [data-player="Goomba"] {background-color: red;}
-[data-player="Brown Mii (F)"] [data-player="Paragoomba"] {background-color: red;}
-[data-player="Brown Mii (F)"] [data-player="Brown Kritter"] {background-color: red;}
-[data-player="Brown Mii (F)"] [data-player="Baby DK"] {background-color: red;}
-[data-player="White Mii (F)"] [data-player="Boo"] {background-color: red;}
-[data-player="White Mii (F)"] [data-player="King Boo"] {background-color: red;}
-[data-player="White Mii (F)"] [data-player="Dry Bones"] {background-color: red;}
-[data-player="White Mii (F)"] [data-player="Blooper"] {background-color: red;}
-[data-player="Black Mii (F)"] [data-player="Bowser"] {background-color: red;}
-[data-player="Black Mii (F)"] [data-player="Bowser Jr."] {background-color: red;}
-[data-player="Black Mii (F)"] [data-player="Gray Shy Guy"] {background-color: red;}
+[data-player="Mario"] [data-player="Luigi"] span {opacity: 1;}
+[data-player="Mario"] [data-player="Peach"] span {opacity: 1;}
+[data-player="Mario"] [data-player="Yoshi"] span {opacity: 1;}
+[data-player="Mario"] [data-player="Blue Pianta"] span {opacity: 1;}
+[data-player="Mario"] [data-player="Red Pianta"] span {opacity: 1;}
+[data-player="Mario"] [data-player="Yellow Pianta"] span {opacity: 1;}
+[data-player="Mario"] [data-player="Blue Noki"] span {opacity: 1;}
+[data-player="Mario"] [data-player="Red Noki"] span {opacity: 1;}
+[data-player="Mario"] [data-player="Green Noki"] span {opacity: 1;}
+[data-player="Mario"] [data-player="Red Yoshi"] span {opacity: 1;}
+[data-player="Mario"] [data-player="Blue Yoshi"] span {opacity: 1;}
+[data-player="Mario"] [data-player="Yellow Yoshi"] span {opacity: 1;}
+[data-player="Mario"] [data-player="Light Blue Yoshi"] span {opacity: 1;}
+[data-player="Mario"] [data-player="Pink Yoshi"] span {opacity: 1;}
+[data-player="Luigi"] [data-player="Mario"] span {opacity: 1;}
+[data-player="Luigi"] [data-player="Daisy"] span {opacity: 1;}
+[data-player="Donkey Kong"] [data-player="Diddy Kong"] span {opacity: 1;}
+[data-player="Donkey Kong"] [data-player="Dixie Kong"] span {opacity: 1;}
+[data-player="Donkey Kong"] [data-player="Funky Kong"] span {opacity: 1;}
+[data-player="Donkey Kong"] [data-player="Tiny Kong"] span {opacity: 1;}
+[data-player="Diddy Kong"] [data-player="Donkey Kong"] span {opacity: 1;}
+[data-player="Diddy Kong"] [data-player="Dixie Kong"] span {opacity: 1;}
+[data-player="Diddy Kong"] [data-player="Funky Kong"] span {opacity: 1;}
+[data-player="Diddy Kong"] [data-player="Tiny Kong"] span {opacity: 1;}
+[data-player="Peach"] [data-player="Mario"] span {opacity: 1;}
+[data-player="Peach"] [data-player="Daisy"] span {opacity: 1;}
+[data-player="Peach"] [data-player="Red Toad"] span {opacity: 1;}
+[data-player="Peach"] [data-player="Toadette"] span {opacity: 1;}
+[data-player="Peach"] [data-player="Toadsworth"] span {opacity: 1;}
+[data-player="Peach"] [data-player="Blue Toad"] span {opacity: 1;}
+[data-player="Peach"] [data-player="Yellow Toad"] span {opacity: 1;}
+[data-player="Peach"] [data-player="Green Toad"] span {opacity: 1;}
+[data-player="Peach"] [data-player="Purple Toad"] span {opacity: 1;}
+[data-player="Daisy"] [data-player="Luigi"] span {opacity: 1;}
+[data-player="Daisy"] [data-player="Peach"] span {opacity: 1;}
+[data-player="Daisy"] [data-player="Birdo"] span {opacity: 1;}
+[data-player="Yoshi"] [data-player="Mario"] span {opacity: 1;}
+[data-player="Yoshi"] [data-player="Baby Mario"] span {opacity: 1;}
+[data-player="Yoshi"] [data-player="Baby Luigi"] span {opacity: 1;}
+[data-player="Yoshi"] [data-player="Birdo"] span {opacity: 1;}
+[data-player="Yoshi"] [data-player="Baby Daisy"] span {opacity: 1;}
+[data-player="Yoshi"] [data-player="Baby DK"] span {opacity: 1;}
+[data-player="Baby Mario"] [data-player="Yoshi"] span {opacity: 1;}
+[data-player="Baby Mario"] [data-player="Baby Luigi"] span {opacity: 1;}
+[data-player="Baby Mario"] [data-player="Baby Daisy"] span {opacity: 1;}
+[data-player="Baby Mario"] [data-player="Baby DK"] span {opacity: 1;}
+[data-player="Baby Mario"] [data-player="Red Yoshi"] span {opacity: 1;}
+[data-player="Baby Mario"] [data-player="Blue Yoshi"] span {opacity: 1;}
+[data-player="Baby Mario"] [data-player="Yellow Yoshi"] span {opacity: 1;}
+[data-player="Baby Mario"] [data-player="Light Blue Yoshi"] span {opacity: 1;}
+[data-player="Baby Mario"] [data-player="Pink Yoshi"] span {opacity: 1;}
+[data-player="Baby Luigi"] [data-player="Yoshi"] span {opacity: 1;}
+[data-player="Baby Luigi"] [data-player="Baby Mario"] span {opacity: 1;}
+[data-player="Baby Luigi"] [data-player="Baby Daisy"] span {opacity: 1;}
+[data-player="Baby Luigi"] [data-player="Baby DK"] span {opacity: 1;}
+[data-player="Baby Luigi"] [data-player="Red Yoshi"] span {opacity: 1;}
+[data-player="Baby Luigi"] [data-player="Blue Yoshi"] span {opacity: 1;}
+[data-player="Baby Luigi"] [data-player="Yellow Yoshi"] span {opacity: 1;}
+[data-player="Baby Luigi"] [data-player="Light Blue Yoshi"] span {opacity: 1;}
+[data-player="Baby Luigi"] [data-player="Pink Yoshi"] span {opacity: 1;}
+[data-player="Bowser"] [data-player="Koopa Troopa"] span {opacity: 1;}
+[data-player="Bowser"] [data-player="Bowser Jr."] span {opacity: 1;}
+[data-player="Bowser"] [data-player="Koopa Paratroopa"] span {opacity: 1;}
+[data-player="Bowser"] [data-player="Hammer Bro."] span {opacity: 1;}
+[data-player="Bowser"] [data-player="Magikoopa"] span {opacity: 1;}
+[data-player="Bowser"] [data-player="Red Magikoopa"] span {opacity: 1;}
+[data-player="Bowser"] [data-player="Green Magikoopa"] span {opacity: 1;}
+[data-player="Bowser"] [data-player="Yellow Magikoopa"] span {opacity: 1;}
+[data-player="Bowser"] [data-player="Red Koopa Troopa"] span {opacity: 1;}
+[data-player="Bowser"] [data-player="Green Koopa Paratroopa"] span {opacity: 1;}
+[data-player="Bowser"] [data-player="Dry Bones"] span {opacity: 1;}
+[data-player="Bowser"] [data-player="Green Dry Bones"] span {opacity: 1;}
+[data-player="Bowser"] [data-player="Dark Bones"] span {opacity: 1;}
+[data-player="Bowser"] [data-player="Blue Dry Bones"] span {opacity: 1;}
+[data-player="Bowser"] [data-player="Fire Bro."] span {opacity: 1;}
+[data-player="Bowser"] [data-player="Boomerang Bro."] span {opacity: 1;}
+[data-player="Wario"] [data-player="Waluigi"] span {opacity: 1;}
+[data-player="Waluigi"] [data-player="Wario"] span {opacity: 1;}
+[data-player="Koopa Troopa"] [data-player="Bowser"] span {opacity: 1;}
+[data-player="Koopa Troopa"] [data-player="Bowser Jr."] span {opacity: 1;}
+[data-player="Koopa Troopa"] [data-player="Koopa Paratroopa"] span {opacity: 1;}
+[data-player="Koopa Troopa"] [data-player="Goomba"] span {opacity: 1;}
+[data-player="Koopa Troopa"] [data-player="Green Koopa Paratroopa"] span {opacity: 1;}
+[data-player="Koopa Troopa"] [data-player="Dry Bones"] span {opacity: 1;}
+[data-player="Koopa Troopa"] [data-player="Green Dry Bones"] span {opacity: 1;}
+[data-player="Koopa Troopa"] [data-player="Dark Bones"] span {opacity: 1;}
+[data-player="Koopa Troopa"] [data-player="Blue Dry Bones"] span {opacity: 1;}
+[data-player="Red Toad"] [data-player="Peach"] span {opacity: 1;}
+[data-player="Red Toad"] [data-player="Toadette"] span {opacity: 1;}
+[data-player="Red Toad"] [data-player="Blue Pianta"] span {opacity: 1;}
+[data-player="Red Toad"] [data-player="Red Pianta"] span {opacity: 1;}
+[data-player="Red Toad"] [data-player="Yellow Pianta"] span {opacity: 1;}
+[data-player="Red Toad"] [data-player="Toadsworth"] span {opacity: 1;}
+[data-player="Boo"] [data-player="Shy Guy"] span {opacity: 1;}
+[data-player="Boo"] [data-player="Magikoopa"] span {opacity: 1;}
+[data-player="Boo"] [data-player="Red Magikoopa"] span {opacity: 1;}
+[data-player="Boo"] [data-player="Green Magikoopa"] span {opacity: 1;}
+[data-player="Boo"] [data-player="Yellow Magikoopa"] span {opacity: 1;}
+[data-player="Boo"] [data-player="King Boo"] span {opacity: 1;}
+[data-player="Boo"] [data-player="Blue Shy Guy"] span {opacity: 1;}
+[data-player="Boo"] [data-player="Yellow Shy Guy"] span {opacity: 1;}
+[data-player="Boo"] [data-player="Green Shy Guy"] span {opacity: 1;}
+[data-player="Boo"] [data-player="Gray Shy Guy"] span {opacity: 1;}
+[data-player="Boo"] [data-player="Blooper"] span {opacity: 1;}
+[data-player="Toadette"] [data-player="Peach"] span {opacity: 1;}
+[data-player="Toadette"] [data-player="Red Toad"] span {opacity: 1;}
+[data-player="Toadette"] [data-player="Birdo"] span {opacity: 1;}
+[data-player="Toadette"] [data-player="Blue Noki"] span {opacity: 1;}
+[data-player="Toadette"] [data-player="Red Noki"] span {opacity: 1;}
+[data-player="Toadette"] [data-player="Green Noki"] span {opacity: 1;}
+[data-player="Toadette"] [data-player="Toadsworth"] span {opacity: 1;}
+[data-player="Toadette"] [data-player="Blue Toad"] span {opacity: 1;}
+[data-player="Toadette"] [data-player="Yellow Toad"] span {opacity: 1;}
+[data-player="Toadette"] [data-player="Green Toad"] span {opacity: 1;}
+[data-player="Toadette"] [data-player="Purple Toad"] span {opacity: 1;}
+[data-player="Shy Guy"] [data-player="Boo"] span {opacity: 1;}
+[data-player="Shy Guy"] [data-player="Birdo"] span {opacity: 1;}
+[data-player="Shy Guy"] [data-player="Monty Mole"] span {opacity: 1;}
+[data-player="Birdo"] [data-player="Daisy"] span {opacity: 1;}
+[data-player="Birdo"] [data-player="Yoshi"] span {opacity: 1;}
+[data-player="Birdo"] [data-player="Toadette"] span {opacity: 1;}
+[data-player="Birdo"] [data-player="Shy Guy"] span {opacity: 1;}
+[data-player="Birdo"] [data-player="Petey Piranha"] span {opacity: 1;}
+[data-player="Birdo"] [data-player="Blue Shy Guy"] span {opacity: 1;}
+[data-player="Birdo"] [data-player="Yellow Shy Guy"] span {opacity: 1;}
+[data-player="Birdo"] [data-player="Green Shy Guy"] span {opacity: 1;}
+[data-player="Birdo"] [data-player="Gray Shy Guy"] span {opacity: 1;}
+[data-player="Birdo"] [data-player="Red Yoshi"] span {opacity: 1;}
+[data-player="Birdo"] [data-player="Blue Yoshi"] span {opacity: 1;}
+[data-player="Birdo"] [data-player="Yellow Yoshi"] span {opacity: 1;}
+[data-player="Birdo"] [data-player="Light Blue Yoshi"] span {opacity: 1;}
+[data-player="Birdo"] [data-player="Pink Yoshi"] span {opacity: 1;}
+[data-player="Monty Mole"] [data-player="Shy Guy"] span {opacity: 1;}
+[data-player="Monty Mole"] [data-player="Goomba"] span {opacity: 1;}
+[data-player="Monty Mole"] [data-player="Paragoomba"] span {opacity: 1;}
+[data-player="Monty Mole"] [data-player="Blue Shy Guy"] span {opacity: 1;}
+[data-player="Monty Mole"] [data-player="Yellow Shy Guy"] span {opacity: 1;}
+[data-player="Monty Mole"] [data-player="Green Shy Guy"] span {opacity: 1;}
+[data-player="Monty Mole"] [data-player="Gray Shy Guy"] span {opacity: 1;}
+[data-player="Bowser Jr."] [data-player="Bowser"] span {opacity: 1;}
+[data-player="Bowser Jr."] [data-player="Koopa Troopa"] span {opacity: 1;}
+[data-player="Bowser Jr."] [data-player="Hammer Bro."] span {opacity: 1;}
+[data-player="Bowser Jr."] [data-player="Magikoopa"] span {opacity: 1;}
+[data-player="Bowser Jr."] [data-player="Red Magikoopa"] span {opacity: 1;}
+[data-player="Bowser Jr."] [data-player="Green Magikoopa"] span {opacity: 1;}
+[data-player="Bowser Jr."] [data-player="Yellow Magikoopa"] span {opacity: 1;}
+[data-player="Bowser Jr."] [data-player="Red Koopa Troopa"] span {opacity: 1;}
+[data-player="Bowser Jr."] [data-player="Fire Bro."] span {opacity: 1;}
+[data-player="Bowser Jr."] [data-player="Boomerang Bro."] span {opacity: 1;}
+[data-player="Koopa Paratroopa"] [data-player="Bowser"] span {opacity: 1;}
+[data-player="Koopa Paratroopa"] [data-player="Koopa Troopa"] span {opacity: 1;}
+[data-player="Koopa Paratroopa"] [data-player="Paragoomba"] span {opacity: 1;}
+[data-player="Koopa Paratroopa"] [data-player="Red Koopa Troopa"] span {opacity: 1;}
+[data-player="Blue Pianta"] [data-player="Mario"] span {opacity: 1;}
+[data-player="Blue Pianta"] [data-player="Red Toad"] span {opacity: 1;}
+[data-player="Blue Pianta"] [data-player="Blue Noki"] span {opacity: 1;}
+[data-player="Blue Pianta"] [data-player="Red Noki"] span {opacity: 1;}
+[data-player="Blue Pianta"] [data-player="Green Noki"] span {opacity: 1;}
+[data-player="Blue Pianta"] [data-player="Toadsworth"] span {opacity: 1;}
+[data-player="Blue Pianta"] [data-player="Blue Toad"] span {opacity: 1;}
+[data-player="Blue Pianta"] [data-player="Yellow Toad"] span {opacity: 1;}
+[data-player="Blue Pianta"] [data-player="Green Toad"] span {opacity: 1;}
+[data-player="Blue Pianta"] [data-player="Purple Toad"] span {opacity: 1;}
+[data-player="Red Pianta"] [data-player="Mario"] span {opacity: 1;}
+[data-player="Red Pianta"] [data-player="Red Toad"] span {opacity: 1;}
+[data-player="Red Pianta"] [data-player="Blue Noki"] span {opacity: 1;}
+[data-player="Red Pianta"] [data-player="Red Noki"] span {opacity: 1;}
+[data-player="Red Pianta"] [data-player="Green Noki"] span {opacity: 1;}
+[data-player="Red Pianta"] [data-player="Toadsworth"] span {opacity: 1;}
+[data-player="Red Pianta"] [data-player="Blue Toad"] span {opacity: 1;}
+[data-player="Red Pianta"] [data-player="Yellow Toad"] span {opacity: 1;}
+[data-player="Red Pianta"] [data-player="Green Toad"] span {opacity: 1;}
+[data-player="Red Pianta"] [data-player="Purple Toad"] span {opacity: 1;}
+[data-player="Yellow Pianta"] [data-player="Mario"] span {opacity: 1;}
+[data-player="Yellow Pianta"] [data-player="Red Toad"] span {opacity: 1;}
+[data-player="Yellow Pianta"] [data-player="Blue Noki"] span {opacity: 1;}
+[data-player="Yellow Pianta"] [data-player="Red Noki"] span {opacity: 1;}
+[data-player="Yellow Pianta"] [data-player="Green Noki"] span {opacity: 1;}
+[data-player="Yellow Pianta"] [data-player="Toadsworth"] span {opacity: 1;}
+[data-player="Yellow Pianta"] [data-player="Blue Toad"] span {opacity: 1;}
+[data-player="Yellow Pianta"] [data-player="Yellow Toad"] span {opacity: 1;}
+[data-player="Yellow Pianta"] [data-player="Green Toad"] span {opacity: 1;}
+[data-player="Yellow Pianta"] [data-player="Purple Toad"] span {opacity: 1;}
+[data-player="Blue Noki"] [data-player="Mario"] span {opacity: 1;}
+[data-player="Blue Noki"] [data-player="Toadette"] span {opacity: 1;}
+[data-player="Blue Noki"] [data-player="Blue Pianta"] span {opacity: 1;}
+[data-player="Blue Noki"] [data-player="Red Pianta"] span {opacity: 1;}
+[data-player="Blue Noki"] [data-player="Yellow Pianta"] span {opacity: 1;}
+[data-player="Red Noki"] [data-player="Mario"] span {opacity: 1;}
+[data-player="Red Noki"] [data-player="Toadette"] span {opacity: 1;}
+[data-player="Red Noki"] [data-player="Blue Pianta"] span {opacity: 1;}
+[data-player="Red Noki"] [data-player="Red Pianta"] span {opacity: 1;}
+[data-player="Red Noki"] [data-player="Yellow Pianta"] span {opacity: 1;}
+[data-player="Green Noki"] [data-player="Mario"] span {opacity: 1;}
+[data-player="Green Noki"] [data-player="Toadette"] span {opacity: 1;}
+[data-player="Green Noki"] [data-player="Blue Pianta"] span {opacity: 1;}
+[data-player="Green Noki"] [data-player="Red Pianta"] span {opacity: 1;}
+[data-player="Green Noki"] [data-player="Yellow Pianta"] span {opacity: 1;}
+[data-player="Hammer Bro."] [data-player="Bowser"] span {opacity: 1;}
+[data-player="Hammer Bro."] [data-player="Bowser Jr."] span {opacity: 1;}
+[data-player="Hammer Bro."] [data-player="Magikoopa"] span {opacity: 1;}
+[data-player="Hammer Bro."] [data-player="Red Magikoopa"] span {opacity: 1;}
+[data-player="Hammer Bro."] [data-player="Green Magikoopa"] span {opacity: 1;}
+[data-player="Hammer Bro."] [data-player="Yellow Magikoopa"] span {opacity: 1;}
+[data-player="Toadsworth"] [data-player="Peach"] span {opacity: 1;}
+[data-player="Toadsworth"] [data-player="Red Toad"] span {opacity: 1;}
+[data-player="Toadsworth"] [data-player="Toadette"] span {opacity: 1;}
+[data-player="Toadsworth"] [data-player="Blue Pianta"] span {opacity: 1;}
+[data-player="Toadsworth"] [data-player="Red Pianta"] span {opacity: 1;}
+[data-player="Toadsworth"] [data-player="Yellow Pianta"] span {opacity: 1;}
+[data-player="Toadsworth"] [data-player="Blue Toad"] span {opacity: 1;}
+[data-player="Toadsworth"] [data-player="Yellow Toad"] span {opacity: 1;}
+[data-player="Toadsworth"] [data-player="Green Toad"] span {opacity: 1;}
+[data-player="Toadsworth"] [data-player="Purple Toad"] span {opacity: 1;}
+[data-player="Blue Toad"] [data-player="Peach"] span {opacity: 1;}
+[data-player="Blue Toad"] [data-player="Toadette"] span {opacity: 1;}
+[data-player="Blue Toad"] [data-player="Blue Pianta"] span {opacity: 1;}
+[data-player="Blue Toad"] [data-player="Red Pianta"] span {opacity: 1;}
+[data-player="Blue Toad"] [data-player="Yellow Pianta"] span {opacity: 1;}
+[data-player="Blue Toad"] [data-player="Toadsworth"] span {opacity: 1;}
+[data-player="Yellow Toad"] [data-player="Peach"] span {opacity: 1;}
+[data-player="Yellow Toad"] [data-player="Toadette"] span {opacity: 1;}
+[data-player="Yellow Toad"] [data-player="Blue Pianta"] span {opacity: 1;}
+[data-player="Yellow Toad"] [data-player="Red Pianta"] span {opacity: 1;}
+[data-player="Yellow Toad"] [data-player="Yellow Pianta"] span {opacity: 1;}
+[data-player="Yellow Toad"] [data-player="Toadsworth"] span {opacity: 1;}
+[data-player="Green Toad"] [data-player="Peach"] span {opacity: 1;}
+[data-player="Green Toad"] [data-player="Toadette"] span {opacity: 1;}
+[data-player="Green Toad"] [data-player="Blue Pianta"] span {opacity: 1;}
+[data-player="Green Toad"] [data-player="Red Pianta"] span {opacity: 1;}
+[data-player="Green Toad"] [data-player="Yellow Pianta"] span {opacity: 1;}
+[data-player="Green Toad"] [data-player="Toadsworth"] span {opacity: 1;}
+[data-player="Purple Toad"] [data-player="Peach"] span {opacity: 1;}
+[data-player="Purple Toad"] [data-player="Toadette"] span {opacity: 1;}
+[data-player="Purple Toad"] [data-player="Blue Pianta"] span {opacity: 1;}
+[data-player="Purple Toad"] [data-player="Red Pianta"] span {opacity: 1;}
+[data-player="Purple Toad"] [data-player="Yellow Pianta"] span {opacity: 1;}
+[data-player="Purple Toad"] [data-player="Toadsworth"] span {opacity: 1;}
+[data-player="Magikoopa"] [data-player="Bowser"] span {opacity: 1;}
+[data-player="Magikoopa"] [data-player="Boo"] span {opacity: 1;}
+[data-player="Magikoopa"] [data-player="Bowser Jr."] span {opacity: 1;}
+[data-player="Magikoopa"] [data-player="Hammer Bro."] span {opacity: 1;}
+[data-player="Magikoopa"] [data-player="Fire Bro."] span {opacity: 1;}
+[data-player="Magikoopa"] [data-player="Boomerang Bro."] span {opacity: 1;}
+[data-player="Red Magikoopa"] [data-player="Bowser"] span {opacity: 1;}
+[data-player="Red Magikoopa"] [data-player="Boo"] span {opacity: 1;}
+[data-player="Red Magikoopa"] [data-player="Bowser Jr."] span {opacity: 1;}
+[data-player="Red Magikoopa"] [data-player="Hammer Bro."] span {opacity: 1;}
+[data-player="Red Magikoopa"] [data-player="Fire Bro."] span {opacity: 1;}
+[data-player="Red Magikoopa"] [data-player="Boomerang Bro."] span {opacity: 1;}
+[data-player="Green Magikoopa"] [data-player="Bowser"] span {opacity: 1;}
+[data-player="Green Magikoopa"] [data-player="Boo"] span {opacity: 1;}
+[data-player="Green Magikoopa"] [data-player="Bowser Jr."] span {opacity: 1;}
+[data-player="Green Magikoopa"] [data-player="Hammer Bro."] span {opacity: 1;}
+[data-player="Green Magikoopa"] [data-player="Fire Bro."] span {opacity: 1;}
+[data-player="Green Magikoopa"] [data-player="Boomerang Bro."] span {opacity: 1;}
+[data-player="Yellow Magikoopa"] [data-player="Bowser"] span {opacity: 1;}
+[data-player="Yellow Magikoopa"] [data-player="Boo"] span {opacity: 1;}
+[data-player="Yellow Magikoopa"] [data-player="Bowser Jr."] span {opacity: 1;}
+[data-player="Yellow Magikoopa"] [data-player="Hammer Bro."] span {opacity: 1;}
+[data-player="Yellow Magikoopa"] [data-player="Fire Bro."] span {opacity: 1;}
+[data-player="Yellow Magikoopa"] [data-player="Boomerang Bro."] span {opacity: 1;}
+[data-player="King Boo"] [data-player="Boo"] span {opacity: 1;}
+[data-player="King Boo"] [data-player="Petey Piranha"] span {opacity: 1;}
+[data-player="King Boo"] [data-player="Wiggler"] span {opacity: 1;}
+[data-player="King Boo"] [data-player="King K. Rool"] span {opacity: 1;}
+[data-player="Petey Piranha"] [data-player="Birdo"] span {opacity: 1;}
+[data-player="Petey Piranha"] [data-player="King Boo"] span {opacity: 1;}
+[data-player="Petey Piranha"] [data-player="Wiggler"] span {opacity: 1;}
+[data-player="Petey Piranha"] [data-player="Blooper"] span {opacity: 1;}
+[data-player="Dixie Kong"] [data-player="Donkey Kong"] span {opacity: 1;}
+[data-player="Dixie Kong"] [data-player="Diddy Kong"] span {opacity: 1;}
+[data-player="Dixie Kong"] [data-player="Funky Kong"] span {opacity: 1;}
+[data-player="Dixie Kong"] [data-player="Tiny Kong"] span {opacity: 1;}
+[data-player="Dixie Kong"] [data-player="Baby DK"] span {opacity: 1;}
+[data-player="Goomba"] [data-player="Koopa Troopa"] span {opacity: 1;}
+[data-player="Goomba"] [data-player="Monty Mole"] span {opacity: 1;}
+[data-player="Goomba"] [data-player="Paragoomba"] span {opacity: 1;}
+[data-player="Goomba"] [data-player="Red Koopa Troopa"] span {opacity: 1;}
+[data-player="Paragoomba"] [data-player="Monty Mole"] span {opacity: 1;}
+[data-player="Paragoomba"] [data-player="Koopa Paratroopa"] span {opacity: 1;}
+[data-player="Paragoomba"] [data-player="Goomba"] span {opacity: 1;}
+[data-player="Paragoomba"] [data-player="Green Koopa Paratroopa"] span {opacity: 1;}
+[data-player="Red Koopa Troopa"] [data-player="Bowser"] span {opacity: 1;}
+[data-player="Red Koopa Troopa"] [data-player="Bowser Jr."] span {opacity: 1;}
+[data-player="Red Koopa Troopa"] [data-player="Koopa Paratroopa"] span {opacity: 1;}
+[data-player="Red Koopa Troopa"] [data-player="Goomba"] span {opacity: 1;}
+[data-player="Red Koopa Troopa"] [data-player="Green Koopa Paratroopa"] span {opacity: 1;}
+[data-player="Red Koopa Troopa"] [data-player="Dry Bones"] span {opacity: 1;}
+[data-player="Red Koopa Troopa"] [data-player="Green Dry Bones"] span {opacity: 1;}
+[data-player="Red Koopa Troopa"] [data-player="Dark Bones"] span {opacity: 1;}
+[data-player="Red Koopa Troopa"] [data-player="Blue Dry Bones"] span {opacity: 1;}
+[data-player="Green Koopa Paratroopa"] [data-player="Bowser"] span {opacity: 1;}
+[data-player="Green Koopa Paratroopa"] [data-player="Koopa Troopa"] span {opacity: 1;}
+[data-player="Green Koopa Paratroopa"] [data-player="Paragoomba"] span {opacity: 1;}
+[data-player="Green Koopa Paratroopa"] [data-player="Red Koopa Troopa"] span {opacity: 1;}
+[data-player="Blue Shy Guy"] [data-player="Boo"] span {opacity: 1;}
+[data-player="Blue Shy Guy"] [data-player="Birdo"] span {opacity: 1;}
+[data-player="Blue Shy Guy"] [data-player="Monty Mole"] span {opacity: 1;}
+[data-player="Yellow Shy Guy"] [data-player="Boo"] span {opacity: 1;}
+[data-player="Yellow Shy Guy"] [data-player="Birdo"] span {opacity: 1;}
+[data-player="Yellow Shy Guy"] [data-player="Monty Mole"] span {opacity: 1;}
+[data-player="Green Shy Guy"] [data-player="Boo"] span {opacity: 1;}
+[data-player="Green Shy Guy"] [data-player="Birdo"] span {opacity: 1;}
+[data-player="Green Shy Guy"] [data-player="Monty Mole"] span {opacity: 1;}
+[data-player="Gray Shy Guy"] [data-player="Boo"] span {opacity: 1;}
+[data-player="Gray Shy Guy"] [data-player="Birdo"] span {opacity: 1;}
+[data-player="Gray Shy Guy"] [data-player="Monty Mole"] span {opacity: 1;}
+[data-player="Dry Bones"] [data-player="Bowser"] span {opacity: 1;}
+[data-player="Dry Bones"] [data-player="Koopa Troopa"] span {opacity: 1;}
+[data-player="Dry Bones"] [data-player="Red Koopa Troopa"] span {opacity: 1;}
+[data-player="Green Dry Bones"] [data-player="Bowser"] span {opacity: 1;}
+[data-player="Green Dry Bones"] [data-player="Koopa Troopa"] span {opacity: 1;}
+[data-player="Green Dry Bones"] [data-player="Red Koopa Troopa"] span {opacity: 1;}
+[data-player="Dark Bones"] [data-player="Bowser"] span {opacity: 1;}
+[data-player="Dark Bones"] [data-player="Koopa Troopa"] span {opacity: 1;}
+[data-player="Dark Bones"] [data-player="Red Koopa Troopa"] span {opacity: 1;}
+[data-player="Blue Dry Bones"] [data-player="Bowser"] span {opacity: 1;}
+[data-player="Blue Dry Bones"] [data-player="Koopa Troopa"] span {opacity: 1;}
+[data-player="Blue Dry Bones"] [data-player="Red Koopa Troopa"] span {opacity: 1;}
+[data-player="Fire Bro."] [data-player="Bowser"] span {opacity: 1;}
+[data-player="Fire Bro."] [data-player="Bowser Jr."] span {opacity: 1;}
+[data-player="Fire Bro."] [data-player="Magikoopa"] span {opacity: 1;}
+[data-player="Fire Bro."] [data-player="Red Magikoopa"] span {opacity: 1;}
+[data-player="Fire Bro."] [data-player="Green Magikoopa"] span {opacity: 1;}
+[data-player="Fire Bro."] [data-player="Yellow Magikoopa"] span {opacity: 1;}
+[data-player="Boomerang Bro."] [data-player="Bowser"] span {opacity: 1;}
+[data-player="Boomerang Bro."] [data-player="Bowser Jr."] span {opacity: 1;}
+[data-player="Boomerang Bro."] [data-player="Magikoopa"] span {opacity: 1;}
+[data-player="Boomerang Bro."] [data-player="Red Magikoopa"] span {opacity: 1;}
+[data-player="Boomerang Bro."] [data-player="Green Magikoopa"] span {opacity: 1;}
+[data-player="Boomerang Bro."] [data-player="Yellow Magikoopa"] span {opacity: 1;}
+[data-player="Wiggler"] [data-player="King Boo"] span {opacity: 1;}
+[data-player="Wiggler"] [data-player="Petey Piranha"] span {opacity: 1;}
+[data-player="Wiggler"] [data-player="Blooper"] span {opacity: 1;}
+[data-player="Blooper"] [data-player="Boo"] span {opacity: 1;}
+[data-player="Blooper"] [data-player="Petey Piranha"] span {opacity: 1;}
+[data-player="Blooper"] [data-player="Wiggler"] span {opacity: 1;}
+[data-player="Funky Kong"] [data-player="Donkey Kong"] span {opacity: 1;}
+[data-player="Funky Kong"] [data-player="Diddy Kong"] span {opacity: 1;}
+[data-player="Funky Kong"] [data-player="Dixie Kong"] span {opacity: 1;}
+[data-player="Funky Kong"] [data-player="Tiny Kong"] span {opacity: 1;}
+[data-player="Funky Kong"] [data-player="Baby DK"] span {opacity: 1;}
+[data-player="Tiny Kong"] [data-player="Donkey Kong"] span {opacity: 1;}
+[data-player="Tiny Kong"] [data-player="Diddy Kong"] span {opacity: 1;}
+[data-player="Tiny Kong"] [data-player="Dixie Kong"] span {opacity: 1;}
+[data-player="Tiny Kong"] [data-player="Funky Kong"] span {opacity: 1;}
+[data-player="Tiny Kong"] [data-player="Baby DK"] span {opacity: 1;}
+[data-player="Kritter"] [data-player="King K. Rool"] span {opacity: 1;}
+[data-player="Blue Kritter"] [data-player="King K. Rool"] span {opacity: 1;}
+[data-player="Red Kritter"] [data-player="King K. Rool"] span {opacity: 1;}
+[data-player="Brown Kritter"] [data-player="King K. Rool"] span {opacity: 1;}
+[data-player="King K. Rool"] [data-player="King Boo"] span {opacity: 1;}
+[data-player="King K. Rool"] [data-player="Kritter"] span {opacity: 1;}
+[data-player="King K. Rool"] [data-player="Blue Kritter"] span {opacity: 1;}
+[data-player="King K. Rool"] [data-player="Red Kritter"] span {opacity: 1;}
+[data-player="King K. Rool"] [data-player="Brown Kritter"] span {opacity: 1;}
+[data-player="Baby Peach"] [data-player="Yoshi"] span {opacity: 1;}
+[data-player="Baby Peach"] [data-player="Baby Mario"] span {opacity: 1;}
+[data-player="Baby Peach"] [data-player="Baby Luigi"] span {opacity: 1;}
+[data-player="Baby Peach"] [data-player="Red Toad"] span {opacity: 1;}
+[data-player="Baby Peach"] [data-player="Toadsworth"] span {opacity: 1;}
+[data-player="Baby Peach"] [data-player="Blue Toad"] span {opacity: 1;}
+[data-player="Baby Peach"] [data-player="Yellow Toad"] span {opacity: 1;}
+[data-player="Baby Peach"] [data-player="Green Toad"] span {opacity: 1;}
+[data-player="Baby Peach"] [data-player="Purple Toad"] span {opacity: 1;}
+[data-player="Baby Peach"] [data-player="Baby Daisy"] span {opacity: 1;}
+[data-player="Baby Peach"] [data-player="Baby DK"] span {opacity: 1;}
+[data-player="Baby Peach"] [data-player="Red Yoshi"] span {opacity: 1;}
+[data-player="Baby Peach"] [data-player="Blue Yoshi"] span {opacity: 1;}
+[data-player="Baby Peach"] [data-player="Yellow Yoshi"] span {opacity: 1;}
+[data-player="Baby Peach"] [data-player="Light Blue Yoshi"] span {opacity: 1;}
+[data-player="Baby Peach"] [data-player="Pink Yoshi"] span {opacity: 1;}
+[data-player="Baby Daisy"] [data-player="Yoshi"] span {opacity: 1;}
+[data-player="Baby Daisy"] [data-player="Baby Mario"] span {opacity: 1;}
+[data-player="Baby Daisy"] [data-player="Baby Luigi"] span {opacity: 1;}
+[data-player="Baby Daisy"] [data-player="Baby DK"] span {opacity: 1;}
+[data-player="Baby Daisy"] [data-player="Red Yoshi"] span {opacity: 1;}
+[data-player="Baby Daisy"] [data-player="Blue Yoshi"] span {opacity: 1;}
+[data-player="Baby Daisy"] [data-player="Yellow Yoshi"] span {opacity: 1;}
+[data-player="Baby Daisy"] [data-player="Light Blue Yoshi"] span {opacity: 1;}
+[data-player="Baby Daisy"] [data-player="Pink Yoshi"] span {opacity: 1;}
+[data-player="Baby DK"] [data-player="Yoshi"] span {opacity: 1;}
+[data-player="Baby DK"] [data-player="Baby Mario"] span {opacity: 1;}
+[data-player="Baby DK"] [data-player="Baby Luigi"] span {opacity: 1;}
+[data-player="Baby DK"] [data-player="Dixie Kong"] span {opacity: 1;}
+[data-player="Baby DK"] [data-player="Funky Kong"] span {opacity: 1;}
+[data-player="Baby DK"] [data-player="Tiny Kong"] span {opacity: 1;}
+[data-player="Baby DK"] [data-player="Baby Daisy"] span {opacity: 1;}
+[data-player="Baby DK"] [data-player="Red Yoshi"] span {opacity: 1;}
+[data-player="Baby DK"] [data-player="Blue Yoshi"] span {opacity: 1;}
+[data-player="Baby DK"] [data-player="Yellow Yoshi"] span {opacity: 1;}
+[data-player="Baby DK"] [data-player="Light Blue Yoshi"] span {opacity: 1;}
+[data-player="Baby DK"] [data-player="Pink Yoshi"] span {opacity: 1;}
+[data-player="Red Yoshi"] [data-player="Mario"] span {opacity: 1;}
+[data-player="Red Yoshi"] [data-player="Baby Mario"] span {opacity: 1;}
+[data-player="Red Yoshi"] [data-player="Baby Luigi"] span {opacity: 1;}
+[data-player="Red Yoshi"] [data-player="Birdo"] span {opacity: 1;}
+[data-player="Red Yoshi"] [data-player="Baby Daisy"] span {opacity: 1;}
+[data-player="Red Yoshi"] [data-player="Baby DK"] span {opacity: 1;}
+[data-player="Blue Yoshi"] [data-player="Mario"] span {opacity: 1;}
+[data-player="Blue Yoshi"] [data-player="Baby Mario"] span {opacity: 1;}
+[data-player="Blue Yoshi"] [data-player="Baby Luigi"] span {opacity: 1;}
+[data-player="Blue Yoshi"] [data-player="Birdo"] span {opacity: 1;}
+[data-player="Blue Yoshi"] [data-player="Baby Daisy"] span {opacity: 1;}
+[data-player="Blue Yoshi"] [data-player="Baby DK"] span {opacity: 1;}
+[data-player="Yellow Yoshi"] [data-player="Mario"] span {opacity: 1;}
+[data-player="Yellow Yoshi"] [data-player="Baby Mario"] span {opacity: 1;}
+[data-player="Yellow Yoshi"] [data-player="Baby Luigi"] span {opacity: 1;}
+[data-player="Yellow Yoshi"] [data-player="Birdo"] span {opacity: 1;}
+[data-player="Yellow Yoshi"] [data-player="Baby Daisy"] span {opacity: 1;}
+[data-player="Yellow Yoshi"] [data-player="Baby DK"] span {opacity: 1;}
+[data-player="Light Blue Yoshi"] [data-player="Mario"] span {opacity: 1;}
+[data-player="Light Blue Yoshi"] [data-player="Baby Mario"] span {opacity: 1;}
+[data-player="Light Blue Yoshi"] [data-player="Baby Luigi"] span {opacity: 1;}
+[data-player="Light Blue Yoshi"] [data-player="Birdo"] span {opacity: 1;}
+[data-player="Light Blue Yoshi"] [data-player="Baby Daisy"] span {opacity: 1;}
+[data-player="Light Blue Yoshi"] [data-player="Baby DK"] span {opacity: 1;}
+[data-player="Pink Yoshi"] [data-player="Mario"] span {opacity: 1;}
+[data-player="Pink Yoshi"] [data-player="Baby Mario"] span {opacity: 1;}
+[data-player="Pink Yoshi"] [data-player="Baby Luigi"] span {opacity: 1;}
+[data-player="Pink Yoshi"] [data-player="Birdo"] span {opacity: 1;}
+[data-player="Pink Yoshi"] [data-player="Baby Daisy"] span {opacity: 1;}
+[data-player="Pink Yoshi"] [data-player="Baby DK"] span {opacity: 1;}
+[data-player="Unused Yoshi (Orange?)"] [data-player="Mario"] span {opacity: 1;}
+[data-player="Unused Yoshi (Orange?)"] [data-player="Baby Mario"] span {opacity: 1;}
+[data-player="Unused Yoshi (Orange?)"] [data-player="Baby Luigi"] span {opacity: 1;}
+[data-player="Unused Yoshi (Orange?)"] [data-player="Birdo"] span {opacity: 1;}
+[data-player="Unused Yoshi (Orange?)"] [data-player="Baby Daisy"] span {opacity: 1;}
+[data-player="Unused Yoshi (Orange?)"] [data-player="Baby DK"] span {opacity: 1;}
+[data-player="Unused Yoshi"] [data-player="Mario"] span {opacity: 1;}
+[data-player="Unused Yoshi"] [data-player="Baby Mario"] span {opacity: 1;}
+[data-player="Unused Yoshi"] [data-player="Baby Luigi"] span {opacity: 1;}
+[data-player="Unused Yoshi"] [data-player="Birdo"] span {opacity: 1;}
+[data-player="Unused Yoshi"] [data-player="Baby Daisy"] span {opacity: 1;}
+[data-player="Unused Yoshi"] [data-player="Baby DK"] span {opacity: 1;}
+[data-player="Unused Toad"] [data-player="Peach"] span {opacity: 1;}
+[data-player="Unused Toad"] [data-player="Toadette"] span {opacity: 1;}
+[data-player="Unused Toad"] [data-player="Blue Pianta"] span {opacity: 1;}
+[data-player="Unused Toad"] [data-player="Red Pianta"] span {opacity: 1;}
+[data-player="Unused Toad"] [data-player="Yellow Pianta"] span {opacity: 1;}
+[data-player="Unused Toad"] [data-player="Toadsworth"] span {opacity: 1;}
+[data-player="Unused Pianta"] [data-player="Mario"] span {opacity: 1;}
+[data-player="Unused Pianta"] [data-player="Red Toad"] span {opacity: 1;}
+[data-player="Unused Pianta"] [data-player="Blue Noki"] span {opacity: 1;}
+[data-player="Unused Pianta"] [data-player="Red Noki"] span {opacity: 1;}
+[data-player="Unused Pianta"] [data-player="Green Noki"] span {opacity: 1;}
+[data-player="Unused Pianta"] [data-player="Toadsworth"] span {opacity: 1;}
+[data-player="Unused Pianta"] [data-player="Blue Toad"] span {opacity: 1;}
+[data-player="Unused Pianta"] [data-player="Yellow Toad"] span {opacity: 1;}
+[data-player="Unused Pianta"] [data-player="Green Toad"] span {opacity: 1;}
+[data-player="Unused Pianta"] [data-player="Purple Toad"] span {opacity: 1;}
+[data-player="Unused Kritter"] [data-player="King K. Rool"] span {opacity: 1;}
+[data-player="Unused Koopa"] [data-player="Bowser"] span {opacity: 1;}
+[data-player="Unused Koopa"] [data-player="Bowser Jr."] span {opacity: 1;}
+[data-player="Unused Koopa"] [data-player="Koopa Paratroopa"] span {opacity: 1;}
+[data-player="Unused Koopa"] [data-player="Goomba"] span {opacity: 1;}
+[data-player="Unused Koopa"] [data-player="Green Koopa Paratroopa"] span {opacity: 1;}
+[data-player="Unused Koopa"] [data-player="Dry Bones"] span {opacity: 1;}
+[data-player="Unused Koopa"] [data-player="Green Dry Bones"] span {opacity: 1;}
+[data-player="Unused Koopa"] [data-player="Dark Bones"] span {opacity: 1;}
+[data-player="Unused Koopa"] [data-player="Blue Dry Bones"] span {opacity: 1;}
+[data-player="Red Mii"] [data-player="Mario"] span {opacity: 1;}
+[data-player="Red Mii"] [data-player="Baby Mario"] span {opacity: 1;}
+[data-player="Red Mii"] [data-player="Red Toad"] span {opacity: 1;}
+[data-player="Red Mii"] [data-player="Shy Guy"] span {opacity: 1;}
+[data-player="Red Mii"] [data-player="Koopa Paratroopa"] span {opacity: 1;}
+[data-player="Red Mii"] [data-player="Red Pianta"] span {opacity: 1;}
+[data-player="Red Mii"] [data-player="Red Noki"] span {opacity: 1;}
+[data-player="Red Mii"] [data-player="Red Magikoopa"] span {opacity: 1;}
+[data-player="Red Mii"] [data-player="Red Koopa Troopa"] span {opacity: 1;}
+[data-player="Red Mii"] [data-player="Dark Bones"] span {opacity: 1;}
+[data-player="Red Mii"] [data-player="Fire Bro."] span {opacity: 1;}
+[data-player="Red Mii"] [data-player="Red Kritter"] span {opacity: 1;}
+[data-player="Red Mii"] [data-player="Red Yoshi"] span {opacity: 1;}
+[data-player="Orange Mii"] [data-player="Daisy"] span {opacity: 1;}
+[data-player="Orange Mii"] [data-player="Baby Daisy"] span {opacity: 1;}
+[data-player="Yellow Mii"] [data-player="Wario"] span {opacity: 1;}
+[data-player="Yellow Mii"] [data-player="Yellow Pianta"] span {opacity: 1;}
+[data-player="Yellow Mii"] [data-player="Yellow Toad"] span {opacity: 1;}
+[data-player="Yellow Mii"] [data-player="Yellow Magikoopa"] span {opacity: 1;}
+[data-player="Yellow Mii"] [data-player="Yellow Shy Guy"] span {opacity: 1;}
+[data-player="Yellow Mii"] [data-player="Wiggler"] span {opacity: 1;}
+[data-player="Yellow Mii"] [data-player="Yellow Yoshi"] span {opacity: 1;}
+[data-player="Light Green Mii"] [data-player="Yoshi"] span {opacity: 1;}
+[data-player="Light Green Mii"] [data-player="Petey Piranha"] span {opacity: 1;}
+[data-player="Green Mii"] [data-player="Luigi"] span {opacity: 1;}
+[data-player="Green Mii"] [data-player="Baby Luigi"] span {opacity: 1;}
+[data-player="Green Mii"] [data-player="Koopa Troopa"] span {opacity: 1;}
+[data-player="Green Mii"] [data-player="Green Noki"] span {opacity: 1;}
+[data-player="Green Mii"] [data-player="Hammer Bro."] span {opacity: 1;}
+[data-player="Green Mii"] [data-player="Green Toad"] span {opacity: 1;}
+[data-player="Green Mii"] [data-player="Green Magikoopa"] span {opacity: 1;}
+[data-player="Green Mii"] [data-player="Green Koopa Paratroopa"] span {opacity: 1;}
+[data-player="Green Mii"] [data-player="Green Shy Guy"] span {opacity: 1;}
+[data-player="Green Mii"] [data-player="Green Dry Bones"] span {opacity: 1;}
+[data-player="Green Mii"] [data-player="Kritter"] span {opacity: 1;}
+[data-player="Green Mii"] [data-player="King K. Rool"] span {opacity: 1;}
+[data-player="Blue Mii"] [data-player="Blue Pianta"] span {opacity: 1;}
+[data-player="Blue Mii"] [data-player="Blue Noki"] span {opacity: 1;}
+[data-player="Blue Mii"] [data-player="Blue Toad"] span {opacity: 1;}
+[data-player="Blue Mii"] [data-player="Magikoopa"] span {opacity: 1;}
+[data-player="Blue Mii"] [data-player="Blue Shy Guy"] span {opacity: 1;}
+[data-player="Blue Mii"] [data-player="Blue Dry Bones"] span {opacity: 1;}
+[data-player="Blue Mii"] [data-player="Boomerang Bro."] span {opacity: 1;}
+[data-player="Blue Mii"] [data-player="Blue Kritter"] span {opacity: 1;}
+[data-player="Blue Mii"] [data-player="Blue Yoshi"] span {opacity: 1;}
+[data-player="Light Blue Mii"] [data-player="Funky Kong"] span {opacity: 1;}
+[data-player="Light Blue Mii"] [data-player="Tiny Kong"] span {opacity: 1;}
+[data-player="Light Blue Mii"] [data-player="Light Blue Yoshi"] span {opacity: 1;}
+[data-player="Pink Mii"] [data-player="Peach"] span {opacity: 1;}
+[data-player="Pink Mii"] [data-player="Toadette"] span {opacity: 1;}
+[data-player="Pink Mii"] [data-player="Birdo"] span {opacity: 1;}
+[data-player="Pink Mii"] [data-player="Dixie Kong"] span {opacity: 1;}
+[data-player="Pink Mii"] [data-player="Pink Yoshi"] span {opacity: 1;}
+[data-player="Purple Mii"] [data-player="Waluigi"] span {opacity: 1;}
+[data-player="Purple Mii"] [data-player="Purple Toad"] span {opacity: 1;}
+[data-player="Brown Mii"] [data-player="Donkey Kong"] span {opacity: 1;}
+[data-player="Brown Mii"] [data-player="Monty Mole"] span {opacity: 1;}
+[data-player="Brown Mii"] [data-player="Toadsworth"] span {opacity: 1;}
+[data-player="Brown Mii"] [data-player="Goomba"] span {opacity: 1;}
+[data-player="Brown Mii"] [data-player="Paragoomba"] span {opacity: 1;}
+[data-player="Brown Mii"] [data-player="Brown Kritter"] span {opacity: 1;}
+[data-player="Brown Mii"] [data-player="Baby DK"] span {opacity: 1;}
+[data-player="White Mii"] [data-player="Boo"] span {opacity: 1;}
+[data-player="White Mii"] [data-player="King Boo"] span {opacity: 1;}
+[data-player="White Mii"] [data-player="Dry Bones"] span {opacity: 1;}
+[data-player="White Mii"] [data-player="Blooper"] span {opacity: 1;}
+[data-player="Black Mii"] [data-player="Bowser"] span {opacity: 1;}
+[data-player="Black Mii"] [data-player="Bowser Jr."] span {opacity: 1;}
+[data-player="Black Mii"] [data-player="Gray Shy Guy"] span {opacity: 1;}
+[data-player="Red Mii (F)"] [data-player="Mario"] span {opacity: 1;}
+[data-player="Red Mii (F)"] [data-player="Baby Mario"] span {opacity: 1;}
+[data-player="Red Mii (F)"] [data-player="Red Toad"] span {opacity: 1;}
+[data-player="Red Mii (F)"] [data-player="Shy Guy"] span {opacity: 1;}
+[data-player="Red Mii (F)"] [data-player="Koopa Paratroopa"] span {opacity: 1;}
+[data-player="Red Mii (F)"] [data-player="Red Pianta"] span {opacity: 1;}
+[data-player="Red Mii (F)"] [data-player="Red Noki"] span {opacity: 1;}
+[data-player="Red Mii (F)"] [data-player="Red Magikoopa"] span {opacity: 1;}
+[data-player="Red Mii (F)"] [data-player="Red Koopa Troopa"] span {opacity: 1;}
+[data-player="Red Mii (F)"] [data-player="Dark Bones"] span {opacity: 1;}
+[data-player="Red Mii (F)"] [data-player="Fire Bro."] span {opacity: 1;}
+[data-player="Red Mii (F)"] [data-player="Red Kritter"] span {opacity: 1;}
+[data-player="Red Mii (F)"] [data-player="Red Yoshi"] span {opacity: 1;}
+[data-player="Orange Mii (F)"] [data-player="Daisy"] span {opacity: 1;}
+[data-player="Orange Mii (F)"] [data-player="Baby Daisy"] span {opacity: 1;}
+[data-player="Yellow Mii (F)"] [data-player="Wario"] span {opacity: 1;}
+[data-player="Yellow Mii (F)"] [data-player="Yellow Pianta"] span {opacity: 1;}
+[data-player="Yellow Mii (F)"] [data-player="Yellow Toad"] span {opacity: 1;}
+[data-player="Yellow Mii (F)"] [data-player="Yellow Magikoopa"] span {opacity: 1;}
+[data-player="Yellow Mii (F)"] [data-player="Yellow Shy Guy"] span {opacity: 1;}
+[data-player="Yellow Mii (F)"] [data-player="Wiggler"] span {opacity: 1;}
+[data-player="Yellow Mii (F)"] [data-player="Yellow Yoshi"] span {opacity: 1;}
+[data-player="Light Green Mii (F)"] [data-player="Yoshi"] span {opacity: 1;}
+[data-player="Light Green Mii (F)"] [data-player="Petey Piranha"] span {opacity: 1;}
+[data-player="Green Mii (F)"] [data-player="Luigi"] span {opacity: 1;}
+[data-player="Green Mii (F)"] [data-player="Baby Luigi"] span {opacity: 1;}
+[data-player="Green Mii (F)"] [data-player="Koopa Troopa"] span {opacity: 1;}
+[data-player="Green Mii (F)"] [data-player="Green Noki"] span {opacity: 1;}
+[data-player="Green Mii (F)"] [data-player="Hammer Bro."] span {opacity: 1;}
+[data-player="Green Mii (F)"] [data-player="Green Toad"] span {opacity: 1;}
+[data-player="Green Mii (F)"] [data-player="Green Magikoopa"] span {opacity: 1;}
+[data-player="Green Mii (F)"] [data-player="Green Koopa Paratroopa"] span {opacity: 1;}
+[data-player="Green Mii (F)"] [data-player="Green Shy Guy"] span {opacity: 1;}
+[data-player="Green Mii (F)"] [data-player="Green Dry Bones"] span {opacity: 1;}
+[data-player="Green Mii (F)"] [data-player="Kritter"] span {opacity: 1;}
+[data-player="Green Mii (F)"] [data-player="King K. Rool"] span {opacity: 1;}
+[data-player="Blue Mii (F)"] [data-player="Blue Pianta"] span {opacity: 1;}
+[data-player="Blue Mii (F)"] [data-player="Blue Noki"] span {opacity: 1;}
+[data-player="Blue Mii (F)"] [data-player="Blue Toad"] span {opacity: 1;}
+[data-player="Blue Mii (F)"] [data-player="Magikoopa"] span {opacity: 1;}
+[data-player="Blue Mii (F)"] [data-player="Blue Shy Guy"] span {opacity: 1;}
+[data-player="Blue Mii (F)"] [data-player="Blue Dry Bones"] span {opacity: 1;}
+[data-player="Blue Mii (F)"] [data-player="Boomerang Bro."] span {opacity: 1;}
+[data-player="Blue Mii (F)"] [data-player="Blue Kritter"] span {opacity: 1;}
+[data-player="Blue Mii (F)"] [data-player="Blue Yoshi"] span {opacity: 1;}
+[data-player="Light Blue Mii (F)"] [data-player="Funky Kong"] span {opacity: 1;}
+[data-player="Light Blue Mii (F)"] [data-player="Tiny Kong"] span {opacity: 1;}
+[data-player="Light Blue Mii (F)"] [data-player="Light Blue Yoshi"] span {opacity: 1;}
+[data-player="Pink Mii (F)"] [data-player="Peach"] span {opacity: 1;}
+[data-player="Pink Mii (F)"] [data-player="Toadette"] span {opacity: 1;}
+[data-player="Pink Mii (F)"] [data-player="Birdo"] span {opacity: 1;}
+[data-player="Pink Mii (F)"] [data-player="Dixie Kong"] span {opacity: 1;}
+[data-player="Pink Mii (F)"] [data-player="Pink Yoshi"] span {opacity: 1;}
+[data-player="Purple Mii (F)"] [data-player="Waluigi"] span {opacity: 1;}
+[data-player="Purple Mii (F)"] [data-player="Purple Toad"] span {opacity: 1;}
+[data-player="Brown Mii (F)"] [data-player="Donkey Kong"] span {opacity: 1;}
+[data-player="Brown Mii (F)"] [data-player="Monty Mole"] span {opacity: 1;}
+[data-player="Brown Mii (F)"] [data-player="Toadsworth"] span {opacity: 1;}
+[data-player="Brown Mii (F)"] [data-player="Goomba"] span {opacity: 1;}
+[data-player="Brown Mii (F)"] [data-player="Paragoomba"] span {opacity: 1;}
+[data-player="Brown Mii (F)"] [data-player="Brown Kritter"] span {opacity: 1;}
+[data-player="Brown Mii (F)"] [data-player="Baby DK"] span {opacity: 1;}
+[data-player="White Mii (F)"] [data-player="Boo"] span {opacity: 1;}
+[data-player="White Mii (F)"] [data-player="King Boo"] span {opacity: 1;}
+[data-player="White Mii (F)"] [data-player="Dry Bones"] span {opacity: 1;}
+[data-player="White Mii (F)"] [data-player="Blooper"] span {opacity: 1;}
+[data-player="Black Mii (F)"] [data-player="Bowser"] span {opacity: 1;}
+[data-player="Black Mii (F)"] [data-player="Bowser Jr."] span {opacity: 1;}
+[data-player="Black Mii (F)"] [data-player="Gray Shy Guy"] span {opacity: 1;}

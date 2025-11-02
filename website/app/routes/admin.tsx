@@ -2,14 +2,10 @@ import { redirect, Form } from "react-router";
 import type { Route } from "./+types/admin";
 import { requireUser } from "~/auth.server";
 import { database } from "~/database/context";
-import {
-  players,
-  teams,
-  teamLineups,
-  fieldingPositions,
-} from "~/database/schema";
+import { players, teams, teamLineups } from "~/database/schema";
 import { eq, isNull } from "drizzle-orm";
 import { TEAM_SIZE, LINEUP_SIZE } from "~/consts";
+import { randomAssignTeams, wipeTeams } from "~/utils/admin";
 
 export async function loader({ request }: Route.LoaderArgs) {
   const user = await requireUser(request);
@@ -34,12 +30,7 @@ export async function action({ request }: Route.ActionArgs) {
 
   if (intent === "wipe-teams") {
     try {
-      await db.transaction(async (tx) => {
-        // Clear all lineups first
-        await tx.delete(teamLineups);
-        // Set all players' teamId to null
-        await tx.update(players).set({ teamId: null });
-      });
+      await wipeTeams(db);
       return {
         success: true,
         message: "All players removed from teams and lineups cleared",
@@ -52,127 +43,11 @@ export async function action({ request }: Route.ActionArgs) {
 
   if (intent === "random-assign") {
     try {
-      const result = await db.transaction(async (tx) => {
-        // Get all teams
-        const allTeams = await tx.select({ id: teams.id }).from(teams);
-
-        // Get all players without teams
-        const unassignedPlayers = await tx
-          .select({ id: players.id })
-          .from(players)
-          .where(isNull(players.teamId));
-
-        if (unassignedPlayers.length === 0) {
-          return { success: false, message: "No unassigned players found" };
-        }
-
-        // Shuffle the unassigned players array
-        const shuffledPlayers = [...unassignedPlayers].sort(
-          () => Math.random() - 0.5
-        );
-
-        let teamIndex = 0;
-        // Get current team sizes
-        const teamSizes = new Map();
-        for (const team of allTeams) {
-          const currentPlayers = await tx
-            .select({ id: players.id })
-            .from(players)
-            .where(eq(players.teamId, team.id));
-          teamSizes.set(team.id, currentPlayers.length);
-        }
-
-        // Assign players to teams
-        for (const player of shuffledPlayers) {
-          // Find a team that has space
-          let assigned = false;
-          let attempts = 0;
-
-          while (!assigned && attempts < allTeams.length) {
-            const currentTeam = allTeams[teamIndex];
-            const currentSize = teamSizes.get(currentTeam.id) || 0;
-
-            if (currentSize < TEAM_SIZE) {
-              await tx
-                .update(players)
-                .set({ teamId: currentTeam.id })
-                .where(eq(players.id, player.id));
-
-              teamSizes.set(currentTeam.id, currentSize + 1);
-              assigned = true;
-            }
-
-            teamIndex = (teamIndex + 1) % allTeams.length;
-            attempts++;
-          }
-
-          // If no team has space, stop assigning
-          if (!assigned) {
-            break;
-          }
-        }
-
-        // Generate lineups for each team
-        for (const team of allTeams) {
-          // Get players for this team
-          const teamPlayers = await tx
-            .select({ id: players.id })
-            .from(players)
-            .where(eq(players.teamId, team.id));
-
-          if (teamPlayers.length === 0) continue;
-
-          // Clear existing lineups for all players on this team
-          if (teamPlayers.length > 0) {
-            for (const teamPlayer of teamPlayers) {
-              await tx
-                .delete(teamLineups)
-                .where(eq(teamLineups.playerId, teamPlayer.id));
-            }
-          }
-
-          // Shuffle team players for random lineup assignment
-          const shuffledTeamPlayers = [...teamPlayers].sort(
-            () => Math.random() - 0.5
-          );
-
-          // Define all fielding positions
-          const positions = [
-            "C",
-            "1B",
-            "2B",
-            "3B",
-            "SS",
-            "LF",
-            "CF",
-            "RF",
-            "P",
-          ] as const;
-
-          // Assign fielding positions and batting order (up to LINEUP_SIZE players)
-          const lineupSize = Math.min(shuffledTeamPlayers.length, LINEUP_SIZE);
-
-          for (let i = 0; i < lineupSize; i++) {
-            const player = shuffledTeamPlayers[i];
-            const position = positions[i];
-            const battingOrder = i + 1;
-
-            await tx.insert(teamLineups).values({
-              playerId: player.id,
-              fieldingPosition: position,
-              battingOrder: battingOrder,
-              isStarred: false,
-            });
-          }
-        }
-
-        return {
-          success: true,
-          message: "Players randomly assigned to teams with lineups generated",
-        };
-      });
-
-      return result;
+      await randomAssignTeams(db);
+      return {
+        success: true,
+        message: "Players randomly assigned to teams with lineups generated",
+      };
     } catch (error) {
       console.error("Error during random assignment:", error);
       return { success: false, message: "Failed to assign players to teams" };

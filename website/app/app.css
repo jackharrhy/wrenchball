@@ -198,7 +198,7 @@ body {
 .drafting-container {
   display: grid;
   grid-template-columns: 1fr 24rem;
-  grid-template-rows: 4rem 10rem 30rem;
+  grid-template-rows: 4rem 24rem 14rem;
   grid-auto-columns: 1fr;
   gap: 0px 0px;
   grid-auto-flow: row;

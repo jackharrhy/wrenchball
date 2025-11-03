@@ -54,7 +54,7 @@ export async function loader({ request }: Route.LoaderArgs) {
     (await database().query.teams.findFirst({
       where: eq(teams.userId, user.id),
     }));
-  const seasonState = seasonStateResult ?? undefined;
+  const seasonState = seasonStateResult?.state ?? undefined;
 
   return { user, team, seasonState };
 }

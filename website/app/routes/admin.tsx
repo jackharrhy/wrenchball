@@ -23,6 +23,36 @@ export async function loader({ request }: Route.LoaderArgs) {
   return { user, seasonState: currentState };
 }
 
+export async function clientAction({
+  request,
+  serverAction,
+}: Route.ClientActionArgs) {
+  const clonedRequest = request.clone();
+  const formData = await clonedRequest.formData();
+  const intent = formData.get("intent");
+
+  if (intent === "set-season-state") {
+    const state = formData.get("state") as string;
+    const confirmed = confirm(
+      `Are you sure you want to change the season state to "${state}"?`
+    );
+    if (!confirmed) {
+      return { success: false, message: "State change cancelled" };
+    }
+  }
+
+  if (intent === "wipe-teams") {
+    const confirmed = confirm(
+      "Are you sure you want to remove all players from teams? This cannot be undone."
+    );
+    if (!confirmed) {
+      return { success: false, message: "Team wipe cancelled" };
+    }
+  }
+
+  return await serverAction();
+}
+
 export async function action({ request }: Route.ActionArgs) {
   const user = await requireUser(request);
 
@@ -136,15 +166,6 @@ export default function Admin({
             <button
               type="submit"
               className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded"
-              onClick={(e) => {
-                if (
-                  !confirm(
-                    "Are you sure you want to remove all players from teams? This cannot be undone."
-                  )
-                ) {
-                  e.preventDefault();
-                }
-              }}
             >
               Wipe All Teams
             </button>

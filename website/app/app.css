@@ -160,9 +160,6 @@ body {
 }
 
 .field {
-}
-
-.field {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   grid-template-rows: repeat(5, 1fr);
@@ -196,4 +193,33 @@ body {
 }
 .field-c {
   grid-area: 5 / 4 / 6 / 5;
+}
+
+.drafting-container {
+  display: grid;
+  grid-template-columns: 1fr 24rem;
+  grid-template-rows: 4rem 10rem 30rem;
+  grid-auto-columns: 1fr;
+  gap: 0px 0px;
+  grid-auto-flow: row;
+  grid-template-areas:
+    "search stats"
+    "free-agents stats"
+    "free-agents drafting";
+}
+
+.drafting-container .search {
+  grid-area: search;
+}
+
+.drafting-container .stats {
+  grid-area: stats;
+}
+
+.drafting-container .free-agents {
+  grid-area: free-agents;
+}
+
+.drafting-container .drafting {
+  grid-area: drafting;
 }

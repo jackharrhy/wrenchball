@@ -27,6 +27,20 @@ export async function loader({ request }: Route.LoaderArgs) {
   };
 }
 
+const DraftingIndicator = ({
+  currentDraftingUserName,
+}: {
+  currentDraftingUserName: string | null;
+}) => {
+  return (
+    <div>
+      {currentDraftingUserName
+        ? `${currentDraftingUserName} is drafting`
+        : "Drafting state active, but no user is currently drafting"}
+    </div>
+  );
+};
+
 export default function Drafting({ loaderData }: Route.ComponentProps) {
   if (loaderData.seasonState !== "drafting") {
     return (
@@ -38,10 +52,23 @@ export default function Drafting({ loaderData }: Route.ComponentProps) {
   }
 
   return (
-    <div>
-      {loaderData.currentDraftingUserName
-        ? `${loaderData.currentDraftingUserName} is drafting`
-        : "Drafting state active, but no user is currently drafting"}
-    </div>
+    <>
+      <DraftingIndicator
+        currentDraftingUserName={loaderData.currentDraftingUserName}
+      />
+      <div className="drafting-container">
+        <div className="search flex flex-col gap-2 items-center justify-center pr-3">
+          <input
+            name="search"
+            type="text"
+            placeholder="Search players"
+            className="w-full border border-cell-gray/50 outline-none focus:ring-1 ring-cell-gray/70 rounded-md p-2 bg-transparent"
+          />
+        </div>
+        <div className="stats bg-green-500"></div>
+        <div className="free-agents bg-blue-500"></div>
+        <div className="drafting bg-yellow-500"></div>
+      </div>
+    </>
   );
 }

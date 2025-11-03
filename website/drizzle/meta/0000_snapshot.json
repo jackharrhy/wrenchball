@@ -1,5 +1,5 @@
 {
-  "id": "81495884-d1e8-4e52-9f2e-7734ca00cda2",
+  "id": "cc8700c5-e056-41cd-9f46-6083309ed50a",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -93,8 +93,8 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.season_state": {
-      "name": "season_state",
+    "public.season": {
+      "name": "season",
       "schema": "",
       "columns": {
         "id": {
@@ -106,7 +106,7 @@
         },
         "state": {
           "name": "state",
-          "type": "season_state_value",
+          "type": "season_state",
           "typeSchema": "public",
           "primaryKey": false,
           "notNull": true,
@@ -474,6 +474,64 @@
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false
+    },
+    "public.users_seasons": {
+      "name": "users_seasons",
+      "schema": "",
+      "columns": {
+        "user_id": {
+          "name": "user_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "season_id": {
+          "name": "season_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "drafting_turn": {
+          "name": "drafting_turn",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "users_seasons_user_id_user_id_fk": {
+          "name": "users_seasons_user_id_user_id_fk",
+          "tableFrom": "users_seasons",
+          "tableTo": "user",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "users_seasons_season_id_season_id_fk": {
+          "name": "users_seasons_season_id_season_id_fk",
+          "tableFrom": "users_seasons",
+          "tableTo": "season",
+          "columnsFrom": [
+            "season_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
     }
   },
   "enums": {
@@ -534,8 +592,8 @@
         "High"
       ]
     },
-    "public.season_state_value": {
-      "name": "season_state_value",
+    "public.season_state": {
+      "name": "season_state",
       "schema": "public",
       "values": [
         "pre-season",

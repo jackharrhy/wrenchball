@@ -2,7 +2,7 @@ CREATE TYPE "public"."ability" AS ENUM('Enlarge', 'Super Jump', 'Clamber', 'Quic
 CREATE TYPE "public"."direction" AS ENUM('Left', 'Right');--> statement-breakpoint
 CREATE TYPE "public"."fielding_positions" AS ENUM('C', '1B', '2B', '3B', 'SS', 'LF', 'CF', 'RF', 'P');--> statement-breakpoint
 CREATE TYPE "public"."hitting_trajectory" AS ENUM('Low', 'Medium', 'High');--> statement-breakpoint
-CREATE TYPE "public"."season_state_value" AS ENUM('pre-season', 'drafting', 'playing', 'finished');--> statement-breakpoint
+CREATE TYPE "public"."season_state" AS ENUM('pre-season', 'drafting', 'playing', 'finished');--> statement-breakpoint
 CREATE TYPE "public"."user_role" AS ENUM('admin', 'user');--> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "players" (
 	"id" integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY (sequence name "players_id_seq" INCREMENT BY 1 MINVALUE 1 MAXVALUE 2147483647 START WITH 1 CACHE 1),
@@ -13,9 +13,9 @@ CREATE TABLE IF NOT EXISTS "players" (
 	CONSTRAINT "players_name_unique" UNIQUE("name")
 );
 --> statement-breakpoint
-CREATE TABLE IF NOT EXISTS "season_state" (
+CREATE TABLE IF NOT EXISTS "season" (
 	"id" integer PRIMARY KEY DEFAULT 1 NOT NULL,
-	"state" "season_state_value" DEFAULT 'pre-season' NOT NULL
+	"state" "season_state" DEFAULT 'pre-season' NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "stat" (
@@ -70,6 +70,12 @@ CREATE TABLE IF NOT EXISTS "user" (
 	CONSTRAINT "user_discord_snowflake_unique" UNIQUE("discord_snowflake")
 );
 --> statement-breakpoint
+CREATE TABLE IF NOT EXISTS "users_seasons" (
+	"user_id" integer NOT NULL,
+	"season_id" integer NOT NULL,
+	"drafting_turn" integer NOT NULL
+);
+--> statement-breakpoint
 DO $$ BEGIN
  ALTER TABLE "players" ADD CONSTRAINT "players_team_id_team_id_fk" FOREIGN KEY ("team_id") REFERENCES "public"."team"("id") ON DELETE no action ON UPDATE no action;
 EXCEPTION
@@ -90,6 +96,18 @@ END $$;
 --> statement-breakpoint
 DO $$ BEGIN
  ALTER TABLE "team" ADD CONSTRAINT "team_user_id_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."user"("id") ON DELETE no action ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "users_seasons" ADD CONSTRAINT "users_seasons_user_id_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."user"("id") ON DELETE no action ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "users_seasons" ADD CONSTRAINT "users_seasons_season_id_season_id_fk" FOREIGN KEY ("season_id") REFERENCES "public"."season"("id") ON DELETE no action ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;

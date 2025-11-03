@@ -1,13 +1,15 @@
-import { eq, isNull } from "drizzle-orm";
+import { eq, isNull, and, asc } from "drizzle-orm";
 import { LINEUP_SIZE, TEAM_SIZE } from "~/consts";
 import { database } from "~/database/context";
 import {
   players,
-  seasonState,
+  season,
   teamLineups,
   teams,
-  type SeasonState as SeasonStateType,
-  type SeasonStateValue,
+  users,
+  usersSeasons,
+  type Season as SeasonType,
+  type SeasonState,
 } from "~/database/schema";
 
 export const wipeTeams = async (db: ReturnType<typeof database>) => {
@@ -122,30 +124,229 @@ export const randomAssignTeams = async (db: ReturnType<typeof database>) => {
 
 export const getSeasonState = async (
   db: ReturnType<typeof database>
-): Promise<SeasonStateType | null> => {
-  const state = await db
-    .select()
-    .from(seasonState)
-    .where(eq(seasonState.id, 1))
-    .limit(1);
+): Promise<SeasonType | null> => {
+  const state = await db.select().from(season).where(eq(season.id, 1)).limit(1);
 
   return state[0] || null;
 };
 
 export const setSeasonState = async (
   db: ReturnType<typeof database>,
-  newState: SeasonStateValue
+  newState: SeasonState
 ) => {
   const currentState = await getSeasonState(db);
 
   if (currentState) {
-    await db
-      .update(seasonState)
-      .set({ state: newState })
-      .where(eq(seasonState.id, 1));
+    await db.update(season).set({ state: newState }).where(eq(season.id, 1));
   } else {
-    await db.insert(seasonState).values({ id: 1, state: newState });
+    await db.insert(season).values({ id: 1, state: newState });
   }
 
   return { success: true, state: newState };
+};
+
+export const getDraftingOrder = async (
+  db: ReturnType<typeof database>
+): Promise<
+  Array<{
+    userId: number;
+    userName: string;
+    draftingTurn: number;
+  }>
+> => {
+  const currentSeason = await getSeasonState(db);
+  if (!currentSeason) {
+    return [];
+  }
+
+  const order = await db
+    .select({
+      userId: usersSeasons.userId,
+      userName: users.name,
+      draftingTurn: usersSeasons.draftingTurn,
+    })
+    .from(usersSeasons)
+    .innerJoin(users, eq(usersSeasons.userId, users.id))
+    .where(eq(usersSeasons.seasonId, currentSeason.id))
+    .orderBy(asc(usersSeasons.draftingTurn));
+
+  return order;
+};
+
+export const adjustDraftingOrder = async (
+  db: ReturnType<typeof database>,
+  userId: number,
+  direction: "up" | "down"
+) => {
+  const currentSeason = await getSeasonState(db);
+  if (!currentSeason) {
+    throw new Error("No current season found");
+  }
+
+  await db.transaction(async (tx) => {
+    const currentUserTurn = await tx
+      .select({ draftingTurn: usersSeasons.draftingTurn })
+      .from(usersSeasons)
+      .where(
+        and(
+          eq(usersSeasons.userId, userId),
+          eq(usersSeasons.seasonId, currentSeason.id)
+        )
+      )
+      .limit(1);
+
+    if (currentUserTurn.length === 0) {
+      throw new Error("User not found in current season");
+    }
+
+    const currentTurn = currentUserTurn[0].draftingTurn;
+    const newTurn = direction === "up" ? currentTurn - 1 : currentTurn + 1;
+
+    // Check if there's a user at the target position
+    const targetUser = await tx
+      .select({ userId: usersSeasons.userId })
+      .from(usersSeasons)
+      .where(
+        and(
+          eq(usersSeasons.seasonId, currentSeason.id),
+          eq(usersSeasons.draftingTurn, newTurn)
+        )
+      )
+      .limit(1);
+
+    if (targetUser.length === 0) {
+      throw new Error("No user at target position");
+    }
+
+    const targetUserId = targetUser[0].userId;
+
+    // Swap the turns
+    await tx
+      .update(usersSeasons)
+      .set({ draftingTurn: newTurn })
+      .where(
+        and(
+          eq(usersSeasons.userId, userId),
+          eq(usersSeasons.seasonId, currentSeason.id)
+        )
+      );
+
+    await tx
+      .update(usersSeasons)
+      .set({ draftingTurn: currentTurn })
+      .where(
+        and(
+          eq(usersSeasons.userId, targetUserId),
+          eq(usersSeasons.seasonId, currentSeason.id)
+        )
+      );
+
+    // Recalculate all turns to be sequential
+    // Get all users ordered by their current turn (after swap)
+    const allUsers = await tx
+      .select({
+        userId: usersSeasons.userId,
+        draftingTurn: usersSeasons.draftingTurn,
+      })
+      .from(usersSeasons)
+      .where(eq(usersSeasons.seasonId, currentSeason.id))
+      .orderBy(asc(usersSeasons.draftingTurn));
+
+    // Reassign sequential turn numbers starting from 1
+    for (let i = 0; i < allUsers.length; i++) {
+      await tx
+        .update(usersSeasons)
+        .set({ draftingTurn: i + 1 })
+        .where(
+          and(
+            eq(usersSeasons.userId, allUsers[i].userId),
+            eq(usersSeasons.seasonId, currentSeason.id)
+          )
+        );
+    }
+  });
+};
+
+export const randomAssignDraftOrder = async (
+  db: ReturnType<typeof database>
+) => {
+  const currentSeason = await getSeasonState(db);
+  if (!currentSeason) {
+    throw new Error("No current season found");
+  }
+
+  await db.transaction(async (tx) => {
+    // Get all users in the current season
+    const allUsers = await tx
+      .select({
+        userId: usersSeasons.userId,
+      })
+      .from(usersSeasons)
+      .where(eq(usersSeasons.seasonId, currentSeason.id));
+
+    if (allUsers.length === 0) {
+      return;
+    }
+
+    // Shuffle the user IDs
+    const shuffledUsers = [...allUsers].sort(() => Math.random() - 0.5);
+
+    // Assign sequential turn numbers starting from 1
+    for (let i = 0; i < shuffledUsers.length; i++) {
+      await tx
+        .update(usersSeasons)
+        .set({ draftingTurn: i + 1 })
+        .where(
+          and(
+            eq(usersSeasons.userId, shuffledUsers[i].userId),
+            eq(usersSeasons.seasonId, currentSeason.id)
+          )
+        );
+    }
+  });
+};
+
+export const createDraftEntriesForAllUsers = async (
+  db: ReturnType<typeof database>
+) => {
+  const currentSeason = await getSeasonState(db);
+  if (!currentSeason) {
+    throw new Error("No current season found");
+  }
+
+  await db.transaction(async (tx) => {
+    const allUsers = await tx.select({ id: users.id }).from(users);
+
+    const existingEntries = await tx
+      .select({
+        userId: usersSeasons.userId,
+        draftingTurn: usersSeasons.draftingTurn,
+      })
+      .from(usersSeasons)
+      .where(eq(usersSeasons.seasonId, currentSeason.id))
+      .orderBy(asc(usersSeasons.draftingTurn));
+
+    const existingUserIds = new Set(existingEntries.map((e) => e.userId));
+
+    const newUsers = allUsers.filter((u) => !existingUserIds.has(u.id));
+
+    if (newUsers.length === 0) {
+      return;
+    }
+
+    const maxTurn =
+      existingEntries.length > 0
+        ? existingEntries[existingEntries.length - 1].draftingTurn
+        : 0;
+
+    const startTurn = maxTurn + 1;
+
+    for (let i = 0; i < newUsers.length; i++) {
+      await tx.insert(usersSeasons).values({
+        userId: newUsers[i].id,
+        seasonId: currentSeason.id,
+        draftingTurn: startTurn + i,
+      });
+    }
+  });
 };

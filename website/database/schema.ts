@@ -132,21 +132,33 @@ export const fieldingPositions = pgEnum("fielding_positions", [
 
 export type FieldingPosition = (typeof fieldingPositions.enumValues)[number];
 
-export const seasonStates = pgEnum("season_state_value", [
+export const seasonState = pgEnum("season_state", [
   "pre-season",
   "drafting",
   "playing",
   "finished",
 ]);
 
-export type SeasonStateValue = (typeof seasonStates.enumValues)[number];
+export type SeasonState = (typeof seasonState.enumValues)[number];
 
-export const seasonState = pgTable("season_state", {
+export const season = pgTable("season", {
   id: integer().primaryKey().default(1).notNull(),
-  state: seasonStates("state").notNull().default("pre-season"),
+  state: seasonState("state").notNull().default("pre-season"),
 });
 
-export type SeasonState = typeof seasonState.$inferSelect;
+export type Season = typeof season.$inferSelect;
+
+export const usersSeasons = pgTable("users_seasons", {
+  userId: integer("user_id")
+    .notNull()
+    .references(() => users.id),
+  seasonId: integer("season_id")
+    .notNull()
+    .references(() => season.id),
+  draftingTurn: integer("drafting_turn").notNull(),
+});
+
+export type UsersSeason = typeof usersSeasons.$inferSelect;
 
 export const teamLineups = pgTable("team_lineup", {
   playerId: integer("player_id")
@@ -164,5 +176,16 @@ export const teamLineupRelations = relations(teamLineups, ({ one }) => ({
     fields: [teamLineups.playerId],
     references: [players.id],
     relationName: "lineup",
+  }),
+}));
+
+export const usersSeasonsRelations = relations(usersSeasons, ({ one }) => ({
+  user: one(users, {
+    fields: [usersSeasons.userId],
+    references: [users.id],
+  }),
+  season: one(season, {
+    fields: [usersSeasons.seasonId],
+    references: [season.id],
   }),
 }));

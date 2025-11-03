@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router";
-import type { SeasonStateValue, Team, User } from "~/database/schema";
+import type { SeasonState, Team, User } from "~/database/schema";
 
 export function Nav({
   user,
@@ -8,7 +8,7 @@ export function Nav({
 }: {
   user?: User;
   team?: Team;
-  seasonState?: SeasonStateValue;
+  seasonState?: SeasonState;
 }) {
   const location = useLocation();
 

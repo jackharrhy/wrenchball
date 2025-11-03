@@ -2,12 +2,16 @@ import { redirect, Form } from "react-router";
 import type { Route } from "./+types/admin";
 import { requireUser } from "~/auth.server";
 import { database } from "~/database/context";
-import { seasonStates, type SeasonStateValue } from "~/database/schema";
+import { seasonState, type SeasonState } from "~/database/schema";
 import {
   randomAssignTeams,
   wipeTeams,
   getSeasonState,
   setSeasonState,
+  getDraftingOrder,
+  adjustDraftingOrder,
+  randomAssignDraftOrder,
+  createDraftEntriesForAllUsers,
 } from "~/utils/admin";
 
 export async function loader({ request }: Route.LoaderArgs) {
@@ -19,8 +23,9 @@ export async function loader({ request }: Route.LoaderArgs) {
 
   const db = database();
   const currentState = await getSeasonState(db);
+  const draftingOrder = await getDraftingOrder(db);
 
-  return { user, seasonState: currentState };
+  return { user, seasonState: currentState, draftingOrder };
 }
 
 export async function clientAction({
@@ -47,6 +52,19 @@ export async function clientAction({
     );
     if (!confirmed) {
       return { success: false, message: "Team wipe cancelled" };
+    }
+  }
+
+  if (intent === "adjust-draft-order") {
+    // No confirmation needed for draft order adjustments
+  }
+
+  if (intent === "create-draft-entries") {
+    const confirmed = confirm(
+      "Are you sure you want to add all users to the current season's draft order?"
+    );
+    if (!confirmed) {
+      return { success: false, message: "Draft entry creation cancelled" };
     }
   }
 
@@ -90,12 +108,50 @@ export async function action({ request }: Route.ActionArgs) {
     }
   }
 
+  if (intent === "random-assign-draft-order") {
+    try {
+      await randomAssignDraftOrder(db);
+      return {
+        success: true,
+        message: "Draft order randomly assigned",
+      };
+    } catch (error) {
+      console.error("Error during draft order randomization:", error);
+      return {
+        success: false,
+        message:
+          error instanceof Error
+            ? error.message
+            : "Failed to randomize draft order",
+      };
+    }
+  }
+
+  if (intent === "create-draft-entries") {
+    try {
+      await createDraftEntriesForAllUsers(db);
+      return {
+        success: true,
+        message: "Draft entries created for all users",
+      };
+    } catch (error) {
+      console.error("Error creating draft entries:", error);
+      return {
+        success: false,
+        message:
+          error instanceof Error
+            ? error.message
+            : "Failed to create draft entries",
+      };
+    }
+  }
+
   if (intent === "set-season-state") {
-    const state = formData.get("state") as SeasonStateValue;
+    const state = formData.get("state") as SeasonState;
 
     if (
       !state ||
-      !(seasonStates.enumValues as readonly string[]).includes(state)
+      !(seasonState.enumValues as readonly string[]).includes(state)
     ) {
       return { success: false, message: "Invalid season state" };
     }
@@ -109,6 +165,41 @@ export async function action({ request }: Route.ActionArgs) {
     } catch (error) {
       console.error("Error setting season state:", error);
       return { success: false, message: "Failed to update season state" };
+    }
+  }
+
+  if (intent === "adjust-draft-order") {
+    const userIdStr = formData.get("userId");
+    const direction = formData.get("direction") as "up" | "down";
+
+    if (
+      !userIdStr ||
+      !direction ||
+      (direction !== "up" && direction !== "down")
+    ) {
+      return { success: false, message: "Invalid parameters" };
+    }
+
+    const userId = parseInt(userIdStr as string, 10);
+    if (isNaN(userId)) {
+      return { success: false, message: "Invalid user ID" };
+    }
+
+    try {
+      await adjustDraftingOrder(db, userId, direction);
+      return {
+        success: true,
+        message: `Draft order updated`,
+      };
+    } catch (error) {
+      console.error("Error adjusting draft order:", error);
+      return {
+        success: false,
+        message:
+          error instanceof Error
+            ? error.message
+            : "Failed to adjust draft order",
+      };
     }
   }
 
@@ -139,7 +230,7 @@ export default function Admin({
             </span>
           </p>
           <div className="flex gap-2 flex-wrap">
-            {seasonStates.enumValues.map((state) => (
+            {seasonState.enumValues.map((state) => (
               <Form key={state} method="post" className="inline-block">
                 <input type="hidden" name="intent" value="set-season-state" />
                 <input type="hidden" name="state" value={state} />
@@ -171,15 +262,102 @@ export default function Admin({
             </button>
           </Form>
 
-          <Form method="post" className="inline-block">
+          <Form method="post" className="inline-block mr-4">
             <input type="hidden" name="intent" value="random-assign" />
             <button
               type="submit"
-              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded"
+              className="bg-orange-600 hover:bg-orange-700 text-white px-4 py-2 rounded"
             >
               Randomly Assign Players
             </button>
           </Form>
+
+          <Form method="post" className="inline-block mr-4">
+            <input
+              type="hidden"
+              name="intent"
+              value="random-assign-draft-order"
+            />
+            <button
+              type="submit"
+              className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded"
+            >
+              Randomly Assign Draft Order
+            </button>
+          </Form>
+
+          <Form method="post" className="inline-block">
+            <input type="hidden" name="intent" value="create-draft-entries" />
+            <button
+              type="submit"
+              className="bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-2 rounded"
+            >
+              Add All Users to Season
+            </button>
+          </Form>
+        </div>
+
+        <div>
+          <h2 className="text-xl font-semibold mb-2">Drafting Order</h2>
+          {loaderData.draftingOrder.length === 0 ? (
+            <p className="text-gray-200">No users in drafting order</p>
+          ) : (
+            <div className="space-y-2">
+              {loaderData.draftingOrder.map((item, index) => (
+                <div
+                  key={item.userId}
+                  className="flex items-center gap-4 p-2 border rounded bg-cell-gray/40 border-cell-gray/50 hover:bg-cell-gray/60 transition-colors"
+                >
+                  <span className="font-semibold w-8">
+                    {item.draftingTurn}.
+                  </span>
+                  <span className="flex-1">{item.userName}</span>
+                  <div className="flex gap-2">
+                    <Form method="post" className="inline-block">
+                      <input
+                        type="hidden"
+                        name="intent"
+                        value="adjust-draft-order"
+                      />
+                      <input type="hidden" name="userId" value={item.userId} />
+                      <input type="hidden" name="direction" value="up" />
+                      <button
+                        type="submit"
+                        disabled={index === 0}
+                        className={`px-2 py-1 rounded ${
+                          index === 0
+                            ? "bg-gray-500 text-gray-100 cursor-not-allowed"
+                            : "bg-green-600 hover:bg-green-700 text-white"
+                        }`}
+                      >
+                        +
+                      </button>
+                    </Form>
+                    <Form method="post" className="inline-block">
+                      <input
+                        type="hidden"
+                        name="intent"
+                        value="adjust-draft-order"
+                      />
+                      <input type="hidden" name="userId" value={item.userId} />
+                      <input type="hidden" name="direction" value="down" />
+                      <button
+                        type="submit"
+                        disabled={index === loaderData.draftingOrder.length - 1}
+                        className={`px-2 py-1 rounded ${
+                          index === loaderData.draftingOrder.length - 1
+                            ? "bg-gray-500 text-gray-100 cursor-not-allowed"
+                            : "bg-red-600 hover:bg-red-700 text-white"
+                        }`}
+                      >
+                        -
+                      </button>
+                    </Form>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </div>

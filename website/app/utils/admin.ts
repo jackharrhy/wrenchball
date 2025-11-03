@@ -441,3 +441,22 @@ export const createUser = async (
   });
   await createDraftEntriesForAllUsers(db);
 };
+
+export const setCurrentDraftingUser = async (
+  db: ReturnType<typeof database>,
+  userId: number
+) => {
+  const currentSeason = await getSeasonState(db);
+  if (!currentSeason) {
+    throw new Error("No current season found");
+  }
+
+  if (currentSeason.state !== "drafting") {
+    throw new Error("Season is not in drafting state");
+  }
+
+  await db
+    .update(season)
+    .set({ currentDraftingUserId: userId })
+    .where(eq(season.id, 1));
+};

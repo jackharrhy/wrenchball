@@ -14,6 +14,7 @@ import {
   createDraftEntriesForAllUsers,
   deleteUser,
   createUser,
+  setCurrentDraftingUser,
 } from "~/utils/admin";
 
 export async function loader({ request }: Route.LoaderArgs) {
@@ -106,6 +107,17 @@ export async function clientAction({
 
     if (!name || !role || !discordSnowflake) {
       return { success: false, message: "All fields are required" };
+    }
+  }
+
+  if (intent === "set-current-drafting-user") {
+    const userId = formData.get("userId");
+    const userName = formData.get("userName");
+    const confirmed = confirm(
+      `Are you sure you want to set "${userName}" as the current drafting user?`
+    );
+    if (!confirmed) {
+      return { success: false, message: "Action cancelled" };
     }
   }
 
@@ -304,6 +316,37 @@ export async function action({ request }: Route.ActionArgs) {
     }
   }
 
+  if (intent === "set-current-drafting-user") {
+    const userIdStr = formData.get("userId");
+    const userName = formData.get("userName");
+
+    if (!userIdStr || !userName) {
+      return { success: false, message: "Invalid parameters" };
+    }
+
+    const userId = parseInt(userIdStr as string, 10);
+    if (isNaN(userId)) {
+      return { success: false, message: "Invalid user ID" };
+    }
+
+    try {
+      await setCurrentDraftingUser(db, userId);
+      return {
+        success: true,
+        message: `Set "${userName}" as the current drafting user`,
+      };
+    } catch (error) {
+      console.error("Error setting current drafting user:", error);
+      return {
+        success: false,
+        message:
+          error instanceof Error
+            ? error.message
+            : "Failed to set current drafting user",
+      };
+    }
+  }
+
   return { success: false, message: "Invalid action" };
 }
 
@@ -438,6 +481,40 @@ export default function Admin({
                         Delete
                       </button>
                     </Form>
+                    {loaderData.seasonState?.state === "drafting" && (
+                      <Form method="post" className="inline-block">
+                        <input
+                          type="hidden"
+                          name="intent"
+                          value="set-current-drafting-user"
+                        />
+                        <input
+                          type="hidden"
+                          name="userId"
+                          value={item.userId}
+                        />
+                        <input
+                          type="hidden"
+                          name="userName"
+                          value={item.userName}
+                        />
+                        <button
+                          type="submit"
+                          className={`px-3 py-1 rounded text-sm ${
+                            loaderData.seasonState?.currentDraftingUserId ===
+                            item.userId
+                              ? "bg-blue-700 text-white cursor-not-allowed"
+                              : "bg-blue-600 hover:bg-blue-700 text-white"
+                          }`}
+                          disabled={
+                            loaderData.seasonState?.currentDraftingUserId ===
+                            item.userId
+                          }
+                        >
+                          Set as Drafting
+                        </button>
+                      </Form>
+                    )}
                     <div className="flex gap-2">
                       <Form method="post" className="inline-block">
                         <input

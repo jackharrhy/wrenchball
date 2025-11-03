@@ -26,7 +26,7 @@ export function meta({}: Route.MetaArgs) {
 
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" className="h-full">
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -34,7 +34,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Meta />
         <Links />
       </head>
-      <body>
+      <body className="h-full flex flex-col">
         {children}
         <ScrollRestoration />
         <Scripts />
@@ -69,7 +69,7 @@ export default function App({
         id="bg-gradient"
       />
       <Nav user={user} team={team} seasonState={seasonState} />
-      <div className="container mx-auto py-8">
+      <div className="container mx-auto py-8 flex-1 flex flex-col">
         <Outlet />
       </div>
     </>

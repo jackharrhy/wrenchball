@@ -146,9 +146,20 @@ export type SeasonState = (typeof seasonState.enumValues)[number];
 export const season = pgTable("season", {
   id: integer().primaryKey().default(1).notNull(),
   state: seasonState("state").notNull().default("pre-season"),
+  currentDraftingUserId: integer("current_drafting_user_id").references(
+    () => users.id,
+    { onDelete: "set null" }
+  ),
 });
 
 export type Season = typeof season.$inferSelect;
+
+export const seasonRelations = relations(season, ({ one }) => ({
+  currentDraftingUser: one(users, {
+    fields: [season.currentDraftingUserId],
+    references: [users.id],
+  }),
+}));
 
 export const usersSeasons = pgTable("users_seasons", {
   userId: integer("user_id")

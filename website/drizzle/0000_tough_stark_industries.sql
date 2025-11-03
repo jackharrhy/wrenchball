@@ -15,7 +15,8 @@ CREATE TABLE IF NOT EXISTS "players" (
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "season" (
 	"id" integer PRIMARY KEY DEFAULT 1 NOT NULL,
-	"state" "season_state" DEFAULT 'pre-season' NOT NULL
+	"state" "season_state" DEFAULT 'pre-season' NOT NULL,
+	"current_drafting_user_id" integer
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "stat" (
@@ -77,7 +78,7 @@ CREATE TABLE IF NOT EXISTS "users_seasons" (
 );
 --> statement-breakpoint
 DO $$ BEGIN
- ALTER TABLE "players" ADD CONSTRAINT "players_team_id_team_id_fk" FOREIGN KEY ("team_id") REFERENCES "public"."team"("id") ON DELETE no action ON UPDATE no action;
+ ALTER TABLE "players" ADD CONSTRAINT "players_team_id_team_id_fk" FOREIGN KEY ("team_id") REFERENCES "public"."team"("id") ON DELETE set null ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
@@ -89,19 +90,25 @@ EXCEPTION
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
- ALTER TABLE "team_lineup" ADD CONSTRAINT "team_lineup_player_id_players_id_fk" FOREIGN KEY ("player_id") REFERENCES "public"."players"("id") ON DELETE no action ON UPDATE no action;
+ ALTER TABLE "season" ADD CONSTRAINT "season_current_drafting_user_id_user_id_fk" FOREIGN KEY ("current_drafting_user_id") REFERENCES "public"."user"("id") ON DELETE set null ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
- ALTER TABLE "team" ADD CONSTRAINT "team_user_id_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."user"("id") ON DELETE no action ON UPDATE no action;
+ ALTER TABLE "team_lineup" ADD CONSTRAINT "team_lineup_player_id_players_id_fk" FOREIGN KEY ("player_id") REFERENCES "public"."players"("id") ON DELETE cascade ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
- ALTER TABLE "users_seasons" ADD CONSTRAINT "users_seasons_user_id_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."user"("id") ON DELETE no action ON UPDATE no action;
+ ALTER TABLE "team" ADD CONSTRAINT "team_user_id_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "users_seasons" ADD CONSTRAINT "users_seasons_user_id_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;

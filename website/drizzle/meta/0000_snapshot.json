@@ -1,5 +1,5 @@
 {
-  "id": "cc8700c5-e056-41cd-9f46-6083309ed50a",
+  "id": "636551a7-a1e7-400e-99c3-930017957dfd",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -62,7 +62,7 @@
           "columnsTo": [
             "id"
           ],
-          "onDelete": "no action",
+          "onDelete": "set null",
           "onUpdate": "no action"
         },
         "players_stats_character_stat_character_fk": {
@@ -111,10 +111,30 @@
           "primaryKey": false,
           "notNull": true,
           "default": "'pre-season'"
+        },
+        "current_drafting_user_id": {
+          "name": "current_drafting_user_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
         }
       },
       "indexes": {},
-      "foreignKeys": {},
+      "foreignKeys": {
+        "season_current_drafting_user_id_user_id_fk": {
+          "name": "season_current_drafting_user_id_user_id_fk",
+          "tableFrom": "season",
+          "tableTo": "user",
+          "columnsFrom": [
+            "current_drafting_user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        }
+      },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
       "policies": {},
@@ -325,7 +345,7 @@
           "columnsTo": [
             "id"
           ],
-          "onDelete": "no action",
+          "onDelete": "cascade",
           "onUpdate": "no action"
         }
       },
@@ -393,7 +413,7 @@
           "columnsTo": [
             "id"
           ],
-          "onDelete": "no action",
+          "onDelete": "cascade",
           "onUpdate": "no action"
         }
       },
@@ -510,7 +530,7 @@
           "columnsTo": [
             "id"
           ],
-          "onDelete": "no action",
+          "onDelete": "cascade",
           "onUpdate": "no action"
         },
         "users_seasons_season_id_season_id_fk": {

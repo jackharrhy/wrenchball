@@ -403,7 +403,15 @@ export default function Admin({
                   <span className="font-semibold w-8">
                     {item.draftingTurn}.
                   </span>
-                  <span className="flex-1">{item.userName}</span>
+                  <span className="flex-1 flex items-center gap-2">
+                    {item.userName}
+                    {loaderData.seasonState?.currentDraftingUserId ===
+                      item.userId && (
+                      <span className="text-sm italic">
+                        (Currently Drafting)
+                      </span>
+                    )}
+                  </span>
                   <div className="flex gap-8 items-center">
                     <Form method="post" className="inline-block">
                       <input type="hidden" name="intent" value="delete-user" />

@@ -136,11 +136,49 @@ export const setSeasonState = async (
 ) => {
   const currentState = await getSeasonState(db);
 
-  if (currentState) {
-    await db.update(season).set({ state: newState }).where(eq(season.id, 1));
-  } else {
-    await db.insert(season).values({ id: 1, state: newState });
-  }
+  await db.transaction(async (tx) => {
+    if (currentState?.state === "pre-season" && newState === "drafting") {
+      await tx.delete(teamLineups);
+      await tx.update(players).set({ teamId: null });
+
+      const draftingOrder = await tx
+        .select({
+          userId: usersSeasons.userId,
+        })
+        .from(usersSeasons)
+        .where(eq(usersSeasons.seasonId, currentState.id))
+        .orderBy(asc(usersSeasons.draftingTurn))
+        .limit(1);
+
+      const currentDraftingUserId =
+        draftingOrder.length > 0 ? draftingOrder[0].userId : null;
+
+      if (currentState) {
+        await tx
+          .update(season)
+          .set({ state: newState, currentDraftingUserId })
+          .where(eq(season.id, 1));
+      } else {
+        await tx
+          .insert(season)
+          .values({ id: 1, state: newState, currentDraftingUserId });
+      }
+    } else if (currentState?.state === "drafting" && newState === "playing") {
+      await tx
+        .update(season)
+        .set({ state: newState, currentDraftingUserId: null })
+        .where(eq(season.id, 1));
+    } else {
+      if (currentState) {
+        await tx
+          .update(season)
+          .set({ state: newState })
+          .where(eq(season.id, 1));
+      } else {
+        await tx.insert(season).values({ id: 1, state: newState });
+      }
+    }
+  });
 
   return { success: true, state: newState };
 };

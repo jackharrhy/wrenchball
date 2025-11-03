@@ -21,7 +21,7 @@ export function PlayerIcon({
 
   return (
     <div
-      className={cn("relative", sizeClasses[size])}
+      className={cn("relative shrink-0", sizeClasses[size])}
       data-player={player?.name}
     >
       <img

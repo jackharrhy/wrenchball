@@ -44,7 +44,7 @@ export default function Player({
                 {player.team.name}
               </Link>
             ) : (
-              <span className={cn("text-green-600 font-semibold")}>
+              <span className={cn("text-green-400 font-semibold")}>
                 Free Agent
               </span>
             )}

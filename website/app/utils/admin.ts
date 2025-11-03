@@ -414,10 +414,30 @@ export const createUser = async (
   role: "admin" | "user",
   discordSnowflake: string
 ) => {
-  await db.insert(users).values({
-    name,
-    role,
-    discordSnowflake,
+  const [user] = await db
+    .insert(users)
+    .values({
+      name,
+      role,
+      discordSnowflake,
+    })
+    .returning({ id: users.id, name: users.name });
+
+  const teamName = `${user.name}'s Team`;
+  const abbreviation =
+    user.name
+      .split(/\s+/)
+      .filter(Boolean)
+      .map((w) => w[0])
+      .join("")
+      .toUpperCase()
+      .slice(0, 3) || user.name.slice(0, 3).toUpperCase();
+
+  await db.insert(teams).values({
+    name: teamName,
+    userId: user.id,
+    abbreviation,
+    color: "white",
   });
   await createDraftEntriesForAllUsers(db);
 };

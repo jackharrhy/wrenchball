@@ -2,7 +2,7 @@ import { redirect, Form } from "react-router";
 import type { Route } from "./+types/admin";
 import { requireUser } from "~/auth.server";
 import { database } from "~/database/context";
-import { seasonState, type SeasonState } from "~/database/schema";
+import { players, seasonState, type SeasonState } from "~/database/schema";
 import {
   randomAssignTeams,
   wipeTeams,
@@ -70,6 +70,15 @@ export async function clientAction({
     }
   }
 
+  if (intent === "random-assign-players") {
+    const confirmed = confirm(
+      "Are you sure you want to randomly assign players to teams?"
+    );
+    if (!confirmed) {
+      return { success: false, message: "Player assignment cancelled" };
+    }
+  }
+
   if (intent === "random-assign-draft-order") {
     const confirmed = confirm(
       "Are you sure you want to randomly assign the draft order?"
@@ -127,7 +136,7 @@ export async function action({ request }: Route.ActionArgs) {
     }
   }
 
-  if (intent === "random-assign") {
+  if (intent === "random-assign-players") {
     try {
       await randomAssignTeams(db);
       return {
@@ -313,8 +322,8 @@ export default function Admin({
       )}
 
       <div className="space-y-4">
-        <div>
-          <h2 className="text-xl font-semibold mb-2">Season State</h2>
+        <h2 className="text-xl font-semibold mb-2">Season State</h2>
+        <div className="flex flex-col gap-2">
           <p className="mb-2">
             Current state:{" "}
             <span className="font-semibold">
@@ -339,6 +348,7 @@ export default function Admin({
               </Form>
             ))}
           </div>
+          <p>Note: Switching to drafting will clear all lineups!</p>
         </div>
 
         <div>
@@ -355,7 +365,7 @@ export default function Admin({
           </Form>
 
           <Form method="post" className="inline-block mr-4">
-            <input type="hidden" name="intent" value="random-assign" />
+            <input type="hidden" name="intent" value="random-assign-players" />
             <button
               type="submit"
               className="bg-orange-600 hover:bg-orange-700 text-white px-4 py-2 rounded"

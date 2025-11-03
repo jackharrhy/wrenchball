@@ -12,6 +12,7 @@ import {
   adjustDraftingOrder,
   randomAssignDraftOrder,
   createDraftEntriesForAllUsers,
+  deleteUser,
 } from "~/utils/admin";
 
 export async function loader({ request }: Route.LoaderArgs) {
@@ -25,7 +26,11 @@ export async function loader({ request }: Route.LoaderArgs) {
   const currentState = await getSeasonState(db);
   const draftingOrder = await getDraftingOrder(db);
 
-  return { user, seasonState: currentState, draftingOrder };
+  return {
+    user,
+    seasonState: currentState,
+    draftingOrder,
+  };
 }
 
 export async function clientAction({
@@ -70,6 +75,17 @@ export async function clientAction({
     );
     if (!confirmed) {
       return { success: false, message: "Draft order randomization cancelled" };
+    }
+  }
+
+  if (intent === "delete-user") {
+    const userId = formData.get("userId");
+    const userName = formData.get("userName");
+    const confirmed = confirm(
+      `Are you sure you want to delete user "${userName}"? This will also delete their team, remove players from their team, and cannot be undone.`
+    );
+    if (!confirmed) {
+      return { success: false, message: "User deletion cancelled" };
     }
   }
 
@@ -208,6 +224,35 @@ export async function action({ request }: Route.ActionArgs) {
     }
   }
 
+  if (intent === "delete-user") {
+    const userIdStr = formData.get("userId");
+    const userName = formData.get("userName");
+
+    if (!userIdStr || !userName) {
+      return { success: false, message: "Invalid parameters" };
+    }
+
+    const userId = parseInt(userIdStr as string, 10);
+    if (isNaN(userId)) {
+      return { success: false, message: "Invalid user ID" };
+    }
+
+    try {
+      await deleteUser(db, userId);
+      return {
+        success: true,
+        message: `User "${userName}" deleted successfully`,
+      };
+    } catch (error) {
+      console.error("Error deleting user:", error);
+      return {
+        success: false,
+        message:
+          error instanceof Error ? error.message : "Failed to delete user",
+      };
+    }
+  }
+
   return { success: false, message: "Invalid action" };
 }
 
@@ -317,47 +362,74 @@ export default function Admin({
                     {item.draftingTurn}.
                   </span>
                   <span className="flex-1">{item.userName}</span>
-                  <div className="flex gap-2">
+                  <div className="flex gap-8 items-center">
                     <Form method="post" className="inline-block">
+                      <input type="hidden" name="intent" value="delete-user" />
+                      <input type="hidden" name="userId" value={item.userId} />
                       <input
                         type="hidden"
-                        name="intent"
-                        value="adjust-draft-order"
+                        name="userName"
+                        value={item.userName}
                       />
-                      <input type="hidden" name="userId" value={item.userId} />
-                      <input type="hidden" name="direction" value="up" />
                       <button
                         type="submit"
-                        disabled={index === 0}
-                        className={`px-2 py-1 rounded ${
-                          index === 0
-                            ? "bg-gray-500 text-gray-100 cursor-not-allowed"
-                            : "bg-green-600 hover:bg-green-700 text-white"
-                        }`}
+                        className="opacity-50 hover:opacity-100 cursor-pointer bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-sm"
                       >
-                        +
+                        Delete
                       </button>
                     </Form>
-                    <Form method="post" className="inline-block">
-                      <input
-                        type="hidden"
-                        name="intent"
-                        value="adjust-draft-order"
-                      />
-                      <input type="hidden" name="userId" value={item.userId} />
-                      <input type="hidden" name="direction" value="down" />
-                      <button
-                        type="submit"
-                        disabled={index === loaderData.draftingOrder.length - 1}
-                        className={`px-2 py-1 rounded ${
-                          index === loaderData.draftingOrder.length - 1
-                            ? "bg-gray-500 text-gray-100 cursor-not-allowed"
-                            : "bg-red-600 hover:bg-red-700 text-white"
-                        }`}
-                      >
-                        -
-                      </button>
-                    </Form>
+                    <div className="flex gap-2">
+                      <Form method="post" className="inline-block">
+                        <input
+                          type="hidden"
+                          name="intent"
+                          value="adjust-draft-order"
+                        />
+                        <input
+                          type="hidden"
+                          name="userId"
+                          value={item.userId}
+                        />
+                        <input type="hidden" name="direction" value="up" />
+                        <button
+                          type="submit"
+                          disabled={index === 0}
+                          className={`px-2 py-1 rounded cursor-pointer ${
+                            index === 0
+                              ? "bg-gray-500 text-gray-100 cursor-not-allowed"
+                              : "bg-green-600 hover:bg-green-700 text-white"
+                          }`}
+                        >
+                          +
+                        </button>
+                      </Form>
+                      <Form method="post" className="inline-block">
+                        <input
+                          type="hidden"
+                          name="intent"
+                          value="adjust-draft-order"
+                        />
+                        <input
+                          type="hidden"
+                          name="userId"
+                          value={item.userId}
+                        />
+                        <input type="hidden" name="direction" value="down" />
+                        <button
+                          type="submit"
+                          disabled={
+                            index === loaderData.draftingOrder.length - 1
+                          }
+                          className={`px-2 py-1 rounded cursor-pointer ${
+                            index === loaderData.draftingOrder.length - 1
+                              ? "bg-gray-500 text-gray-100 cursor-not-allowed"
+                              : "bg-red-600 hover:bg-red-700 text-white"
+                          }`}
+                        >
+                          -
+                        </button>
+                      </Form>
+                    </div>
                   </div>
                 </div>
               ))}

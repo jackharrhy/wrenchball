@@ -19,7 +19,7 @@ export const teams = pgTable("team", {
   userId: integer("user_id")
     .notNull()
     .unique()
-    .references(() => users.id),
+    .references(() => users.id, { onDelete: "cascade" }),
   abbreviation: text("abbreviation").notNull(),
 });
 
@@ -93,7 +93,9 @@ export type Stats = typeof stats.$inferSelect;
 export const players = pgTable("players", {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
   name: text("name").notNull().unique(),
-  teamId: integer("team_id").references(() => teams.id),
+  teamId: integer("team_id").references(() => teams.id, {
+    onDelete: "set null",
+  }),
   imageUrl: text("image_url"),
   statsCharacter: text("stats_character").references(() => stats.character),
 });
@@ -151,7 +153,7 @@ export type Season = typeof season.$inferSelect;
 export const usersSeasons = pgTable("users_seasons", {
   userId: integer("user_id")
     .notNull()
-    .references(() => users.id),
+    .references(() => users.id, { onDelete: "cascade" }),
   seasonId: integer("season_id")
     .notNull()
     .references(() => season.id),
@@ -163,7 +165,7 @@ export type UsersSeason = typeof usersSeasons.$inferSelect;
 export const teamLineups = pgTable("team_lineup", {
   playerId: integer("player_id")
     .primaryKey()
-    .references(() => players.id),
+    .references(() => players.id, { onDelete: "cascade" }),
   fieldingPosition: fieldingPositions("fielding_position"),
   battingOrder: integer("batting_order"),
   isStarred: boolean("is_starred").notNull().default(false),

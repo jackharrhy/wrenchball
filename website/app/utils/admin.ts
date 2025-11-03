@@ -342,3 +342,30 @@ export const createDraftEntriesForAllUsers = async (
     }
   });
 };
+
+export const deleteUser = async (
+  db: ReturnType<typeof database>,
+  userId: number
+) => {
+  await db.transaction(async (tx) => {
+    const userTeam = await tx
+      .select({ id: teams.id })
+      .from(teams)
+      .where(eq(teams.userId, userId))
+      .limit(1);
+
+    if (userTeam.length > 0) {
+      const teamId = userTeam[0].id;
+      const teamPlayers = await tx
+        .select({ id: players.id })
+        .from(players)
+        .where(eq(players.teamId, teamId));
+
+      for (const player of teamPlayers) {
+        await tx.delete(teamLineups).where(eq(teamLineups.playerId, player.id));
+      }
+    }
+
+    await tx.delete(users).where(eq(users.id, userId));
+  });
+};

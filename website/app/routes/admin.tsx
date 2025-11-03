@@ -13,6 +13,7 @@ import {
   randomAssignDraftOrder,
   createDraftEntriesForAllUsers,
   deleteUser,
+  createUser,
 } from "~/utils/admin";
 
 export async function loader({ request }: Route.LoaderArgs) {
@@ -86,6 +87,16 @@ export async function clientAction({
     );
     if (!confirmed) {
       return { success: false, message: "User deletion cancelled" };
+    }
+  }
+
+  if (intent === "create-user") {
+    const name = formData.get("name");
+    const role = formData.get("role");
+    const discordSnowflake = formData.get("discordSnowflake");
+
+    if (!name || !role || !discordSnowflake) {
+      return { success: false, message: "All fields are required" };
     }
   }
 
@@ -249,6 +260,37 @@ export async function action({ request }: Route.ActionArgs) {
         success: false,
         message:
           error instanceof Error ? error.message : "Failed to delete user",
+      };
+    }
+  }
+
+  if (intent === "create-user") {
+    const name = formData.get("name") as string;
+    const role = formData.get("role") as "admin" | "user";
+    const discordSnowflake = formData.get("discordSnowflake") as string;
+
+    if (!name || !role || !discordSnowflake) {
+      return { success: false, message: "All fields are required" };
+    }
+
+    if (role !== "admin" && role !== "user") {
+      return { success: false, message: "Invalid role" };
+    }
+
+    try {
+      await createUser(db, name, role, discordSnowflake);
+      return {
+        success: true,
+        message: `User "${name}" created successfully`,
+      };
+    } catch (error) {
+      console.error("Error creating user:", error);
+      return {
+        success: false,
+        message:
+          error instanceof Error
+            ? error.message
+            : "Failed to create user. Discord snowflake may already be in use.",
       };
     }
   }
@@ -435,6 +477,59 @@ export default function Admin({
               ))}
             </div>
           )}
+        </div>
+
+        <h2 className="text-xl font-semibold mb-2">Add New User</h2>
+        <div className="bg-cell-gray/40 rounded-md border border-cell-gray/50 p-6">
+          <Form method="post" className="space-y-3">
+            <input type="hidden" name="intent" value="create-user" />
+            <div className="flex flex-col gap-2">
+              <label htmlFor="name" className="text-sm font-medium">
+                Name
+              </label>
+              <input
+                type="text"
+                id="name"
+                name="name"
+                required
+                className="px-3 py-2 border rounded bg-white text-black border-gray-300"
+                placeholder="User name"
+              />
+            </div>
+            <div className="flex flex-col gap-2">
+              <label htmlFor="role" className="text-sm font-medium">
+                Role
+              </label>
+              <select
+                id="role"
+                name="role"
+                required
+                className="px-3 py-2 border rounded bg-white text-black border-gray-300"
+              >
+                <option value="user">User</option>
+                <option value="admin">Admin</option>
+              </select>
+            </div>
+            <div className="flex flex-col gap-2">
+              <label htmlFor="discordSnowflake" className="text-sm font-medium">
+                Discord Snowflake
+              </label>
+              <input
+                type="text"
+                id="discordSnowflake"
+                name="discordSnowflake"
+                required
+                className="px-3 py-2 border rounded bg-white text-black border-gray-300"
+                placeholder="Right-click on user in Discord (dev mode enabled) → Copy User ID"
+              />
+            </div>
+            <button
+              type="submit"
+              className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded"
+            >
+              Create User
+            </button>
+          </Form>
         </div>
       </div>
     </div>

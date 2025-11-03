@@ -369,3 +369,17 @@ export const deleteUser = async (
     await tx.delete(users).where(eq(users.id, userId));
   });
 };
+
+export const createUser = async (
+  db: ReturnType<typeof database>,
+  name: string,
+  role: "admin" | "user",
+  discordSnowflake: string
+) => {
+  await db.insert(users).values({
+    name,
+    role,
+    discordSnowflake,
+  });
+  await createDraftEntriesForAllUsers(db);
+};

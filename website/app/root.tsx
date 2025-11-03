@@ -69,7 +69,7 @@ export default function App({
         id="bg-gradient"
       />
       <Nav user={user} team={team} seasonState={seasonState} />
-      <div className="container mx-auto py-8 flex-1 flex flex-col">
+      <div className="container mx-auto p-8 flex-1 flex flex-col">
         <Outlet />
       </div>
     </>

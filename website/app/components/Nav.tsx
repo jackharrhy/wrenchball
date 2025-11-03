@@ -30,11 +30,11 @@ export function Nav({
 
   return (
     <nav className="border-b border-gray-200 py-4">
-      <div className="container mx-auto flex items-center justify-start gap-12 h-full px-4">
+      <div className="container mx-auto flex flex-col lg:flex-row items-start lg:items-center justify-start gap-4 lg:gap-12 h-full px-4">
         <Link to="/" className="text-xl font-bold font-happiness">
           Lil Slug Crew
         </Link>
-        <ul className="flex flex-row items-center gap-8">
+        <ul className="flex flex-col md:flex-row items-start md:items-center gap-4 md:gap-8">
           <li>
             <Link to="/" className={linkClassName("/")}>
               Home
@@ -93,9 +93,11 @@ export function Nav({
             </li>
           )}
           {user !== undefined ? (
-            <Link to="/logout" className={linkClassName("/logout")}>
-              Logout
-            </Link>
+            <li>
+              <Link to="/logout" className={linkClassName("/logout")}>
+                Logout
+              </Link>
+            </li>
           ) : (
             <li>
               <Link to="/login" className={linkClassName("/login")}>

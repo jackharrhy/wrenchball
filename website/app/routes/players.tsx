@@ -18,7 +18,7 @@ export async function loader({ request }: Route.LoaderArgs) {
 export default function Players({ loaderData }: Route.ComponentProps) {
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex flex-wrap gap-4">
+      <div className="flex flex-wrap gap-4 justify-center">
         {loaderData.players.map((player) => (
           <Link
             key={player.id}

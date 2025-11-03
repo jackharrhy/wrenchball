@@ -29,8 +29,8 @@ export async function loader({ request }: Route.LoaderArgs) {
 
 export default function Teams({ loaderData }: Route.ComponentProps) {
   return (
-    <div className="flex flex-col gap-4">
-      <div className="flex flex-wrap gap-4">
+    <div className="flex justify-center">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
         {loaderData.teams.map((team) => (
           <Link
             to={`/team/${team.id}`}

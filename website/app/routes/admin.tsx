@@ -91,8 +91,6 @@ export default function Admin({
 }: Route.ComponentProps) {
   return (
     <div className="flex flex-col gap-4">
-      <h1 className="text-2xl font-bold">Admin Panel</h1>
-
       {actionData?.message && (
         <div
           className={`p-4 rounded mb-4 ${actionData.success ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}`}

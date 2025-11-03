@@ -18,7 +18,6 @@ export async function loader({ request }: Route.LoaderArgs) {
 export default function Players({ loaderData }: Route.ComponentProps) {
   return (
     <div className="flex flex-col gap-4">
-      <h1 className="text-2xl font-bold">Players</h1>
       <div className="flex flex-wrap gap-4">
         {loaderData.players.map((player) => (
           <Link

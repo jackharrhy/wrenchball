@@ -30,7 +30,6 @@ export async function loader({ request }: Route.LoaderArgs) {
 export default function Teams({ loaderData }: Route.ComponentProps) {
   return (
     <div className="flex flex-col gap-4">
-      <h1 className="text-2xl font-bold">Teams</h1>
       <div className="flex flex-wrap gap-4">
         {loaderData.teams.map((team) => (
           <Link

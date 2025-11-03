@@ -15,6 +15,7 @@ import { getUser } from "./auth.server";
 import { database } from "~/database/context";
 import { teams } from "~/database/schema";
 import { eq } from "drizzle-orm";
+import { getSeasonState } from "./utils/admin";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -43,18 +44,23 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export async function loader({ request }: Route.LoaderArgs) {
-  const user = (await getUser(request)) ?? undefined;
+  const [userResult, seasonStateResult] = await Promise.all([
+    getUser(request),
+    getSeasonState(database()),
+  ]);
+  const user = userResult ?? undefined;
   const team =
     user &&
     (await database().query.teams.findFirst({
-      where: eq(teams.userId, user?.id),
+      where: eq(teams.userId, user.id),
     }));
+  const seasonState = seasonStateResult ?? undefined;
 
-  return { user, team };
+  return { user, team, seasonState };
 }
 
 export default function App({
-  loaderData: { user, team },
+  loaderData: { user, team, seasonState },
 }: Route.ComponentProps) {
   return (
     <>
@@ -62,7 +68,7 @@ export default function App({
         className="absolute top-0 w-full h-[70dvh] pointer-events-none -z-10"
         id="bg-gradient"
       />
-      <Nav user={user} team={team} />
+      <Nav user={user} team={team} seasonState={seasonState} />
       <div className="container mx-auto py-8">
         <Outlet />
       </div>

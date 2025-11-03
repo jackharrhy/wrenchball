@@ -202,7 +202,6 @@ export const adjustDraftingOrder = async (
     const currentTurn = currentUserTurn[0].draftingTurn;
     const newTurn = direction === "up" ? currentTurn - 1 : currentTurn + 1;
 
-    // Check if there's a user at the target position
     const targetUser = await tx
       .select({ userId: usersSeasons.userId })
       .from(usersSeasons)
@@ -220,7 +219,6 @@ export const adjustDraftingOrder = async (
 
     const targetUserId = targetUser[0].userId;
 
-    // Swap the turns
     await tx
       .update(usersSeasons)
       .set({ draftingTurn: newTurn })
@@ -241,8 +239,6 @@ export const adjustDraftingOrder = async (
         )
       );
 
-    // Recalculate all turns to be sequential
-    // Get all users ordered by their current turn (after swap)
     const allUsers = await tx
       .select({
         userId: usersSeasons.userId,
@@ -252,7 +248,6 @@ export const adjustDraftingOrder = async (
       .where(eq(usersSeasons.seasonId, currentSeason.id))
       .orderBy(asc(usersSeasons.draftingTurn));
 
-    // Reassign sequential turn numbers starting from 1
     for (let i = 0; i < allUsers.length; i++) {
       await tx
         .update(usersSeasons)
@@ -276,7 +271,6 @@ export const randomAssignDraftOrder = async (
   }
 
   await db.transaction(async (tx) => {
-    // Get all users in the current season
     const allUsers = await tx
       .select({
         userId: usersSeasons.userId,
@@ -288,10 +282,8 @@ export const randomAssignDraftOrder = async (
       return;
     }
 
-    // Shuffle the user IDs
     const shuffledUsers = [...allUsers].sort(() => Math.random() - 0.5);
 
-    // Assign sequential turn numbers starting from 1
     for (let i = 0; i < shuffledUsers.length; i++) {
       await tx
         .update(usersSeasons)

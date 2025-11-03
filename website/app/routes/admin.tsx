@@ -55,16 +55,21 @@ export async function clientAction({
     }
   }
 
-  if (intent === "adjust-draft-order") {
-    // No confirmation needed for draft order adjustments
-  }
-
   if (intent === "create-draft-entries") {
     const confirmed = confirm(
       "Are you sure you want to add all users to the current season's draft order?"
     );
     if (!confirmed) {
       return { success: false, message: "Draft entry creation cancelled" };
+    }
+  }
+
+  if (intent === "random-assign-draft-order") {
+    const confirmed = confirm(
+      "Are you sure you want to randomly assign the draft order?"
+    );
+    if (!confirmed) {
+      return { success: false, message: "Draft order randomization cancelled" };
     }
   }
 

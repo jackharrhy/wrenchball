@@ -1,4 +1,4 @@
-import { redirect, Form } from "react-router";
+import { redirect, Form, Link } from "react-router";
 import type { Route } from "./+types/admin";
 import { requireUser } from "~/auth.server";
 import { database } from "~/database/context";
@@ -363,6 +363,15 @@ export default function Admin({
           {actionData.message}
         </div>
       )}
+
+      <div>
+        <Link
+          to="/admin/match-track"
+          className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded"
+        >
+          Match Track
+        </Link>
+      </div>
 
       <div className="space-y-4">
         <h2 className="text-xl font-semibold mb-2">Season State</h2>

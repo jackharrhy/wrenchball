@@ -38,6 +38,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         {children}
         <ScrollRestoration />
         <Scripts />
+        <script src="https://www.youtube.com/iframe_api"></script>
       </body>
     </html>
   );

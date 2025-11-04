@@ -16,5 +16,6 @@ export default [
   route("trading", "routes/trading.tsx"),
   route("chemistry", "routes/chemistry.tsx"),
   route("admin", "routes/admin.tsx"),
+  route("admin/match-track", "routes/admin-match-track.tsx"),
   route("kitchen-sink", "routes/kitchen-sink.tsx"),
 ] satisfies RouteConfig;

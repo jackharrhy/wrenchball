@@ -83,14 +83,17 @@ export function Nav({
             </li>
           )}
           {team !== undefined && (
-            <li>
-              <Link
-                to={`/team/${team.id}`}
-                className={linkClassName(`/team/${team.id}`)}
-              >
-                My Team
-              </Link>
-            </li>
+            <>
+              <li className="text-gray-200">Logged in as {user.name}</li>
+              <li>
+                <Link
+                  to={`/team/${team.id}`}
+                  className={linkClassName(`/team/${team.id}`)}
+                >
+                  My Team
+                </Link>
+              </li>
+            </>
           )}
           {user !== undefined ? (
             <li>

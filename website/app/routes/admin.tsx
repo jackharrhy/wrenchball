@@ -1,6 +1,6 @@
 import { redirect, Form, Link } from "react-router";
 import type { Route } from "./+types/admin";
-import { requireUser } from "~/auth.server";
+import { requireUser, impersonateUser } from "~/auth.server";
 import { database } from "~/database/context";
 import { players, seasonState, type SeasonState } from "~/database/schema";
 import {
@@ -118,6 +118,17 @@ export async function clientAction({
     );
     if (!confirmed) {
       return { success: false, message: "Action cancelled" };
+    }
+  }
+
+  if (intent === "impersonate-user") {
+    const userId = formData.get("userId");
+    const userName = formData.get("userName");
+    const confirmed = confirm(
+      `Are you sure you want to impersonate "${userName}"? You will be logged in as this user.`
+    );
+    if (!confirmed) {
+      return { success: false, message: "Impersonation cancelled" };
     }
   }
 
@@ -347,6 +358,34 @@ export async function action({ request }: Route.ActionArgs) {
     }
   }
 
+  if (intent === "impersonate-user") {
+    const userIdStr = formData.get("userId");
+    const userName = formData.get("userName");
+
+    if (!userIdStr || !userName) {
+      return { success: false, message: "Invalid parameters" };
+    }
+
+    const userId = parseInt(userIdStr as string, 10);
+    if (isNaN(userId)) {
+      return { success: false, message: "Invalid user ID" };
+    }
+
+    try {
+      await impersonateUser(request, userId);
+    } catch (error) {
+      if (error instanceof Response) {
+        throw error;
+      }
+      console.error("Error impersonating user:", error);
+      return {
+        success: false,
+        message:
+          error instanceof Error ? error.message : "Failed to impersonate user",
+      };
+    }
+  }
+
   return { success: false, message: "Invalid action" };
 }
 
@@ -475,6 +514,25 @@ export default function Admin({
                     )}
                   </span>
                   <div className="flex gap-8 items-center">
+                    <Form method="post" className="inline-block">
+                      <input
+                        type="hidden"
+                        name="intent"
+                        value="impersonate-user"
+                      />
+                      <input type="hidden" name="userId" value={item.userId} />
+                      <input
+                        type="hidden"
+                        name="userName"
+                        value={item.userName}
+                      />
+                      <button
+                        type="submit"
+                        className="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-1 rounded text-sm"
+                      >
+                        Impersonate
+                      </button>
+                    </Form>
                     <Form method="post" className="inline-block">
                       <input type="hidden" name="intent" value="delete-user" />
                       <input type="hidden" name="userId" value={item.userId} />

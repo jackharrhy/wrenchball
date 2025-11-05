@@ -208,3 +208,33 @@ export const getUser = async (request: Request) => {
 
   return user[0];
 };
+
+export const impersonateUser = async (
+  request: Request,
+  targetUserId: number
+) => {
+  const currentUser = await requireUser(request);
+
+  if (currentUser.role !== "admin") {
+    throw new Error("Only admins can impersonate users");
+  }
+
+  const db = database();
+  const targetUser = await db
+    .select()
+    .from(users)
+    .where(eq(users.id, targetUserId))
+    .then((users) => users[0]);
+
+  if (!targetUser) {
+    throw new Error("Target user not found");
+  }
+
+  const session = await getSession(request.headers.get("Cookie"));
+  session.set("userId", targetUserId.toString());
+  throw redirect("/", {
+    headers: {
+      "Set-Cookie": await commitSession(session),
+    },
+  });
+};

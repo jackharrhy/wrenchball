@@ -5,10 +5,15 @@ export function Nav({
   user,
   team,
   seasonState,
+  impersonationInfo,
 }: {
   user?: User;
   team?: Team;
   seasonState?: SeasonState;
+  impersonationInfo?: {
+    originalUserId: number;
+    originalUserName: string;
+  } | null;
 }) {
   const location = useLocation();
 
@@ -82,7 +87,7 @@ export function Nav({
               </Link>
             </li>
           )}
-          {team !== undefined && (
+          {team !== undefined && user && (
             <>
               <li className="text-gray-200">Logged in as {user.name}</li>
               <li>
@@ -96,11 +101,23 @@ export function Nav({
             </>
           )}
           {user !== undefined ? (
-            <li>
-              <Link to="/logout" className={linkClassName("/logout")}>
-                Logout
-              </Link>
-            </li>
+            <>
+              {impersonationInfo && (
+                <li>
+                  <Link
+                    to="/return-to-original"
+                    className="bg-yellow-600 hover:bg-yellow-700 text-white px-3 py-1 rounded text-sm"
+                  >
+                    Return to {impersonationInfo.originalUserName}
+                  </Link>
+                </li>
+              )}
+              <li>
+                <Link to="/logout" className={linkClassName("/logout")}>
+                  Logout
+                </Link>
+              </li>
+            </>
           ) : (
             <li>
               <Link to="/login" className={linkClassName("/login")}>

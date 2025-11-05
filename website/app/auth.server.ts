@@ -5,6 +5,7 @@ import { users } from "~/database/schema";
 
 type SessionData = {
   userId: string;
+  originalUserId?: string;
 };
 
 type SessionFlashData = {
@@ -231,7 +232,69 @@ export const impersonateUser = async (
   }
 
   const session = await getSession(request.headers.get("Cookie"));
+  const originalUserId = session.get("userId");
+
+  // Store the original user ID if not already impersonating
+  if (!session.get("originalUserId") && originalUserId) {
+    session.set("originalUserId", originalUserId);
+  }
+
   session.set("userId", targetUserId.toString());
+  throw redirect("/", {
+    headers: {
+      "Set-Cookie": await commitSession(session),
+    },
+  });
+};
+
+export const getImpersonationInfo = async (request: Request) => {
+  const session = await getSession(request.headers.get("Cookie"));
+  const originalUserId = session.get("originalUserId");
+
+  if (!originalUserId) {
+    return null;
+  }
+
+  const db = database();
+  const originalUser = await db
+    .select()
+    .from(users)
+    .where(eq(users.id, Number(originalUserId)))
+    .then((users) => users[0]);
+
+  if (!originalUser) {
+    return null;
+  }
+
+  return {
+    originalUserId: Number(originalUserId),
+    originalUserName: originalUser.name,
+  };
+};
+
+export const returnToOriginalUser = async (request: Request) => {
+  const session = await getSession(request.headers.get("Cookie"));
+  const originalUserId = session.get("originalUserId");
+
+  if (!originalUserId) {
+    throw new Error("No original user found");
+  }
+
+  const db = database();
+  const originalUser = await db
+    .select()
+    .from(users)
+    .where(eq(users.id, Number(originalUserId)))
+    .then((users) => users[0]);
+
+  if (!originalUser) {
+    throw new Error("Original user not found");
+  }
+
+  // Restore the original user session and clear impersonation
+  session.set("userId", originalUserId);
+  session.unset("originalUserId");
+
   throw redirect("/", {
     headers: {
       "Set-Cookie": await commitSession(session),

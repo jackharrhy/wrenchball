@@ -11,7 +11,7 @@ import type { Route } from "./+types/root";
 import "./app.css";
 import "./chem.css";
 import { Nav } from "./components/Nav";
-import { getUser } from "./auth.server";
+import { getUser, getImpersonationInfo } from "./auth.server";
 import { database } from "~/database/context";
 import { teams } from "~/database/schema";
 import { eq } from "drizzle-orm";
@@ -45,9 +45,10 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export async function loader({ request }: Route.LoaderArgs) {
-  const [userResult, seasonStateResult] = await Promise.all([
+  const [userResult, seasonStateResult, impersonationInfo] = await Promise.all([
     getUser(request),
     getSeasonState(database()),
+    getImpersonationInfo(request),
   ]);
   const user = userResult ?? undefined;
   const team =
@@ -57,11 +58,11 @@ export async function loader({ request }: Route.LoaderArgs) {
     }));
   const seasonState = seasonStateResult?.state ?? undefined;
 
-  return { user, team, seasonState };
+  return { user, team, seasonState, impersonationInfo };
 }
 
 export default function App({
-  loaderData: { user, team, seasonState },
+  loaderData: { user, team, seasonState, impersonationInfo },
 }: Route.ComponentProps) {
   return (
     <>
@@ -69,7 +70,12 @@ export default function App({
         className="absolute top-0 w-full h-[70dvh] pointer-events-none -z-10"
         id="bg-gradient"
       />
-      <Nav user={user} team={team} seasonState={seasonState} />
+      <Nav
+        user={user}
+        team={team}
+        seasonState={seasonState}
+        impersonationInfo={impersonationInfo}
+      />
       <div className="container mx-auto p-8 flex-1 flex flex-col">
         <Outlet />
       </div>

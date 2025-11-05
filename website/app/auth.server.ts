@@ -234,7 +234,6 @@ export const impersonateUser = async (
   const session = await getSession(request.headers.get("Cookie"));
   const originalUserId = session.get("userId");
 
-  // Store the original user ID if not already impersonating
   if (!session.get("originalUserId") && originalUserId) {
     session.set("originalUserId", originalUserId);
   }
@@ -291,7 +290,6 @@ export const returnToOriginalUser = async (request: Request) => {
     throw new Error("Original user not found");
   }
 
-  // Restore the original user session and clear impersonation
   session.set("userId", originalUserId);
   session.unset("originalUserId");
 

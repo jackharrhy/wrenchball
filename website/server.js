@@ -2,7 +2,6 @@ import compression from "compression";
 import express from "express";
 import morgan from "morgan";
 
-// Short-circuit the type-checking of the built output.
 const BUILD_PATH = "./build/server/index.js";
 const DEVELOPMENT = process.env.NODE_ENV === "development";
 const PORT = Number.parseInt(process.env.PORT || "3000");
@@ -17,7 +16,7 @@ if (DEVELOPMENT) {
   const viteDevServer = await import("vite").then((vite) =>
     vite.createServer({
       server: { middlewareMode: true },
-    }),
+    })
   );
   app.use(viteDevServer.middlewares);
   app.use(async (req, res, next) => {
@@ -35,7 +34,7 @@ if (DEVELOPMENT) {
   console.log("Starting production server");
   app.use(
     "/assets",
-    express.static("build/client/assets", { immutable: true, maxAge: "1y" }),
+    express.static("build/client/assets", { immutable: true, maxAge: "1y" })
   );
   app.use(morgan("tiny"));
   app.use(express.static("build/client", { maxAge: "1h" }));

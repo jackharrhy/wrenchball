@@ -14,6 +14,7 @@ export default [
   route("player/:playerId", "routes/player.tsx"),
   route("matches", "routes/matches.tsx"),
   route("drafting", "routes/drafting.tsx"),
+  route("stream", "routes/stream.tsx"),
   route("trading", "routes/trading.tsx"),
   route("chemistry", "routes/chemistry.tsx"),
   route("admin", "routes/admin.tsx"),

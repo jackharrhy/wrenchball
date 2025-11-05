@@ -1,13 +1,33 @@
 import type { Stats } from "~/database/schema";
+import { cn } from "~/utils/cn";
 
-export function PlayerInfo({ stats }: { stats: Stats }) {
+export function PlayerInfo({
+  stats,
+  variant = "default",
+}: {
+  stats: Stats;
+  variant?: "default" | "compact";
+}) {
+  const isCompact = variant === "compact";
+
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-      <div className="space-y-2">
-        <h3 className="font-semibold text-lg border-b border-gray-300 pb-1">
+    <div
+      className={cn(
+        isCompact
+          ? "flex flex-col gap-3"
+          : "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8"
+      )}
+    >
+      <div className={cn(isCompact ? "space-y-1" : "space-y-2")}>
+        <h3
+          className={cn(
+            "font-semibold border-b border-gray-300 pb-1",
+            isCompact ? "text-sm" : "text-lg"
+          )}
+        >
           Basic Info
         </h3>
-        <div className="space-y-1 text-sm">
+        <div className={cn("space-y-1", isCompact ? "text-xs" : "text-sm")}>
           <div className="flex justify-between">
             <span>Character:</span>
             <span className="font-medium">{stats.character}</span>
@@ -35,11 +55,16 @@ export function PlayerInfo({ stats }: { stats: Stats }) {
         </div>
       </div>
 
-      <div className="space-y-2">
-        <h3 className="font-semibold text-lg border-b border-gray-300 pb-1">
+      <div className={cn(isCompact ? "space-y-1" : "space-y-2")}>
+        <h3
+          className={cn(
+            "font-semibold border-b border-gray-300 pb-1",
+            isCompact ? "text-sm" : "text-lg"
+          )}
+        >
           Batting
         </h3>
-        <div className="space-y-1 text-sm">
+        <div className={cn("space-y-1", isCompact ? "text-xs" : "text-sm")}>
           <div className="flex justify-between">
             <span>Stance:</span>
             <span className="font-medium">{stats.battingStance}</span>
@@ -71,11 +96,16 @@ export function PlayerInfo({ stats }: { stats: Stats }) {
         </div>
       </div>
 
-      <div className="space-y-2">
-        <h3 className="font-semibold text-lg border-b border-gray-300 pb-1">
+      <div className={cn(isCompact ? "space-y-1" : "space-y-2")}>
+        <h3
+          className={cn(
+            "font-semibold border-b border-gray-300 pb-1",
+            isCompact ? "text-sm" : "text-lg"
+          )}
+        >
           Pitching & Fielding
         </h3>
-        <div className="space-y-1 text-sm">
+        <div className={cn("space-y-1", isCompact ? "text-xs" : "text-sm")}>
           <div className="flex justify-between">
             <span>Throwing Arm:</span>
             <span className="font-medium">{stats.throwingArm}</span>
@@ -107,11 +137,16 @@ export function PlayerInfo({ stats }: { stats: Stats }) {
         </div>
       </div>
 
-      <div className="space-y-2">
-        <h3 className="font-semibold text-lg border-b border-gray-300 pb-1">
+      <div className={cn(isCompact ? "space-y-1" : "space-y-2")}>
+        <h3
+          className={cn(
+            "font-semibold border-b border-gray-300 pb-1",
+            isCompact ? "text-sm" : "text-lg"
+          )}
+        >
           Displayed Stats
         </h3>
-        <div className="space-y-1 text-sm">
+        <div className={cn("space-y-1", isCompact ? "text-xs" : "text-sm")}>
           <div className="flex justify-between">
             <span>Pitching:</span>
             <span className="font-medium">{stats.pitchingCss}</span>

@@ -1,5 +1,17 @@
+import { redirect } from "react-router";
 import { useEffect, useRef, useState } from "react";
 import type { Route } from "./+types/admin-match-track";
+import { requireUser } from "~/auth.server";
+
+export async function loader({ request }: Route.LoaderArgs) {
+  const user = await requireUser(request);
+
+  if (user.role !== "admin") {
+    throw redirect("/");
+  }
+
+  return {};
+}
 
 export default function AdminMatchTrack({}: Route.ComponentProps) {
   const ref = useRef<HTMLDivElement>(null);

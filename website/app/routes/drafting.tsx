@@ -7,7 +7,12 @@ import { eq } from "drizzle-orm";
 import { PlayerIcon } from "~/components/PlayerIcon";
 import { PlayerInfo } from "~/components/PlayerInfo";
 import { useState } from "react";
-import { Form, useActionData, useNavigation, useRevalidator } from "react-router";
+import {
+  Form,
+  useActionData,
+  useNavigation,
+  useRevalidator,
+} from "react-router";
 import { requireUser } from "~/auth.server";
 import { broadcast } from "~/sse.server";
 import { useStream } from "~/utils/useStream";
@@ -70,8 +75,7 @@ export async function action({ request }: Route.ActionArgs) {
     const result = await draftPlayer(db, user.id, playerId);
 
     if (result.success) {
-      // Broadcast draft update to all connected clients
-      broadcast("draft-update", { playerId, userId: user.id });
+      broadcast(user, "draft-update", { playerId, userId: user.id });
       return { success: true, message: "Player drafted successfully" };
     } else {
       return {
@@ -103,8 +107,8 @@ export default function Drafting({
   const isDrafting = navigation.formData?.get("intent") === "draft-player";
   const revalidator = useRevalidator();
 
-  // Subscribe to draft-update events and revalidate when received
-  useStream(() => {
+  useStream((data) => {
+    console.log("draft-update", data);
     revalidator.revalidate();
   }, "draft-update");
 

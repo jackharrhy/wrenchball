@@ -1,19 +1,9 @@
 import { eq, sql, asc } from "drizzle-orm";
 import { TEAM_SIZE } from "~/consts";
 import { database } from "~/database/context";
-import {
-  players,
-  season,
-  teams,
-  usersSeasons,
-  users,
-  type SeasonState,
-} from "~/database/schema";
+import { players, season, teams, usersSeasons, users } from "~/database/schema";
 import { getSeasonState } from "./admin";
 
-/**
- * Validates that a player can be drafted by a user
- */
 export const validateDraftPick = async (
   db: ReturnType<typeof database>,
   userId: number,
@@ -75,6 +65,15 @@ export const validateDraftPick = async (
     };
   }
 
+  /*
+  TODO we need to ensure if the player that has been picked is a captain, and this pick
+  might make it impossible for another team to have a captain, we deny the draft such that
+  the other team can draft a captain.
+
+  We must also ensure, if this is the _last_ pick for a team, and the pick isn't a captain,
+  we deny the draft such that the player _has_ to draft a captain to complete the team.
+  */
+
   return { valid: true };
 };
 
@@ -86,14 +85,12 @@ export const draftPlayer = async (
   userId: number,
   playerId: number
 ): Promise<{ success: boolean; error?: string }> => {
-  // Validate the draft pick
   const validation = await validateDraftPick(db, userId, playerId);
   if (!validation.valid) {
     return { success: false, error: validation.error };
   }
 
   await db.transaction(async (tx) => {
-    // Get user's team
     const userTeam = await tx
       .select({ id: teams.id })
       .from(teams)
@@ -104,13 +101,11 @@ export const draftPlayer = async (
       throw new Error("User team not found");
     }
 
-    // Assign player to team
     await tx
       .update(players)
       .set({ teamId: userTeam[0].id })
       .where(eq(players.id, playerId));
 
-    // Advance to next drafter
     await advanceToNextDrafter(tx, userId);
   });
 
@@ -130,7 +125,6 @@ const advanceToNextDrafter = async (
   db: ReturnType<typeof database>,
   currentUserId: number
 ): Promise<void> => {
-  // Get season state within the transaction
   const seasonState = await db
     .select()
     .from(season)

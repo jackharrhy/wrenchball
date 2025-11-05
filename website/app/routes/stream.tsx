@@ -1,8 +1,11 @@
+import { requireUser } from "~/auth.server";
 import type { Route } from "./+types/stream";
 import { addClient, removeClient } from "~/sse.server";
 
 export async function loader({ request }: Route.LoaderArgs) {
-  const id = crypto.randomUUID();
+  const user = await requireUser(request);
+  const id = user.id.toString();
+
   let interval: NodeJS.Timeout | null = null;
 
   const stream = new ReadableStream({
@@ -28,7 +31,6 @@ export async function loader({ request }: Route.LoaderArgs) {
         removeClient(id);
       };
 
-      // Handle abort signal from request
       if (request.signal) {
         request.signal.addEventListener("abort", cleanup);
       }
@@ -51,4 +53,3 @@ export async function loader({ request }: Route.LoaderArgs) {
     },
   });
 }
-

@@ -90,25 +90,12 @@ export async function handleDiscordAuthCallback(request: Request) {
       .then((users) => users[0]);
 
     if (!user) {
-      const displayName = discordUser.username || discordUser.global_name;
-      if (!displayName) {
-        return new Response("Failed to get display name", { status: 400 });
-      }
-
-      const userId = await db
-        .insert(users)
-        .values({
-          discordSnowflake: discordId,
-          name: displayName,
-          role: "user",
-        })
-        .returning({ id: users.id })
-        .then((results) => results[0].id);
-
-      return createUserSession(userId, "/");
-    } else {
-      return createUserSession(user.id, "/");
+      throw new Response("Not permitted to access this application", {
+        status: 403,
+      });
     }
+
+    return createUserSession(user.id, "/");
   } catch (error) {
     console.error("Auth callback error:", error);
     return new Response("Authentication failed", { status: 500 });

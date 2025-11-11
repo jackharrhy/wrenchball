@@ -6,13 +6,8 @@ import { users, players } from "~/database/schema";
 import { eq, sql } from "drizzle-orm";
 import { PlayerIcon } from "~/components/PlayerIcon";
 import { PlayerInfo } from "~/components/PlayerInfo";
-import { useState } from "react";
-import {
-  Form,
-  useActionData,
-  useNavigation,
-  useRevalidator,
-} from "react-router";
+import { useState, useRef } from "react";
+import { Form, useNavigation, useRevalidator, useSubmit } from "react-router";
 import { requireUser } from "~/auth.server";
 import { broadcast } from "~/sse.server";
 import { useStream } from "~/utils/useStream";
@@ -45,7 +40,6 @@ export async function loader({ request }: Route.LoaderArgs) {
 
   const draftingOrder = await getDraftingOrder(db);
 
-  // Count total picks made (same logic as advanceToNextDrafter)
   const draftedPlayers = await db
     .select({ id: players.id })
     .from(players)
@@ -93,6 +87,60 @@ export async function action({ request }: Route.ActionArgs) {
     }
   }
 
+  if (intent === "drafting-player-hover") {
+    const playerIdStr = formData.get("playerId");
+    if (!playerIdStr) {
+      return { success: false, error: "Player ID is required" };
+    }
+
+    const playerId = parseInt(playerIdStr as string, 10);
+    if (isNaN(playerId)) {
+      return { success: false, error: "Invalid player ID" };
+    }
+
+    const db = database();
+    const seasonState = await getSeasonState(db);
+
+    if (
+      seasonState?.state === "drafting" &&
+      seasonState.currentDraftingUserId === user.id
+    ) {
+      broadcast(user, "drafting-player-hover", {
+        playerId,
+        userId: user.id,
+      });
+    }
+
+    return { success: true };
+  }
+
+  if (intent === "drafting-player-selection") {
+    const playerIdStr = formData.get("playerId");
+    if (!playerIdStr) {
+      return { success: false, error: "Player ID is required" };
+    }
+
+    const playerId = parseInt(playerIdStr as string, 10);
+    if (isNaN(playerId)) {
+      return { success: false, error: "Invalid player ID" };
+    }
+
+    const db = database();
+    const seasonState = await getSeasonState(db);
+
+    if (
+      seasonState?.state === "drafting" &&
+      seasonState.currentDraftingUserId === user.id
+    ) {
+      broadcast(user, "drafting-player-selection", {
+        playerId,
+        userId: user.id,
+      });
+    }
+
+    return { success: true };
+  }
+
   return { success: false, error: "Invalid action" };
 }
 
@@ -100,7 +148,6 @@ export default function Drafting({
   loaderData: {
     user,
     seasonState,
-    currentDraftingUserName,
     currentDraftingUserId,
     freeAgents,
     draftingOrder,
@@ -112,14 +159,63 @@ export default function Drafting({
   const [selectedPlayer, setSelectedPlayer] = useState<
     (typeof freeAgents)[0] | null
   >(null);
+  const [localHoverPlayer, setLocalHoverPlayer] = useState<
+    (typeof freeAgents)[0] | null
+  >(null);
+  const [otherPlayerHover, setOtherPlayerHover] = useState<{
+    playerId: number;
+    userName: string;
+  } | null>(null);
+  const [otherPlayerSelection, setOtherPlayerSelection] = useState<{
+    playerId: number;
+    userName: string;
+  } | null>(null);
   const navigation = useNavigation();
+  const submit = useSubmit();
   const isDrafting = navigation.formData?.get("intent") === "draft-player";
   const revalidator = useRevalidator();
+  const isActiveDrafter = currentDraftingUserId === user.id;
+
+  const prevDraftingUserIdRef = useRef(currentDraftingUserId);
+  if (
+    prevDraftingUserIdRef.current !== currentDraftingUserId &&
+    currentDraftingUserId !== user.id
+  ) {
+    setOtherPlayerHover(null);
+    setOtherPlayerSelection(null);
+  }
+  prevDraftingUserIdRef.current = currentDraftingUserId;
 
   useStream((data) => {
     console.log("draft-update", data);
+    setOtherPlayerHover(null);
+    setOtherPlayerSelection(null);
     revalidator.revalidate();
   }, "draft-update");
+
+  useStream((data) => {
+    console.log("drafting-player-hover", data);
+    if (data.user.id !== user.id && currentDraftingUserId === data.user.id) {
+      setOtherPlayerHover({
+        playerId: data.payload.playerId,
+        userName: data.user.name,
+      });
+    } else {
+      setOtherPlayerHover(null);
+    }
+  }, "drafting-player-hover");
+
+  useStream((data) => {
+    console.log("drafting-player-selection", data);
+    if (data.user.id !== user.id && currentDraftingUserId === data.user.id) {
+      setOtherPlayerSelection({
+        playerId: data.payload.playerId,
+        userName: data.user.name,
+      });
+    } else {
+      setOtherPlayerSelection(null);
+    }
+  }, "drafting-player-selection");
 
   if (seasonState !== "drafting") {
     return (
@@ -185,73 +281,134 @@ export default function Drafting({
             </div>
           )}
           <div className="flex flex-wrap gap-2 p-4">
-            {filteredFreeAgents.map((player) => (
-              <div
-                key={player.id}
-                onClick={() => setSelectedPlayer(player)}
-                className={`border-1 border-cell-gray/50 rounded-md p-0.75 cursor-pointer transition-all ${
-                  selectedPlayer?.id === player.id
-                    ? "ring-2 ring-blue-400 border-blue-400"
-                    : "hover:border-cell-gray hover:ring-1 hover:ring-cell-gray/50"
-                }`}
-              >
-                <PlayerIcon player={player} size="lg" />
-              </div>
-            ))}
+            {filteredFreeAgents.map((player) => {
+              const isSelected = selectedPlayer?.id === player.id;
+              const isOtherPlayerHover =
+                otherPlayerHover?.playerId === player.id;
+              const isOtherPlayerSelection =
+                otherPlayerSelection?.playerId === player.id;
+              return (
+                <div key={player.id} className="relative">
+                  <Form
+                    method="post"
+                    onSubmit={(e) => {
+                      if (selectedPlayer?.id === player.id) {
+                        setSelectedPlayer(null);
+                        setLocalHoverPlayer(null);
+                        e.preventDefault();
+                        return;
+                      }
+
+                      setSelectedPlayer(player);
+                      setLocalHoverPlayer(null);
+
+                      if (!isActiveDrafter) {
+                        e.preventDefault();
+                        return;
+                      }
+                    }}
+                  >
+                    <input
+                      type="hidden"
+                      name="intent"
+                      value="drafting-player-selection"
+                    />
+                    <input type="hidden" name="playerId" value={player.id} />
+                    <button
+                      type="submit"
+                      onMouseEnter={() => {
+                        setLocalHoverPlayer(player);
+                        if (isActiveDrafter) {
+                          submit(
+                            {
+                              intent: "drafting-player-hover",
+                              playerId: player.id.toString(),
+                            },
+                            { method: "post" }
+                          );
+                        }
+                      }}
+                      className={`border-1 border-cell-gray/50 rounded-md p-0.75 cursor-pointer transition-all w-full ${
+                        isSelected
+                          ? "ring-2 ring-blue-400 border-blue-400"
+                          : isOtherPlayerSelection
+                            ? "ring-2 ring-yellow-400 border-yellow-400"
+                            : isOtherPlayerHover
+                              ? "ring-2 ring-yellow-400/40 border-yellow-400/40"
+                              : "hover:border-cell-gray hover:ring-1 hover:ring-cell-gray/50"
+                      }`}
+                    >
+                      <PlayerIcon player={player} size="lg" />
+                    </button>
+                  </Form>
+                  {isOtherPlayerSelection && (
+                    <div className="absolute -top-1 -right-1 bg-yellow-400 text-black text-xs px-1 rounded text-[10px] font-semibold">
+                      {otherPlayerSelection.userName}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
           </div>
         </div>
         <div className="stats flex flex-col gap-1">
-          {selectedPlayer ? (
+          {selectedPlayer || localHoverPlayer ? (
             <>
               <div className="flex items-center justify-center">
                 <div className="border-b-2 border-cell-gray/50">
-                  <PlayerIcon player={selectedPlayer} size="xl" />
+                  <PlayerIcon
+                    player={selectedPlayer || localHoverPlayer!}
+                    size="xl"
+                  />
                 </div>
               </div>
-              <div className="mt-4">
-                <Form method="post">
-                  <input type="hidden" name="intent" value="draft-player" />
-                  <input
-                    type="hidden"
-                    name="playerId"
-                    value={selectedPlayer.id}
-                  />
-                  <button
-                    type="submit"
-                    disabled={isDrafting || currentDraftingUserId !== user.id}
-                    className={`w-full px-4 py-2 rounded font-semibold transition-colors ${
-                      currentDraftingUserId === user.id && !isDrafting
-                        ? "bg-green-600 hover:bg-green-700 text-white"
-                        : "bg-gray-500 opacity-50 cursor-not-allowed text-white"
-                    }`}
-                  >
-                    {isDrafting
-                      ? "Drafting..."
-                      : `Draft ${selectedPlayer.name}`}
-                  </button>
-                </Form>
-                {actionData?.error && (
-                  <div className="mt-2 text-red-400 text-sm">
-                    {actionData.error}
-                  </div>
-                )}
-                {actionData?.success && (
-                  <div className="mt-2 text-green-400 text-sm">
-                    {actionData.message || "Player drafted successfully!"}
-                  </div>
-                )}
-              </div>
+              {selectedPlayer && (
+                <div className="mt-4">
+                  <Form method="post">
+                    <input type="hidden" name="intent" value="draft-player" />
+                    <input
+                      type="hidden"
+                      name="playerId"
+                      value={selectedPlayer.id}
+                    />
+                    <button
+                      type="submit"
+                      disabled={isDrafting || currentDraftingUserId !== user.id}
+                      className={`w-full px-4 py-2 rounded font-semibold transition-colors ${
+                        currentDraftingUserId === user.id && !isDrafting
+                          ? "bg-green-600 hover:bg-green-700 text-white"
+                          : "bg-gray-500 opacity-50 cursor-not-allowed text-white"
+                      }`}
+                    >
+                      {isDrafting
+                        ? "Drafting..."
+                        : `Draft ${selectedPlayer.name}`}
+                    </button>
+                  </Form>
+                  {actionData?.error && (
+                    <div className="mt-2 text-red-400 text-sm">
+                      {actionData.error}
+                    </div>
+                  )}
+                  {actionData?.success && actionData.message && (
+                    <div className="mt-2 text-green-400 text-sm">
+                      {actionData.message}
+                    </div>
+                  )}
+                </div>
+              )}
               <div className="p-4 overflow-y-auto">
-                {selectedPlayer.stats ? (
+                {(selectedPlayer || localHoverPlayer)?.stats ? (
                   <>
                     <PlayerInfo
-                      stats={selectedPlayer.stats}
+                      stats={(selectedPlayer || localHoverPlayer)!.stats!}
                       variant="compact"
                     />
                   </>
                 ) : (
                   <div className="text-center text-gray-400">
-                    No stats available for {selectedPlayer.name}
+                    No stats available for{" "}
+                    {(selectedPlayer || localHoverPlayer)!.name}
                   </div>
                 )}
               </div>

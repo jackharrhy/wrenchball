@@ -133,30 +133,20 @@ export default function Drafting({
     player.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  // Calculate snake order for the current round (same logic as advanceToNextDrafter)
   const orderedDraftingList = (() => {
     if (draftingOrder.length === 0 || !currentDraftingUserId) {
       return draftingOrder;
     }
 
-    // Calculate which round we're in (0-indexed: 0, 1, 2, ...)
-    // Round 0: forward (0, 1, 2, ..., n-1)
-    // Round 1: reverse (n-1, n-2, ..., 1, 0)
-    // Round 2: forward (0, 1, 2, ..., n-1)
     const roundNumber = Math.floor(totalPicksMade / draftingOrder.length);
-    const positionInRound = totalPicksMade % draftingOrder.length;
 
-    // Generate the order for the current round
     let currentRoundOrder: typeof draftingOrder;
     if (roundNumber % 2 === 0) {
-      // Forward round: 0, 1, 2, ..., n-1
       currentRoundOrder = [...draftingOrder];
     } else {
-      // Reverse round: n-1, n-2, ..., 1, 0
       currentRoundOrder = [...draftingOrder].reverse();
     }
 
-    // Find the current drafter's position in the current round order
     const currentIndexInRound = currentRoundOrder.findIndex(
       (item) => item.userId === currentDraftingUserId
     );
@@ -165,7 +155,6 @@ export default function Drafting({
       return currentRoundOrder;
     }
 
-    // Show current drafter first, then remaining picks in this round, then next round
     const remainingInRound = currentRoundOrder.slice(currentIndexInRound);
     const nextRoundNumber = roundNumber + 1;
     const nextRoundOrder =
@@ -280,27 +269,34 @@ export default function Drafting({
             </div>
           ) : (
             <div className="space-y-2 px-4 pb-4">
-              {orderedDraftingList.map((item) => (
-                <div
-                  key={item.userId}
-                  className={`flex items-center gap-4 border rounded transition-colors ${
-                    currentDraftingUserId === item.userId
-                      ? "bg-cell-gray/50 border-blue-400 border-2 p-2"
-                      : "bg-cell-gray/40 border-cell-gray/50 hover:bg-cell-gray/60 text-xs p-1.5"
-                  }`}
-                >
-                  <span className="flex-1 flex items-center gap-2">
-                    {currentDraftingUserId === item.userId ? (
-                      <>Drafting: {item.userName}</>
-                    ) : (
-                      <>
-                        <span className="opacity-50">Up next:</span>{" "}
-                        {item.userName}
-                      </>
-                    )}
-                  </span>
-                </div>
-              ))}
+              {orderedDraftingList.map((item, index) => {
+                const isCurrentDrafter =
+                  currentDraftingUserId === item.userId &&
+                  orderedDraftingList.findIndex(
+                    (i) => i.userId === currentDraftingUserId
+                  ) === index;
+                return (
+                  <div
+                    key={`${item.userId}-${index}`}
+                    className={`flex items-center gap-4 border rounded transition-colors ${
+                      isCurrentDrafter
+                        ? "bg-cell-gray/50 border-blue-400 border-2 p-2"
+                        : "bg-cell-gray/40 border-cell-gray/50 hover:bg-cell-gray/60 text-xs p-1.5"
+                    }`}
+                  >
+                    <span className="flex-1 flex items-center gap-2">
+                      {isCurrentDrafter ? (
+                        <>Drafting: {item.userName}</>
+                      ) : (
+                        <>
+                          <span className="opacity-50">Up next:</span>{" "}
+                          {item.userName}
+                        </>
+                      )}
+                    </span>
+                  </div>
+                );
+              })}
             </div>
           )}
         </div>

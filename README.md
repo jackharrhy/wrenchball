@@ -1,4 +1,4 @@
-# wrenchball
+# Sluggers Super Draft
 
 ## setting up
 

@@ -1,7 +1,7 @@
 [project]
-name = "wrenchball"
+name = "sluggers-super-draft"
 version = "0.1.0"
-description = "Add your description here"
+description = "mario sluggers league suite"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [

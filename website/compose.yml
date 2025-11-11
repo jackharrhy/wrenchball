@@ -5,7 +5,7 @@ services:
     ports:
       - "127.0.0.1:3000:3000"
     environment:
-      DATABASE_URL: "postgres://postgres:postgres@127.0.0.1:5932/wrenchball"
+      DATABASE_URL: "postgres://postgres:postgres@127.0.0.1:5932/sluggers_super_draft"
       NODE_ENV: "production"
 
   db:
@@ -17,7 +17,7 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: wrenchball
+      POSTGRES_DB: sluggers_super_draft
 
 volumes:
   db:

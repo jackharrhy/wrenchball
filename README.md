@@ -5,21 +5,29 @@
 start the database:
 
 ```shell
-cd website
 docker compose up db
 ```
+
+install packages:
+
+```shell
+npm install
+```
+
+copy `.env.example` to `.env` and provide a `DATABASE_URL` with your connection string.
+
+run db migrations:
+
+```shell
+npm run db:migrate
+```
+
+> TODO: ingest seed data
 
 start the web server:
 
 ```shell
-cd website
 npm run dev
 ```
 
-if there are missing packages:
-
-```shell
-cd website
-npm install
-npm run dev
-```
+visit `http://localhost:3000`

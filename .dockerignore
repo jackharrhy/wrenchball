@@ -1,6 +1,5 @@
 .DS_Store
 *.swp
-node_modules
 
 .react-router
 build

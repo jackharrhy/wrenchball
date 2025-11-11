@@ -58,15 +58,15 @@ def copy_files(src_dir, dst_dir):
 @app.command()
 def copy_sluggerpics_assets():
     """
-    Copy headshots/sideview images from data/sluggerpics to website/public/images/players,
-    and logos to website/public/images/teams/logos.
+    Copy headshots/sideview images from data/sluggerpics to public/images/players,
+    and logos to public/images/teams/logos.
     """
     src_base = Path("data/sluggerpics")
     src_headshots = src_base / "headshots"
     src_sideview = src_base / "sideview"
     src_logos = src_base / "logos"
 
-    dst_base = Path("website/public/images")
+    dst_base = Path("public/images")
     dst_headshots = dst_base / "players" / "headshots"
     dst_sideview = dst_base / "players" / "sideview"
     dst_logos = dst_base / "teams" / "logos"

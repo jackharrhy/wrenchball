@@ -2,8 +2,8 @@ import type { Route } from "./+types/drafting";
 import { database } from "~/database/context";
 import { getSeasonState, getDraftingOrder } from "~/utils/admin";
 import { draftPlayer } from "~/utils/draft";
-import { users } from "~/database/schema";
-import { eq } from "drizzle-orm";
+import { users, players } from "~/database/schema";
+import { eq, sql } from "drizzle-orm";
 import { PlayerIcon } from "~/components/PlayerIcon";
 import { PlayerInfo } from "~/components/PlayerInfo";
 import { useState } from "react";
@@ -45,6 +45,13 @@ export async function loader({ request }: Route.LoaderArgs) {
 
   const draftingOrder = await getDraftingOrder(db);
 
+  // Count total picks made (same logic as advanceToNextDrafter)
+  const draftedPlayers = await db
+    .select({ id: players.id })
+    .from(players)
+    .where(sql`${players.teamId} IS NOT NULL`);
+  const totalPicksMade = draftedPlayers.length;
+
   return {
     user,
     seasonState: seasonState?.state || null,
@@ -52,6 +59,7 @@ export async function loader({ request }: Route.LoaderArgs) {
     currentDraftingUserId: seasonState?.currentDraftingUserId || null,
     freeAgents,
     draftingOrder,
+    totalPicksMade,
   };
 }
 
@@ -96,6 +104,7 @@ export default function Drafting({
     currentDraftingUserId,
     freeAgents,
     draftingOrder,
+    totalPicksMade,
   },
   actionData,
 }: Route.ComponentProps) {
@@ -124,23 +133,47 @@ export default function Drafting({
     player.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  // Calculate snake order for the current round (same logic as advanceToNextDrafter)
   const orderedDraftingList = (() => {
     if (draftingOrder.length === 0 || !currentDraftingUserId) {
       return draftingOrder;
     }
 
-    const currentIndex = draftingOrder.findIndex(
+    // Calculate which round we're in (0-indexed: 0, 1, 2, ...)
+    // Round 0: forward (0, 1, 2, ..., n-1)
+    // Round 1: reverse (n-1, n-2, ..., 1, 0)
+    // Round 2: forward (0, 1, 2, ..., n-1)
+    const roundNumber = Math.floor(totalPicksMade / draftingOrder.length);
+    const positionInRound = totalPicksMade % draftingOrder.length;
+
+    // Generate the order for the current round
+    let currentRoundOrder: typeof draftingOrder;
+    if (roundNumber % 2 === 0) {
+      // Forward round: 0, 1, 2, ..., n-1
+      currentRoundOrder = [...draftingOrder];
+    } else {
+      // Reverse round: n-1, n-2, ..., 1, 0
+      currentRoundOrder = [...draftingOrder].reverse();
+    }
+
+    // Find the current drafter's position in the current round order
+    const currentIndexInRound = currentRoundOrder.findIndex(
       (item) => item.userId === currentDraftingUserId
     );
 
-    if (currentIndex === -1) {
-      return draftingOrder;
+    if (currentIndexInRound === -1) {
+      return currentRoundOrder;
     }
 
-    return [
-      ...draftingOrder.slice(currentIndex),
-      ...draftingOrder.slice(0, currentIndex),
-    ];
+    // Show current drafter first, then remaining picks in this round, then next round
+    const remainingInRound = currentRoundOrder.slice(currentIndexInRound);
+    const nextRoundNumber = roundNumber + 1;
+    const nextRoundOrder =
+      nextRoundNumber % 2 === 0
+        ? [...draftingOrder]
+        : [...draftingOrder].reverse();
+
+    return [...remainingInRound, ...nextRoundOrder];
   })();
 
   return (

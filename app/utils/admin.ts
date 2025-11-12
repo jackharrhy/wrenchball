@@ -614,7 +614,6 @@ export const loadPlayerData = async (
       return cleanedName;
     };
 
-    // Column mapping
     const columnMapping: Record<string, string> = {
       Character: "character",
       "Character Class": "character_class",
@@ -642,7 +641,6 @@ export const loadPlayerData = async (
       "Speed CSS": "speed_css",
     };
 
-    // Process and insert stats
     await db.transaction(async (tx) => {
       for (const row of filteredStats) {
         const cleanedCharacter = cleanupCharacterName(

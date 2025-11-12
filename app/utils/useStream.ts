@@ -6,7 +6,6 @@ export function useStream(
 ) {
   const onMessageRef = useRef(onMessage);
 
-  // Keep the ref updated with the latest callback
   useEffect(() => {
     onMessageRef.current = onMessage;
   }, [onMessage]);

@@ -1,5 +1,12 @@
 import { relations } from "drizzle-orm";
-import { boolean, integer, pgEnum, pgTable, text } from "drizzle-orm/pg-core";
+import {
+  boolean,
+  integer,
+  pgEnum,
+  pgTable,
+  text,
+  timestamp,
+} from "drizzle-orm/pg-core";
 
 export const userRoles = pgEnum("user_role", ["admin", "user"]);
 
@@ -200,5 +207,80 @@ export const usersSeasonsRelations = relations(usersSeasons, ({ one }) => ({
   season: one(season, {
     fields: [usersSeasons.seasonId],
     references: [season.id],
+  }),
+}));
+
+export const tradeStatus = pgEnum("trade_status", [
+  "pending",
+  "accepted",
+  "denied",
+]);
+
+export type TradeStatus = (typeof tradeStatus.enumValues)[number];
+
+export const trades = pgTable("trades", {
+  id: integer().primaryKey().generatedAlwaysAsIdentity(),
+  fromUserId: integer("from_user_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  toUserId: integer("to_user_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  status: tradeStatus("status").notNull().default("pending"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+export type Trade = typeof trades.$inferSelect;
+
+export const tradePlayers = pgTable("trade_players", {
+  tradeId: integer("trade_id")
+    .notNull()
+    .references(() => trades.id, { onDelete: "cascade" }),
+  playerId: integer("player_id")
+    .notNull()
+    .references(() => players.id, { onDelete: "cascade" }),
+  fromTeamId: integer("from_team_id")
+    .notNull()
+    .references(() => teams.id, { onDelete: "cascade" }),
+  toTeamId: integer("to_team_id")
+    .notNull()
+    .references(() => teams.id, { onDelete: "cascade" }),
+});
+
+export type TradePlayer = typeof tradePlayers.$inferSelect;
+
+export const tradesRelations = relations(trades, ({ one, many }) => ({
+  fromUser: one(users, {
+    fields: [trades.fromUserId],
+    references: [users.id],
+    relationName: "fromUser",
+  }),
+  toUser: one(users, {
+    fields: [trades.toUserId],
+    references: [users.id],
+    relationName: "toUser",
+  }),
+  tradePlayers: many(tradePlayers),
+}));
+
+export const tradePlayersRelations = relations(tradePlayers, ({ one }) => ({
+  trade: one(trades, {
+    fields: [tradePlayers.tradeId],
+    references: [trades.id],
+  }),
+  player: one(players, {
+    fields: [tradePlayers.playerId],
+    references: [players.id],
+  }),
+  fromTeam: one(teams, {
+    fields: [tradePlayers.fromTeamId],
+    references: [teams.id],
+    relationName: "fromTeam",
+  }),
+  toTeam: one(teams, {
+    fields: [tradePlayers.toTeamId],
+    references: [teams.id],
+    relationName: "toTeam",
   }),
 }));

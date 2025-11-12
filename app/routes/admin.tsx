@@ -15,7 +15,10 @@ import {
   deleteUser,
   createUser,
   setCurrentDraftingUser,
+  importUsersFromCSV,
+  loadPlayerData,
 } from "~/utils/admin";
+import { parseCSV } from "~/utils/fileParsing";
 
 export async function loader({ request }: Route.LoaderArgs) {
   const user = await requireUser(request);
@@ -129,6 +132,33 @@ export async function clientAction({
     );
     if (!confirmed) {
       return { success: false, message: "Impersonation cancelled" };
+    }
+  }
+
+  if (intent === "upload-users-csv") {
+    const confirmed = confirm(
+      "Are you sure you want to import users from CSV? This will create users and teams."
+    );
+    if (!confirmed) {
+      return { success: false, message: "User import cancelled" };
+    }
+  }
+
+  if (intent === "upload-mii-csv") {
+    const confirmed = confirm(
+      "Are you sure you want to upload MII metadata CSV? This will overwrite the existing file."
+    );
+    if (!confirmed) {
+      return { success: false, message: "MII metadata upload cancelled" };
+    }
+  }
+
+  if (intent === "load-player-data") {
+    const confirmed = confirm(
+      "Are you sure you want to load player data? This will insert stats and players into the database. This may take a while."
+    );
+    if (!confirmed) {
+      return { success: false, message: "Player data loading cancelled" };
     }
   }
 
@@ -382,6 +412,94 @@ export async function action({ request }: Route.ActionArgs) {
         success: false,
         message:
           error instanceof Error ? error.message : "Failed to impersonate user",
+      };
+    }
+  }
+
+  if (intent === "upload-users-csv") {
+    const file = formData.get("file") as File | null;
+    if (!file) {
+      return { success: false, message: "No file provided" };
+    }
+
+    try {
+      const csvData = await parseCSV(file);
+      const results = await importUsersFromCSV(db, csvData);
+
+      if (results.errors.length > 0) {
+        return {
+          success: false,
+          message: `Import completed with errors. ${results.success} users imported, ${results.skipped} skipped. Errors: ${results.errors.map((e) => `Row ${e.row}: ${e.error}`).join("; ")}`,
+        };
+      }
+
+      return {
+        success: true,
+        message: `Successfully imported ${results.success} users. ${results.skipped} users skipped (already exist).`,
+      };
+    } catch (error) {
+      console.error("Error importing users:", error);
+      return {
+        success: false,
+        message:
+          error instanceof Error
+            ? error.message
+            : "Failed to import users from CSV",
+      };
+    }
+  }
+
+  if (intent === "load-player-data") {
+    try {
+      const results = await loadPlayerData(db);
+      if (results.errors.length > 0) {
+        return {
+          success: false,
+          message: `Player data loaded with errors. ${results.statsInserted} stats inserted, ${results.playersInserted} players inserted. Errors: ${results.errors.slice(0, 10).join("; ")}${results.errors.length > 10 ? ` (and ${results.errors.length - 10} more)` : ""}`,
+        };
+      }
+
+      return {
+        success: true,
+        message: `Successfully loaded player data. ${results.statsInserted} stats inserted, ${results.playersInserted} players inserted.`,
+      };
+    } catch (error) {
+      console.error("Error loading player data:", error);
+      return {
+        success: false,
+        message:
+          error instanceof Error ? error.message : "Failed to load player data",
+      };
+    }
+  }
+
+  if (intent === "upload-mii-csv") {
+    const file = formData.get("file") as File | null;
+    if (!file) {
+      return { success: false, message: "No file provided" };
+    }
+
+    try {
+      const miiCsvContent = await file.text();
+      const results = await loadPlayerData(db, miiCsvContent);
+
+      if (results.errors.length > 0) {
+        return {
+          success: false,
+          message: `Player data loaded with errors. ${results.statsInserted} stats inserted, ${results.playersInserted} players inserted. Errors: ${results.errors.slice(0, 10).join("; ")}${results.errors.length > 10 ? ` (and ${results.errors.length - 10} more)` : ""}`,
+        };
+      }
+
+      return {
+        success: true,
+        message: `Successfully loaded player data. ${results.statsInserted} stats inserted, ${results.playersInserted} players inserted.`,
+      };
+    } catch (error) {
+      console.error("Error loading player data:", error);
+      return {
+        success: false,
+        message:
+          error instanceof Error ? error.message : "Failed to load player data",
       };
     }
   }
@@ -692,6 +810,100 @@ export default function Admin({
               Create User
             </button>
           </Form>
+        </div>
+
+        <div>
+          <h2 className="text-xl font-semibold mb-2">Data Import</h2>
+          <div className="space-y-6">
+            <div className="bg-cell-gray/40 rounded-md border border-cell-gray/50 p-6">
+              <h3 className="text-lg font-semibold mb-3">
+                Import Users from CSV
+              </h3>
+              <p className="text-sm text-gray-300 mb-4">
+                Upload a CSV file with columns: name, initial,
+                discord_snowflake, role. Users and teams will be created
+                automatically.
+              </p>
+              <Form
+                method="post"
+                encType="multipart/form-data"
+                className="space-y-3"
+              >
+                <input type="hidden" name="intent" value="upload-users-csv" />
+                <div className="flex flex-col gap-2">
+                  <label
+                    htmlFor="users-csv-file"
+                    className="text-sm font-medium"
+                  >
+                    CSV File
+                  </label>
+                  <input
+                    type="file"
+                    id="users-csv-file"
+                    name="file"
+                    accept=".csv"
+                    required
+                    className="px-3 py-2 border rounded bg-white text-black border-gray-300"
+                  />
+                </div>
+                <button
+                  type="submit"
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded"
+                >
+                  Import Users
+                </button>
+              </Form>
+            </div>
+
+            <div className="bg-cell-gray/40 rounded-md border border-cell-gray/50 p-6">
+              <h3 className="text-lg font-semibold mb-3">Load Player Data</h3>
+              <p className="text-sm text-gray-300 mb-4">
+                Load player data from Excel files in data/sheets/. Optionally
+                upload MII metadata CSV to match custom MIIs to stats
+                characters.
+              </p>
+              <div className="space-y-4">
+                <Form
+                  method="post"
+                  encType="multipart/form-data"
+                  className="space-y-3"
+                >
+                  <input type="hidden" name="intent" value="upload-mii-csv" />
+                  <div className="flex flex-col gap-2">
+                    <label
+                      htmlFor="mii-csv-file"
+                      className="text-sm font-medium"
+                    >
+                      MII Metadata CSV (Optional)
+                    </label>
+                    <input
+                      type="file"
+                      id="mii-csv-file"
+                      name="file"
+                      accept=".csv"
+                      className="px-3 py-2 border rounded bg-white text-black border-gray-300"
+                    />
+                  </div>
+                  <button
+                    type="submit"
+                    className="bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded"
+                  >
+                    Load Player Data with MII Metadata
+                  </button>
+                </Form>
+                <div className="text-center text-gray-400">OR</div>
+                <Form method="post" className="space-y-3">
+                  <input type="hidden" name="intent" value="load-player-data" />
+                  <button
+                    type="submit"
+                    className="bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded w-full"
+                  >
+                    Load Player Data (No MII Metadata)
+                  </button>
+                </Form>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

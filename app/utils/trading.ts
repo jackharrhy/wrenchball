@@ -7,9 +7,6 @@ import {
   players,
   teams,
   teamLineups,
-  users,
-  type Trade,
-  type TradePlayer,
 } from "~/database/schema";
 import { getSeasonState } from "./admin";
 
@@ -18,22 +15,6 @@ export interface CreateTradeRequestParams {
   toUserId: number;
   fromPlayerIds: number[];
   toPlayerIds: number[];
-}
-
-export interface TradeWithPlayers extends Trade {
-  fromUser: { id: number; name: string };
-  toUser: { id: number; name: string };
-  tradePlayers: Array<{
-    tradePlayer: TradePlayer;
-    player: {
-      id: number;
-      name: string;
-      imageUrl: string | null;
-      statsCharacter: string | null;
-    };
-    fromTeam: { id: number; name: string };
-    toTeam: { id: number; name: string };
-  }>;
 }
 
 export const validateTradeRequest = async (
@@ -430,188 +411,92 @@ export const denyTrade = async (
   return { success: true };
 };
 
-export const getTradesForUser = async (
-  db: ReturnType<typeof database>,
-  userId: number
-): Promise<TradeWithPlayers[]> => {
-  const userTrades = await db
-    .select()
-    .from(trades)
-    .where(or(eq(trades.fromUserId, userId), eq(trades.toUserId, userId)))
-    .orderBy(desc(trades.createdAt));
-
-  if (userTrades.length === 0) {
-    return [];
-  }
-
-  const userIds = new Set<number>();
-  for (const trade of userTrades) {
-    userIds.add(trade.fromUserId);
-    userIds.add(trade.toUserId);
-  }
-
-  const allUsers = await db
-    .select({ id: users.id, name: users.name })
-    .from(users)
-    .where(inArray(users.id, Array.from(userIds)));
-
-  const usersById = new Map(allUsers.map((u) => [u.id, u]));
-
-  const tradeIds = userTrades.map((t) => t.id);
-  const allTradePlayers = await db
-    .select({
-      tradePlayer: tradePlayers,
-      player: {
-        id: players.id,
-        name: players.name,
-        imageUrl: players.imageUrl,
-        statsCharacter: players.statsCharacter,
-      },
-      fromTeam: {
-        id: teams.id,
-        name: teams.name,
-      },
-    })
-    .from(tradePlayers)
-    .innerJoin(players, eq(tradePlayers.playerId, players.id))
-    .innerJoin(teams, eq(tradePlayers.fromTeamId, teams.id))
-    .where(inArray(tradePlayers.tradeId, tradeIds));
-
-  const toTeamIds = new Set(
-    allTradePlayers.map((tp) => tp.tradePlayer.toTeamId)
-  );
-  const toTeams = await db
-    .select({ id: teams.id, name: teams.name })
-    .from(teams)
-    .where(inArray(teams.id, Array.from(toTeamIds)));
-  const toTeamsById = new Map(toTeams.map((t) => [t.id, t]));
-
-  const tradePlayersByTradeId = new Map<
-    number,
-    Array<{
-      tradePlayer: TradePlayer;
-      player: {
-        id: number;
-        name: string;
-        imageUrl: string | null;
-        statsCharacter: string | null;
-      };
-      fromTeam: { id: number; name: string };
-      toTeam: { id: number; name: string };
-    }>
-  >();
-  for (const tp of allTradePlayers) {
-    if (!tradePlayersByTradeId.has(tp.tradePlayer.tradeId)) {
-      tradePlayersByTradeId.set(tp.tradePlayer.tradeId, []);
-    }
-    const toTeam = toTeamsById.get(tp.tradePlayer.toTeamId);
-    if (toTeam) {
-      tradePlayersByTradeId.get(tp.tradePlayer.tradeId)!.push({
-        tradePlayer: tp.tradePlayer,
-        player: tp.player,
-        fromTeam: tp.fromTeam,
-        toTeam,
-      });
-    }
-  }
-
-  return userTrades.map((trade) => ({
-    ...trade,
-    fromUser: usersById.get(trade.fromUserId)!,
-    toUser: usersById.get(trade.toUserId)!,
-    tradePlayers: tradePlayersByTradeId.get(trade.id) || [],
-  }));
-};
-
 export const getPendingTradesForUser = async (
   db: ReturnType<typeof database>,
   userId: number
-): Promise<TradeWithPlayers[]> => {
-  const pendingTrades = await db
-    .select()
+) => {
+  const pendingTrades = await db.query.trades.findMany({
+    where: (trades, { and, eq }) =>
+      and(eq(trades.toUserId, userId), eq(trades.status, "pending")),
+    orderBy: (trades, { desc }) => desc(trades.createdAt),
+    with: {
+      fromUser: true,
+      toUser: true,
+      fromTeam: true,
+      toTeam: true,
+      tradePlayers: {
+        with: {
+          player: true,
+        },
+      },
+    },
+  });
+
+  return pendingTrades;
+};
+
+export const getTrades = async (
+  db: ReturnType<typeof database>,
+  {
+    page = 1,
+    pageSize = 20,
+    userId,
+    order = "desc" as "asc" | "desc",
+  }: {
+    page?: number;
+    pageSize?: number;
+    userId?: number;
+    order?: "asc" | "desc";
+  } = {}
+) => {
+  const offset = (page - 1) * pageSize;
+
+  let whereClause;
+  if (userId !== undefined) {
+    whereClause = or(
+      eq(trades.fromUserId, userId),
+      eq(trades.toUserId, userId)
+    );
+  }
+
+  const tradesQuery = db.query.trades.findMany({
+    where: whereClause,
+    orderBy:
+      order === "asc"
+        ? (trades, { asc }) => asc(trades.createdAt)
+        : (trades, { desc }) => desc(trades.createdAt),
+    limit: pageSize,
+    offset: offset,
+    with: {
+      fromUser: true,
+      toUser: true,
+      fromTeam: true,
+      toTeam: true,
+      tradePlayers: {
+        with: {
+          player: true,
+        },
+      },
+    },
+  });
+
+  const totalQuery = db
+    .select({ count: sql<number>`count(*)` })
     .from(trades)
-    .where(and(eq(trades.toUserId, userId), eq(trades.status, "pending")))
-    .orderBy(desc(trades.createdAt));
+    .where(whereClause);
 
-  if (pendingTrades.length === 0) {
-    return [];
-  }
+  const [tradesResult, totalResult] = await Promise.all([
+    tradesQuery,
+    totalQuery,
+  ]);
 
-  const userIds = new Set<number>();
-  for (const trade of pendingTrades) {
-    userIds.add(trade.fromUserId);
-    userIds.add(trade.toUserId);
-  }
+  const total = totalResult[0]?.count ?? 0;
 
-  const allUsers = await db
-    .select({ id: users.id, name: users.name })
-    .from(users)
-    .where(inArray(users.id, Array.from(userIds)));
-
-  const usersById = new Map(allUsers.map((u) => [u.id, u]));
-
-  const tradeIds = pendingTrades.map((t) => t.id);
-  const allTradePlayers = await db
-    .select({
-      tradePlayer: tradePlayers,
-      player: {
-        id: players.id,
-        name: players.name,
-        imageUrl: players.imageUrl,
-        statsCharacter: players.statsCharacter,
-      },
-      fromTeam: {
-        id: teams.id,
-        name: teams.name,
-      },
-    })
-    .from(tradePlayers)
-    .innerJoin(players, eq(tradePlayers.playerId, players.id))
-    .innerJoin(teams, eq(tradePlayers.fromTeamId, teams.id))
-    .where(inArray(tradePlayers.tradeId, tradeIds));
-
-  const toTeamIds = new Set(
-    allTradePlayers.map((tp) => tp.tradePlayer.toTeamId)
-  );
-  const toTeams = await db
-    .select({ id: teams.id, name: teams.name })
-    .from(teams)
-    .where(inArray(teams.id, Array.from(toTeamIds)));
-  const toTeamsById = new Map(toTeams.map((t) => [t.id, t]));
-
-  const tradePlayersByTradeId = new Map<
-    number,
-    Array<{
-      tradePlayer: TradePlayer;
-      player: {
-        id: number;
-        name: string;
-        imageUrl: string | null;
-        statsCharacter: string | null;
-      };
-      fromTeam: { id: number; name: string };
-      toTeam: { id: number; name: string };
-    }>
-  >();
-  for (const tp of allTradePlayers) {
-    if (!tradePlayersByTradeId.has(tp.tradePlayer.tradeId)) {
-      tradePlayersByTradeId.set(tp.tradePlayer.tradeId, []);
-    }
-    const toTeam = toTeamsById.get(tp.tradePlayer.toTeamId);
-    if (toTeam) {
-      tradePlayersByTradeId.get(tp.tradePlayer.tradeId)!.push({
-        tradePlayer: tp.tradePlayer,
-        player: tp.player,
-        fromTeam: tp.fromTeam,
-        toTeam,
-      });
-    }
-  }
-
-  return pendingTrades.map((trade) => ({
-    ...trade,
-    fromUser: usersById.get(trade.fromUserId)!,
-    toUser: usersById.get(trade.toUserId)!,
-    tradePlayers: tradePlayersByTradeId.get(trade.id) || [],
-  }));
+  return {
+    trades: tradesResult,
+    page,
+    pageSize,
+    total,
+    totalPages: Math.ceil(total / pageSize),
+  };
 };

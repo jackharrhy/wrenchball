@@ -261,6 +261,16 @@ export const tradesRelations = relations(trades, ({ one, many }) => ({
     references: [users.id],
     relationName: "toUser",
   }),
+  fromTeam: one(teams, {
+    fields: [trades.fromUserId],
+    references: [teams.userId],
+    relationName: "fromTeam",
+  }),
+  toTeam: one(teams, {
+    fields: [trades.toUserId],
+    references: [teams.userId],
+    relationName: "toTeam",
+  }),
   tradePlayers: many(tradePlayers),
 }));
 

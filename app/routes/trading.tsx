@@ -141,7 +141,13 @@ export default function Trading({
         <TradeList trades={pendingTrades} />
       )}
       <h2 className="text-xl font-bold text-center">Trade History</h2>
-      <TradeList trades={paginatedTrades?.trades ?? []} />
+      {paginatedTrades?.trades?.length === 0 ? (
+        <div className="italic text-gray-300 text-center">
+          No trades have been made yet
+        </div>
+      ) : (
+        <TradeList trades={paginatedTrades?.trades ?? []} />
+      )}
     </div>
   );
 }

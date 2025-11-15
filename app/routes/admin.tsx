@@ -6,6 +6,7 @@ import { players, seasonState, type SeasonState } from "~/database/schema";
 import {
   randomAssignTeams,
   wipeTeams,
+  wipeTrades,
   getSeasonState,
   setSeasonState,
   getDraftingOrder,
@@ -62,6 +63,15 @@ export async function clientAction({
     );
     if (!confirmed) {
       return { success: false, message: "Team wipe cancelled" };
+    }
+  }
+
+  if (intent === "wipe-trades") {
+    const confirmed = confirm(
+      "Are you sure you want to delete all trades? This cannot be undone."
+    );
+    if (!confirmed) {
+      return { success: false, message: "Trade wipe cancelled" };
     }
   }
 
@@ -186,6 +196,19 @@ export async function action({ request }: Route.ActionArgs) {
     } catch (error) {
       console.error("Error during team wipe:", error);
       return { success: false, message: "Failed to clear teams and lineups" };
+    }
+  }
+
+  if (intent === "wipe-trades") {
+    try {
+      await wipeTrades(db);
+      return {
+        success: true,
+        message: "All trades deleted successfully",
+      };
+    } catch (error) {
+      console.error("Error during trade wipe:", error);
+      return { success: false, message: "Failed to delete trades" };
     }
   }
 
@@ -570,6 +593,16 @@ export default function Admin({
               className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded"
             >
               Wipe All Teams
+            </button>
+          </Form>
+
+          <Form method="post" className="inline-block mr-4">
+            <input type="hidden" name="intent" value="wipe-trades" />
+            <button
+              type="submit"
+              className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded"
+            >
+              Wipe All Trades
             </button>
           </Form>
 

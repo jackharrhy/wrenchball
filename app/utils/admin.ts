@@ -7,6 +7,8 @@ import {
   stats,
   teamLineups,
   teams,
+  trades,
+  tradePlayers,
   users,
   usersSeasons,
   type Season as SeasonType,
@@ -20,6 +22,13 @@ export const wipeTeams = async (db: ReturnType<typeof database>) => {
   await db.transaction(async (tx) => {
     await tx.delete(teamLineups);
     await tx.update(players).set({ teamId: null });
+  });
+};
+
+export const wipeTrades = async (db: ReturnType<typeof database>) => {
+  await db.transaction(async (tx) => {
+    await tx.delete(tradePlayers);
+    await tx.delete(trades);
   });
 };
 

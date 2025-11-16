@@ -399,8 +399,8 @@ export const denyTrade = async (
     return { success: false, error: "Trade is not pending" };
   }
 
-  if (tradeData.toUserId !== userId) {
-    return { success: false, error: "You are not the recipient of this trade" };
+  if (tradeData.fromUserId !== userId && tradeData.toUserId !== userId) {
+    return { success: false, error: "You are not authorized to deny this trade" };
   }
 
   await db
@@ -417,7 +417,10 @@ export const getPendingTradesForUser = async (
 ) => {
   const pendingTrades = await db.query.trades.findMany({
     where: (trades, { and, eq }) =>
-      and(eq(trades.toUserId, userId), eq(trades.status, "pending")),
+      and(
+        or(eq(trades.toUserId, userId), eq(trades.fromUserId, userId)),
+        eq(trades.status, "pending")
+      ),
     orderBy: (trades, { desc }) => desc(trades.createdAt),
     with: {
       fromUser: true,

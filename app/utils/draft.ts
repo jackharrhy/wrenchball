@@ -83,7 +83,8 @@ export const validateDraftPick = async (
 export const draftPlayer = async (
   db: ReturnType<typeof database>,
   userId: number,
-  playerId: number
+  playerId: number,
+  skipAutoDraft = false
 ): Promise<{ success: boolean; error?: string }> => {
   const validation = await validateDraftPick(db, userId, playerId);
   if (!validation.valid) {
@@ -109,7 +110,7 @@ export const draftPlayer = async (
     // Clear pre-draft selections for this player from all users
     await clearPreDraftForPlayer(tx, playerId);
 
-    await advanceToNextDrafter(tx, userId);
+    await advanceToNextDrafter(tx, userId, skipAutoDraft);
   });
 
   return { success: true };
@@ -126,7 +127,8 @@ export const draftPlayer = async (
  */
 const advanceToNextDrafter = async (
   db: ReturnType<typeof database>,
-  currentUserId: number
+  currentUserId: number,
+  skipAutoDraft = false
 ): Promise<void> => {
   const seasonState = await db
     .select()
@@ -188,6 +190,32 @@ const advanceToNextDrafter = async (
     .update(season)
     .set({ currentDraftingUserId: nextUserId })
     .where(eq(season.id, 1));
+
+  // Check if the next user has a pre-draft and auto-draft it (unless we're already in auto-draft)
+  if (!skipAutoDraft) {
+    const preDraftPlayerId = await getPreDraft(db, nextUserId);
+    if (preDraftPlayerId) {
+      // Verify player is still available before auto-drafting
+      const player = await db
+        .select()
+        .from(players)
+        .where(eq(players.id, preDraftPlayerId))
+        .limit(1);
+
+      if (player.length > 0 && player[0].teamId === null) {
+        // Player is still available, attempt to draft with skipAutoDraft=true to prevent infinite loop
+        const result = await draftPlayer(db, nextUserId, preDraftPlayerId, true);
+        if (!result.success) {
+          // Failed to auto-draft, clear the pre-draft
+          await clearPreDraft(db, nextUserId);
+        }
+        // Note: If successful, draftPlayer already cleared the pre-draft via clearPreDraftForPlayer
+      } else {
+        // Player was already taken, clear the pre-draft
+        await clearPreDraft(db, nextUserId);
+      }
+    }
+  }
 };
 
 /**

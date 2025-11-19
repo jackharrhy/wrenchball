@@ -1,12 +1,12 @@
 import type { Route } from "./+types/drafting";
 import { database } from "~/database/context";
 import { getSeasonState, getDraftingOrder } from "~/utils/admin";
-import { draftPlayer, getPreDraft, setPreDraft, clearPreDraft, attemptAutoDraft } from "~/utils/draft";
+import { draftPlayer, getPreDraft, setPreDraft, clearPreDraft } from "~/utils/draft";
 import { users, players } from "~/database/schema";
 import { eq, sql } from "drizzle-orm";
 import { PlayerIcon } from "~/components/PlayerIcon";
 import { PlayerInfo } from "~/components/PlayerInfo";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 import { Form, useNavigation, useRevalidator, useSubmit } from "react-router";
 import { requireUser } from "~/auth.server";
 import { broadcast } from "~/sse.server";
@@ -195,30 +195,6 @@ export async function action({ request }: Route.ActionArgs) {
     }
   }
 
-  if (intent === "attempt-auto-draft") {
-    const db = database();
-    const result = await attemptAutoDraft(db, user.id);
-
-    if (result.autoDrafted) {
-      broadcast(user, "draft-update", { 
-        playerId: result.playerId, 
-        userId: user.id,
-        autoDrafted: true 
-      });
-      return { 
-        success: true, 
-        message: "Player auto-drafted successfully",
-        autoDrafted: true 
-      };
-    } else {
-      return {
-        success: false,
-        error: result.error || "No pre-draft to execute",
-        autoDrafted: false
-      };
-    }
-  }
-
   return { success: false, error: "Invalid action" };
 }
 
@@ -256,38 +232,19 @@ export default function Drafting({
   const isActiveDrafter = currentDraftingUserId === user.id;
 
   const prevDraftingUserIdRef = useRef(currentDraftingUserId);
-  const hasAttemptedAutoDraftRef = useRef(false);
 
-  // Auto-draft when it becomes the user's turn and they have a pre-draft
-  useEffect(() => {
-    if (
-      currentDraftingUserId === user.id &&
-      preDraftPlayer &&
-      prevDraftingUserIdRef.current !== currentDraftingUserId &&
-      !hasAttemptedAutoDraftRef.current
-    ) {
-      hasAttemptedAutoDraftRef.current = true;
-      submit(
-        { intent: "attempt-auto-draft" },
-        { method: "post" }
-      );
-    }
+  useStream((data) => {
+    console.log("draft-update", data);
     
+    // Track turn changes and clear UI state when turn changes
     if (prevDraftingUserIdRef.current !== currentDraftingUserId) {
       if (currentDraftingUserId !== user.id) {
         setOtherPlayerHover(null);
         setOtherPlayerSelection(null);
       }
-      hasAttemptedAutoDraftRef.current = false;
+      prevDraftingUserIdRef.current = currentDraftingUserId;
     }
     
-    prevDraftingUserIdRef.current = currentDraftingUserId;
-  }, [currentDraftingUserId, user.id, preDraftPlayer, submit]);
-
-  useStream((data) => {
-    console.log("draft-update", data);
-    setOtherPlayerHover(null);
-    setOtherPlayerSelection(null);
     revalidator.revalidate();
   }, "draft-update");
 

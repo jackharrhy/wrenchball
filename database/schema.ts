@@ -176,6 +176,9 @@ export const usersSeasons = pgTable("users_seasons", {
     .notNull()
     .references(() => season.id),
   draftingTurn: integer("drafting_turn").notNull(),
+  preDraftPlayerId: integer("pre_draft_player_id").references(() => players.id, {
+    onDelete: "set null",
+  }),
 });
 
 export type UsersSeason = typeof usersSeasons.$inferSelect;

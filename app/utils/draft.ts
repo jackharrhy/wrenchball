@@ -106,6 +106,9 @@ export const draftPlayer = async (
       .set({ teamId: userTeam[0].id })
       .where(eq(players.id, playerId));
 
+    // Clear pre-draft selections for this player from all users
+    await clearPreDraftForPlayer(tx, playerId);
+
     await advanceToNextDrafter(tx, userId);
   });
 
@@ -185,4 +188,164 @@ const advanceToNextDrafter = async (
     .update(season)
     .set({ currentDraftingUserId: nextUserId })
     .where(eq(season.id, 1));
+};
+
+/**
+ * Sets a pre-draft selection for a user
+ */
+export const setPreDraft = async (
+  db: ReturnType<typeof database>,
+  userId: number,
+  playerId: number
+): Promise<{ success: boolean; error?: string }> => {
+  const seasonState = await getSeasonState(db);
+  if (!seasonState) {
+    return { success: false, error: "No active season found" };
+  }
+
+  if (seasonState.state !== "drafting") {
+    return {
+      success: false,
+      error: `Season is in "${seasonState.state}" state, not drafting`,
+    };
+  }
+
+  // Check player exists and is a free agent
+  const player = await db
+    .select()
+    .from(players)
+    .where(eq(players.id, playerId))
+    .limit(1);
+
+  if (player.length === 0) {
+    return { success: false, error: "Player not found" };
+  }
+
+  if (player[0].teamId !== null) {
+    return { success: false, error: "Player is already assigned to a team" };
+  }
+
+  // Update the user's pre-draft selection
+  await db
+    .update(usersSeasons)
+    .set({ preDraftPlayerId: playerId })
+    .where(
+      sql`${usersSeasons.userId} = ${userId} AND ${usersSeasons.seasonId} = ${seasonState.id}`
+    );
+
+  return { success: true };
+};
+
+/**
+ * Clears a pre-draft selection for a user
+ */
+export const clearPreDraft = async (
+  db: ReturnType<typeof database>,
+  userId: number
+): Promise<{ success: boolean; error?: string }> => {
+  const seasonState = await getSeasonState(db);
+  if (!seasonState) {
+    return { success: false, error: "No active season found" };
+  }
+
+  await db
+    .update(usersSeasons)
+    .set({ preDraftPlayerId: null })
+    .where(
+      sql`${usersSeasons.userId} = ${userId} AND ${usersSeasons.seasonId} = ${seasonState.id}`
+    );
+
+  return { success: true };
+};
+
+/**
+ * Gets the pre-draft selection for a user
+ */
+export const getPreDraft = async (
+  db: ReturnType<typeof database>,
+  userId: number
+): Promise<number | null> => {
+  const seasonState = await getSeasonState(db);
+  if (!seasonState) {
+    return null;
+  }
+
+  const userSeason = await db
+    .select({ preDraftPlayerId: usersSeasons.preDraftPlayerId })
+    .from(usersSeasons)
+    .where(
+      sql`${usersSeasons.userId} = ${userId} AND ${usersSeasons.seasonId} = ${seasonState.id}`
+    )
+    .limit(1);
+
+  if (userSeason.length === 0) {
+    return null;
+  }
+
+  return userSeason[0].preDraftPlayerId;
+};
+
+/**
+ * Clears pre-draft selections for all users if the player is the pre-drafted player
+ */
+export const clearPreDraftForPlayer = async (
+  db: ReturnType<typeof database>,
+  playerId: number
+): Promise<void> => {
+  const seasonState = await getSeasonState(db);
+  if (!seasonState) {
+    return;
+  }
+
+  await db
+    .update(usersSeasons)
+    .set({ preDraftPlayerId: null })
+    .where(
+      sql`${usersSeasons.preDraftPlayerId} = ${playerId} AND ${usersSeasons.seasonId} = ${seasonState.id}`
+    );
+};
+
+/**
+ * Attempts to auto-draft for a user if they have a pre-draft selection
+ * This should be called when it becomes a user's turn
+ */
+export const attemptAutoDraft = async (
+  db: ReturnType<typeof database>,
+  userId: number
+): Promise<{ autoDrafted: boolean; playerId?: number; error?: string }> => {
+  const preDraftPlayerId = await getPreDraft(db, userId);
+  
+  if (!preDraftPlayerId) {
+    return { autoDrafted: false };
+  }
+
+  // Check if the pre-drafted player is still available
+  const player = await db
+    .select()
+    .from(players)
+    .where(eq(players.id, preDraftPlayerId))
+    .limit(1);
+
+  if (player.length === 0 || player[0].teamId !== null) {
+    // Player was already drafted, clear the pre-draft
+    await clearPreDraft(db, userId);
+    return { 
+      autoDrafted: false, 
+      error: "Pre-drafted player was already taken" 
+    };
+  }
+
+  // Attempt to draft the player
+  const result = await draftPlayer(db, userId, preDraftPlayerId);
+  
+  if (result.success) {
+    return { autoDrafted: true, playerId: preDraftPlayerId };
+  } else {
+    // Failed to draft, clear pre-draft
+    await clearPreDraft(db, userId);
+    return { 
+      autoDrafted: false, 
+      error: result.error 
+    };
+  }
 };

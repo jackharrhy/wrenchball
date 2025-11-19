@@ -91,7 +91,8 @@ CREATE TABLE IF NOT EXISTS "user" (
 CREATE TABLE IF NOT EXISTS "users_seasons" (
 	"user_id" integer NOT NULL,
 	"season_id" integer NOT NULL,
-	"drafting_turn" integer NOT NULL
+	"drafting_turn" integer NOT NULL,
+	"pre_draft_player_id" integer
 );
 --> statement-breakpoint
 DO $$ BEGIN
@@ -168,6 +169,12 @@ END $$;
 --> statement-breakpoint
 DO $$ BEGIN
  ALTER TABLE "users_seasons" ADD CONSTRAINT "users_seasons_season_id_season_id_fk" FOREIGN KEY ("season_id") REFERENCES "public"."season"("id") ON DELETE no action ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "users_seasons" ADD CONSTRAINT "users_seasons_pre_draft_player_id_players_id_fk" FOREIGN KEY ("pre_draft_player_id") REFERENCES "public"."players"("id") ON DELETE set null ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;

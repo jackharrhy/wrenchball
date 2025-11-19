@@ -1,5 +1,5 @@
 {
-  "id": "64541add-115d-497c-8ff9-89c66f838dcb",
+  "id": "ecf8f10c-9494-47af-abbb-5dd5d492b80b",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -697,6 +697,12 @@
           "type": "integer",
           "primaryKey": false,
           "notNull": true
+        },
+        "pre_draft_player_id": {
+          "name": "pre_draft_player_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
         }
       },
       "indexes": {},
@@ -725,6 +731,19 @@
             "id"
           ],
           "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "users_seasons_pre_draft_player_id_players_id_fk": {
+          "name": "users_seasons_pre_draft_player_id_players_id_fk",
+          "tableFrom": "users_seasons",
+          "tableTo": "players",
+          "columnsFrom": [
+            "pre_draft_player_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
           "onUpdate": "no action"
         }
       },

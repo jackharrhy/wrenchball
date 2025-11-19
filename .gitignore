@@ -9,3 +9,5 @@ data
 
 public/images
 .env
+
+*.tsbuildinfo

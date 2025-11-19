@@ -1,7 +1,7 @@
 import type { Route } from "./+types/drafting";
 import { database } from "~/database/context";
 import { getSeasonState, getDraftingOrder } from "~/utils/admin";
-import { draftPlayer } from "~/utils/draft";
+import { draftPlayer, getPreDraft, setPreDraft, clearPreDraft } from "~/utils/draft";
 import { users, players } from "~/database/schema";
 import { eq, sql } from "drizzle-orm";
 import { PlayerIcon } from "~/components/PlayerIcon";
@@ -46,6 +46,19 @@ export async function loader({ request }: Route.LoaderArgs) {
     .where(sql`${players.teamId} IS NOT NULL`);
   const totalPicksMade = draftedPlayers.length;
 
+  // Get pre-draft selection for current user
+  const preDraftPlayerId = await getPreDraft(db, user.id);
+  let preDraftPlayer = null;
+  if (preDraftPlayerId) {
+    const playerData = await db.query.players.findFirst({
+      where: eq(players.id, preDraftPlayerId),
+      with: {
+        stats: true,
+      },
+    });
+    preDraftPlayer = playerData || null;
+  }
+
   return {
     user,
     seasonState: seasonState?.state || null,
@@ -54,6 +67,7 @@ export async function loader({ request }: Route.LoaderArgs) {
     freeAgents,
     draftingOrder,
     totalPicksMade,
+    preDraftPlayer,
   };
 }
 
@@ -141,6 +155,46 @@ export async function action({ request }: Route.ActionArgs) {
     return { success: true };
   }
 
+  if (intent === "set-pre-draft") {
+    const playerIdStr = formData.get("playerId");
+    if (!playerIdStr) {
+      return { success: false, error: "Player ID is required" };
+    }
+
+    const playerId = parseInt(playerIdStr as string, 10);
+    if (isNaN(playerId)) {
+      return { success: false, error: "Invalid player ID" };
+    }
+
+    const db = database();
+    const result = await setPreDraft(db, user.id, playerId);
+
+    if (result.success) {
+      broadcast(user, "pre-draft-update", { playerId, userId: user.id });
+      return { success: true, message: "Pre-draft set successfully" };
+    } else {
+      return {
+        success: false,
+        error: result.error || "Failed to set pre-draft",
+      };
+    }
+  }
+
+  if (intent === "clear-pre-draft") {
+    const db = database();
+    const result = await clearPreDraft(db, user.id);
+
+    if (result.success) {
+      broadcast(user, "pre-draft-update", { playerId: null, userId: user.id });
+      return { success: true, message: "Pre-draft cleared successfully" };
+    } else {
+      return {
+        success: false,
+        error: result.error || "Failed to clear pre-draft",
+      };
+    }
+  }
+
   return { success: false, error: "Invalid action" };
 }
 
@@ -152,6 +206,7 @@ export default function Drafting({
     freeAgents,
     draftingOrder,
     totalPicksMade,
+    preDraftPlayer,
   },
   actionData,
 }: Route.ComponentProps) {
@@ -177,21 +232,26 @@ export default function Drafting({
   const isActiveDrafter = currentDraftingUserId === user.id;
 
   const prevDraftingUserIdRef = useRef(currentDraftingUserId);
-  if (
-    prevDraftingUserIdRef.current !== currentDraftingUserId &&
-    currentDraftingUserId !== user.id
-  ) {
-    setOtherPlayerHover(null);
-    setOtherPlayerSelection(null);
-  }
-  prevDraftingUserIdRef.current = currentDraftingUserId;
 
   useStream((data) => {
     console.log("draft-update", data);
-    setOtherPlayerHover(null);
-    setOtherPlayerSelection(null);
+    
+    // Track turn changes and clear UI state when turn changes
+    if (prevDraftingUserIdRef.current !== currentDraftingUserId) {
+      if (currentDraftingUserId !== user.id) {
+        setOtherPlayerHover(null);
+        setOtherPlayerSelection(null);
+      }
+      prevDraftingUserIdRef.current = currentDraftingUserId;
+    }
+    
     revalidator.revalidate();
   }, "draft-update");
+
+  useStream((data) => {
+    console.log("pre-draft-update", data);
+    revalidator.revalidate();
+  }, "pre-draft-update");
 
   useStream((data) => {
     console.log("drafting-player-hover", data);
@@ -287,6 +347,7 @@ export default function Drafting({
                 otherPlayerHover?.playerId === player.id;
               const isOtherPlayerSelection =
                 otherPlayerSelection?.playerId === player.id;
+              const isPreDrafted = preDraftPlayer?.id === player.id;
               return (
                 <div key={player.id} className="relative">
                   <Form
@@ -331,11 +392,13 @@ export default function Drafting({
                       className={`border-1 border-cell-gray/50 rounded-md p-0.75 cursor-pointer transition-all w-full ${
                         isSelected
                           ? "ring-2 ring-blue-400 border-blue-400"
-                          : isOtherPlayerSelection
-                            ? "ring-2 ring-yellow-400 border-yellow-400"
-                            : isOtherPlayerHover
-                              ? "ring-2 ring-yellow-400/40 border-yellow-400/40"
-                              : "hover:border-cell-gray hover:ring-1 hover:ring-cell-gray/50"
+                          : isPreDrafted
+                            ? "ring-2 ring-blue-300 border-blue-300"
+                            : isOtherPlayerSelection
+                              ? "ring-2 ring-yellow-400 border-yellow-400"
+                              : isOtherPlayerHover
+                                ? "ring-2 ring-yellow-400/40 border-yellow-400/40"
+                                : "hover:border-cell-gray hover:ring-1 hover:ring-cell-gray/50"
                       }`}
                     >
                       <PlayerIcon player={player} size="lg" />
@@ -344,6 +407,11 @@ export default function Drafting({
                   {isOtherPlayerSelection && (
                     <div className="absolute -top-1 -right-1 bg-yellow-400 text-black text-xs px-1 rounded text-[10px] font-semibold">
                       {otherPlayerSelection.userName}
+                    </div>
+                  )}
+                  {!isOtherPlayerSelection && isPreDrafted && (
+                    <div className="absolute -top-1 -right-1 bg-blue-400 text-white text-xs px-1 rounded text-[10px] font-semibold">
+                      Pre-Draft
                     </div>
                   )}
                 </div>
@@ -363,7 +431,7 @@ export default function Drafting({
                 </div>
               </div>
               {selectedPlayer && (
-                <div className="mt-4">
+                <div className="mt-4 flex flex-col gap-2">
                   <Form method="post">
                     <input type="hidden" name="intent" value="draft-player" />
                     <input
@@ -385,6 +453,29 @@ export default function Drafting({
                         : `Draft ${selectedPlayer.name}`}
                     </button>
                   </Form>
+                  {currentDraftingUserId !== user.id && (
+                    <Form method="post">
+                      <input type="hidden" name="intent" value="set-pre-draft" />
+                      <input
+                        type="hidden"
+                        name="playerId"
+                        value={selectedPlayer.id}
+                      />
+                      <button
+                        type="submit"
+                        disabled={preDraftPlayer?.id === selectedPlayer.id}
+                        className={`w-full px-4 py-2 rounded font-semibold transition-colors ${
+                          preDraftPlayer?.id === selectedPlayer.id
+                            ? "bg-gray-500 opacity-50 cursor-not-allowed text-white"
+                            : "bg-blue-600 hover:bg-blue-700 text-white"
+                        }`}
+                      >
+                        {preDraftPlayer?.id === selectedPlayer.id
+                          ? "Pre-Drafted"
+                          : `Pre-Draft ${selectedPlayer.name}`}
+                      </button>
+                    </Form>
+                  )}
                   {actionData?.error && (
                     <div className="mt-2 text-red-400 text-sm">
                       {actionData.error}
@@ -420,6 +511,35 @@ export default function Drafting({
           )}
         </div>
         <div className="drafting">
+          {preDraftPlayer && (
+            <div className="px-4 pb-4 border-b border-cell-gray/50 mb-4">
+              <h3 className="text-sm font-semibold mb-2 text-blue-400">
+                Your Pre-Draft
+              </h3>
+              <div className="bg-cell-gray/40 border border-blue-400/50 rounded p-2 flex items-center gap-2">
+                <div className="flex-shrink-0">
+                  <PlayerIcon player={preDraftPlayer} size="sm" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="text-sm font-medium truncate">
+                    {preDraftPlayer.name}
+                  </div>
+                  <div className="text-xs text-gray-400">
+                    Will auto-draft on your turn
+                  </div>
+                </div>
+                <Form method="post">
+                  <input type="hidden" name="intent" value="clear-pre-draft" />
+                  <button
+                    type="submit"
+                    className="flex-shrink-0 px-2 py-1 text-xs bg-red-600 hover:bg-red-700 text-white rounded transition-colors"
+                  >
+                    Clear
+                  </button>
+                </Form>
+              </div>
+            </div>
+          )}
           {draftingOrder.length === 0 ? (
             <div className="px-4 pb-4 text-gray-400 italic">
               No users in drafting order

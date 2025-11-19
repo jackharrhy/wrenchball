@@ -134,8 +134,8 @@ const Trade = ({
 }) => {
   return (
     <div className="w-full flex flex-wrap lg:flex-nowrap flex-row justify-center items-center gap-2">
-      <div className="w-0 lg:w-12" />
-      <div className="w-0 lg:w-12" />
+      <div className="w-0 lg:w-24 h-full shrink-0" />
+      <div className="w-0 lg:w-24 h-full shrink-0" />
       <div
         className={cn(
           "relative w-full max-w-2xl shrink-0 flex justify-center items-center gap-4 border rounded-md p-2",

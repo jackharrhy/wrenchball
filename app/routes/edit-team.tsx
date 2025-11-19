@@ -1,35 +1,24 @@
-import type { Player, TeamLineup } from "~/database/schema";
 import type { Route } from "./+types/edit-team";
 import { database } from "~/database/context";
 import { TeamPlayerList } from "~/components/TeamPlayerList";
 import { getUser } from "~/auth.server";
 import { useSubmit } from "react-router";
 import { useRef, useState } from "react";
-import { eq } from "drizzle-orm";
-import { teams } from "~/database/schema";
-import { TEAM_SIZE } from "~/consts";
 import { Field } from "~/components/Field";
+import {
+  getTeamWithPlayers,
+  fillPlayersToTeamSize,
+  checkCanEdit,
+  updateTeamName,
+} from "~/utils/team";
 
 async function getTeamWithPermissionCheck(teamId: string, request: Request) {
   const user = await getUser(request);
   const db = database();
 
-  const team = await db.query.teams.findFirst({
-    where: (teams, { eq }) => eq(teams.id, Number(teamId)),
-    with: {
-      players: {
-        with: {
-          lineup: true,
-        },
-      },
-    },
-  });
+  const team = await getTeamWithPlayers(teamId);
 
-  if (!team) {
-    throw new Response("Team not found", { status: 404 });
-  }
-
-  const canEdit = user?.id === team.userId || user?.role === "admin";
+  const canEdit = checkCanEdit(user, team.userId);
 
   if (!canEdit) {
     throw new Response("You do not have permission to edit this team", {
@@ -46,12 +35,7 @@ export async function loader({
 }: Route.LoaderArgs) {
   const { team } = await getTeamWithPermissionCheck(teamId, request);
 
-  const filledPlayers: ((typeof team.players)[number] | null)[] = [
-    ...team.players,
-  ];
-  while (filledPlayers.length < TEAM_SIZE) {
-    filledPlayers.push(null);
-  }
+  const filledPlayers = fillPlayersToTeamSize(team.players);
   const teamWithFullPlayers = { ...team, players: filledPlayers };
 
   return { team: teamWithFullPlayers };
@@ -64,25 +48,18 @@ export async function action({
   const { db } = await getTeamWithPermissionCheck(teamId, request);
 
   const formData = await request.formData();
-  const name = formData.get("name");
+  const intent = formData.get("intent");
 
-  if (typeof name === "string" && name.trim()) {
-    if (name.trim().length > 29) {
-      return {
-        success: false,
-        message: "Name must be less than 30 characters",
-      };
-    }
-
-    console.log(name.trim(), name.trim().length);
-
-    await db
-      .update(teams)
-      .set({ name: name.trim() })
-      .where(eq(teams.id, Number(teamId)));
+  if (intent === "update-name") {
+    const name = formData.get("name");
+    return await updateTeamName(
+      db,
+      teamId,
+      typeof name === "string" ? name : null
+    );
   }
 
-  return { success: true };
+  return { success: false, message: "Invalid action" };
 }
 
 export default function EditTeam({
@@ -100,7 +77,7 @@ export default function EditTeam({
 
     if (newName && newName !== team.name) {
       setOptimisticName(newName);
-      submit({ name: newName }, { method: "post" });
+      submit({ intent: "update-name", name: newName }, { method: "post" });
     } else if (titleRef.current) {
       titleRef.current.textContent = team.name;
       setOptimisticName(team.name);

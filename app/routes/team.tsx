@@ -1,47 +1,26 @@
-import type { Player } from "~/database/schema";
 import type { Route } from "./+types/team";
-import { database } from "~/database/context";
 import { TeamPlayerList } from "~/components/TeamPlayerList";
 import { getUser } from "~/auth.server";
 import { Link } from "react-router";
-import { TEAM_SIZE } from "~/consts";
 import { Field } from "~/components/Field";
+import {
+  getTeamWithPlayers,
+  fillPlayersToTeamSize,
+  checkCanEdit,
+} from "~/utils/team";
 
 export async function loader({
   params: { teamId },
   request,
 }: Route.LoaderArgs) {
-  const db = database();
-
-  const team = await db.query.teams.findFirst({
-    where: (teams, { eq }) => eq(teams.id, Number(teamId)),
-    with: {
-      players: {
-        with: {
-          lineup: true,
-        },
-      },
-    },
-  });
-
-  if (!team) {
-    throw new Response("Team not found", { status: 404 });
-  }
+  const team = await getTeamWithPlayers(teamId);
 
   const players = team.players ?? [];
-  const filledPlayers: (Player | null)[] = [...players];
-  while (filledPlayers.length < TEAM_SIZE) {
-    filledPlayers.push(null);
-  }
+  const filledPlayers = fillPlayersToTeamSize(players);
   const teamWithFullPlayers = { ...team, players: filledPlayers };
 
   const user = await getUser(request);
-
-  let canEdit = false;
-
-  if (user?.id === team.userId || user?.role === "admin") {
-    canEdit = true;
-  }
+  const canEdit = checkCanEdit(user, team.userId);
 
   return { team: teamWithFullPlayers, canEdit };
 }

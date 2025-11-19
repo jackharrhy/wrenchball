@@ -390,6 +390,7 @@ export default function Drafting({
                 otherPlayerHover?.playerId === player.id;
               const isOtherPlayerSelection =
                 otherPlayerSelection?.playerId === player.id;
+              const isPreDrafted = preDraftPlayer?.id === player.id;
               return (
                 <div key={player.id} className="relative">
                   <Form
@@ -434,11 +435,13 @@ export default function Drafting({
                       className={`border-1 border-cell-gray/50 rounded-md p-0.75 cursor-pointer transition-all w-full ${
                         isSelected
                           ? "ring-2 ring-blue-400 border-blue-400"
-                          : isOtherPlayerSelection
-                            ? "ring-2 ring-yellow-400 border-yellow-400"
-                            : isOtherPlayerHover
-                              ? "ring-2 ring-yellow-400/40 border-yellow-400/40"
-                              : "hover:border-cell-gray hover:ring-1 hover:ring-cell-gray/50"
+                          : isPreDrafted
+                            ? "ring-2 ring-blue-300 border-blue-300"
+                            : isOtherPlayerSelection
+                              ? "ring-2 ring-yellow-400 border-yellow-400"
+                              : isOtherPlayerHover
+                                ? "ring-2 ring-yellow-400/40 border-yellow-400/40"
+                                : "hover:border-cell-gray hover:ring-1 hover:ring-cell-gray/50"
                       }`}
                     >
                       <PlayerIcon player={player} size="lg" />
@@ -447,6 +450,11 @@ export default function Drafting({
                   {isOtherPlayerSelection && (
                     <div className="absolute -top-1 -right-1 bg-yellow-400 text-black text-xs px-1 rounded text-[10px] font-semibold">
                       {otherPlayerSelection.userName}
+                    </div>
+                  )}
+                  {!isOtherPlayerSelection && isPreDrafted && (
+                    <div className="absolute -top-1 -right-1 bg-blue-400 text-white text-xs px-1 rounded text-[10px] font-semibold">
+                      Pre-Draft
                     </div>
                   )}
                 </div>

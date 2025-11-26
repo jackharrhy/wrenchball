@@ -150,6 +150,10 @@ export const seasonState = pgEnum("season_state", [
 
 export type SeasonState = (typeof seasonState.enumValues)[number];
 
+export const eventType = pgEnum("event_type", ["draft", "season_state_change"]);
+
+export type EventType = (typeof eventType.enumValues)[number];
+
 export const season = pgTable("season", {
   id: integer().primaryKey().default(1).notNull(),
   state: seasonState("state").notNull().default("pre-season"),
@@ -176,9 +180,12 @@ export const usersSeasons = pgTable("users_seasons", {
     .notNull()
     .references(() => season.id),
   draftingTurn: integer("drafting_turn").notNull(),
-  preDraftPlayerId: integer("pre_draft_player_id").references(() => players.id, {
-    onDelete: "set null",
-  }),
+  preDraftPlayerId: integer("pre_draft_player_id").references(
+    () => players.id,
+    {
+      onDelete: "set null",
+    }
+  ),
 });
 
 export type UsersSeason = typeof usersSeasons.$inferSelect;
@@ -297,3 +304,86 @@ export const tradePlayersRelations = relations(tradePlayers, ({ one }) => ({
     relationName: "toTeam",
   }),
 }));
+
+export const events = pgTable("events", {
+  id: integer().primaryKey().generatedAlwaysAsIdentity(),
+  eventType: eventType("event_type").notNull(),
+  userId: integer("user_id").references(() => users.id, {
+    onDelete: "set null",
+  }),
+  seasonId: integer("season_id")
+    .notNull()
+    .references(() => season.id, { onDelete: "cascade" }),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+export type Event = typeof events.$inferSelect;
+
+export const eventDraft = pgTable("event_draft", {
+  eventId: integer("event_id")
+    .primaryKey()
+    .references(() => events.id, { onDelete: "cascade" }),
+  playerId: integer("player_id")
+    .notNull()
+    .references(() => players.id, { onDelete: "cascade" }),
+  teamId: integer("team_id")
+    .notNull()
+    .references(() => teams.id, { onDelete: "cascade" }),
+  pickNumber: integer("pick_number").notNull(),
+});
+
+export type EventDraft = typeof eventDraft.$inferSelect;
+
+export const eventSeasonStateChange = pgTable("event_season_state_change", {
+  eventId: integer("event_id")
+    .primaryKey()
+    .references(() => events.id, { onDelete: "cascade" }),
+  fromState: seasonState("from_state"),
+  toState: seasonState("to_state").notNull(),
+});
+
+export type EventSeasonStateChange = typeof eventSeasonStateChange.$inferSelect;
+
+export const eventsRelations = relations(events, ({ one, many }) => ({
+  user: one(users, {
+    fields: [events.userId],
+    references: [users.id],
+  }),
+  season: one(season, {
+    fields: [events.seasonId],
+    references: [season.id],
+  }),
+  draft: one(eventDraft, {
+    fields: [events.id],
+    references: [eventDraft.eventId],
+  }),
+  seasonStateChange: one(eventSeasonStateChange, {
+    fields: [events.id],
+    references: [eventSeasonStateChange.eventId],
+  }),
+}));
+
+export const eventDraftRelations = relations(eventDraft, ({ one }) => ({
+  event: one(events, {
+    fields: [eventDraft.eventId],
+    references: [events.id],
+  }),
+  player: one(players, {
+    fields: [eventDraft.playerId],
+    references: [players.id],
+  }),
+  team: one(teams, {
+    fields: [eventDraft.teamId],
+    references: [teams.id],
+  }),
+}));
+
+export const eventSeasonStateChangeRelations = relations(
+  eventSeasonStateChange,
+  ({ one }) => ({
+    event: one(events, {
+      fields: [eventSeasonStateChange.eventId],
+      references: [events.id],
+    }),
+  })
+);

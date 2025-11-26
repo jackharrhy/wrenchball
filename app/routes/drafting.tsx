@@ -1,7 +1,12 @@
 import type { Route } from "./+types/drafting";
 import { database } from "~/database/context";
 import { getSeasonState, getDraftingOrder } from "~/utils/admin";
-import { draftPlayer, getPreDraft, setPreDraft, clearPreDraft } from "~/utils/draft";
+import {
+  draftPlayer,
+  getPreDraft,
+  setPreDraft,
+  clearPreDraft,
+} from "~/utils/draft";
 import { users, players } from "~/database/schema";
 import { eq, sql } from "drizzle-orm";
 import { PlayerIcon } from "~/components/PlayerIcon";
@@ -235,7 +240,7 @@ export default function Drafting({
 
   useStream((data) => {
     console.log("draft-update", data);
-    
+
     // Track turn changes and clear UI state when turn changes
     if (prevDraftingUserIdRef.current !== currentDraftingUserId) {
       if (currentDraftingUserId !== user.id) {
@@ -244,7 +249,7 @@ export default function Drafting({
       }
       prevDraftingUserIdRef.current = currentDraftingUserId;
     }
-    
+
     revalidator.revalidate();
   }, "draft-update");
 
@@ -419,7 +424,7 @@ export default function Drafting({
             })}
           </div>
         </div>
-        <div className="stats flex flex-col gap-1">
+        <div className="stats flex flex-col gap-1 border-b border-cell-gray/50">
           {selectedPlayer || localHoverPlayer ? (
             <>
               <div className="flex items-center justify-center">
@@ -432,30 +437,35 @@ export default function Drafting({
               </div>
               {selectedPlayer && (
                 <div className="mt-4 flex flex-col gap-2">
-                  <Form method="post">
-                    <input type="hidden" name="intent" value="draft-player" />
-                    <input
-                      type="hidden"
-                      name="playerId"
-                      value={selectedPlayer.id}
-                    />
-                    <button
-                      type="submit"
-                      disabled={isDrafting || currentDraftingUserId !== user.id}
-                      className={`w-full px-4 py-2 rounded font-semibold transition-colors ${
-                        currentDraftingUserId === user.id && !isDrafting
-                          ? "bg-green-600 hover:bg-green-700 text-white"
-                          : "bg-gray-500 opacity-50 cursor-not-allowed text-white"
-                      }`}
-                    >
-                      {isDrafting
-                        ? "Drafting..."
-                        : `Draft ${selectedPlayer.name}`}
-                    </button>
-                  </Form>
-                  {currentDraftingUserId !== user.id && (
+                  {currentDraftingUserId === user.id ? (
                     <Form method="post">
-                      <input type="hidden" name="intent" value="set-pre-draft" />
+                      <input type="hidden" name="intent" value="draft-player" />
+                      <input
+                        type="hidden"
+                        name="playerId"
+                        value={selectedPlayer.id}
+                      />
+                      <button
+                        type="submit"
+                        disabled={isDrafting}
+                        className={`w-full px-4 py-2 rounded font-semibold transition-colors ${
+                          !isDrafting
+                            ? "bg-green-600 hover:bg-green-700 text-white cursor-pointer"
+                            : "bg-gray-500 opacity-50 cursor-not-allowed text-white"
+                        }`}
+                      >
+                        {isDrafting
+                          ? "Drafting..."
+                          : `Draft ${selectedPlayer.name}`}
+                      </button>
+                    </Form>
+                  ) : (
+                    <Form method="post">
+                      <input
+                        type="hidden"
+                        name="intent"
+                        value="set-pre-draft"
+                      />
                       <input
                         type="hidden"
                         name="playerId"
@@ -467,7 +477,7 @@ export default function Drafting({
                         className={`w-full px-4 py-2 rounded font-semibold transition-colors ${
                           preDraftPlayer?.id === selectedPlayer.id
                             ? "bg-gray-500 opacity-50 cursor-not-allowed text-white"
-                            : "bg-blue-600 hover:bg-blue-700 text-white"
+                            : "bg-blue-800 hover:bg-blue-900 text-white cursor-pointer"
                         }`}
                       >
                         {preDraftPlayer?.id === selectedPlayer.id
@@ -513,7 +523,7 @@ export default function Drafting({
         <div className="drafting">
           {preDraftPlayer && (
             <div className="px-4 pb-4 border-b border-cell-gray/50 mb-4">
-              <h3 className="text-sm font-semibold mb-2 text-blue-400">
+              <h3 className="text-sm font-semibold mb-2 text-gray-300">
                 Your Pre-Draft
               </h3>
               <div className="bg-cell-gray/40 border border-blue-400/50 rounded p-2 flex items-center gap-2">
@@ -532,7 +542,7 @@ export default function Drafting({
                   <input type="hidden" name="intent" value="clear-pre-draft" />
                   <button
                     type="submit"
-                    className="flex-shrink-0 px-2 py-1 text-xs bg-red-600 hover:bg-red-700 text-white rounded transition-colors"
+                    className="flex-shrink-0 px-2 py-1 text-xs bg-red-600 hover:bg-red-700 text-white rounded transition-colors cursor-pointer"
                   >
                     Clear
                   </button>

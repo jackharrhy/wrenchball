@@ -14,6 +14,7 @@ import {
   type Season as SeasonType,
   type SeasonState,
 } from "~/database/schema";
+import { createSeasonStateChangeEvent } from "./events";
 
 export const wipeTeams = async (db: ReturnType<typeof database>) => {
   await db.transaction(async (tx) => {
@@ -142,9 +143,11 @@ export const getSeasonState = async (
 
 export const setSeasonState = async (
   db: ReturnType<typeof database>,
-  newState: SeasonState
+  newState: SeasonState,
+  userId: number | null = null
 ) => {
   const currentState = await getSeasonState(db);
+  const fromState = currentState?.state || null;
 
   await db.transaction(async (tx) => {
     if (currentState?.state === "pre-season" && newState === "drafting") {
@@ -187,6 +190,23 @@ export const setSeasonState = async (
       } else {
         await tx.insert(season).values({ id: 1, state: newState });
       }
+    }
+
+    // Create season state change event
+    const seasonId = currentState?.id || 1;
+    const eventResult = await createSeasonStateChangeEvent(
+      tx,
+      userId,
+      fromState,
+      newState,
+      seasonId
+    );
+    if (!eventResult.success) {
+      console.error(
+        "Failed to create season state change event:",
+        eventResult.error
+      );
+      // Don't fail the state change if event creation fails
     }
   });
 

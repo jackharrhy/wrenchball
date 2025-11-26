@@ -78,7 +78,27 @@ if (!worksheet) {
 
 const imageDir = path.join(process.cwd(), "public", "images");
 
+const draftOrderLookup = {
+  Noran: 1,
+  Evan: 2,
+  Ethan: 3,
+  Luke: 4,
+  NDA: 5,
+  Jack: 6,
+  ADwy: 7,
+  Roomba: 8,
+  Michael: 9,
+  Luther: 10,
+};
+
 await db.transaction(async (tx) => {
+  const [season] = await tx
+    .insert(schema.season)
+    .values({
+      state: "pre-season",
+    })
+    .returning();
+
   for (const user of users) {
     console.log(`Inserting user ${user.name}`);
     const [dbUser] = await tx
@@ -104,6 +124,18 @@ await db.transaction(async (tx) => {
       userId: dbUser.id,
       abbreviation,
       color: "white",
+    });
+
+    const draftingTurn = draftOrderLookup[user.name];
+
+    if (!draftingTurn) {
+      throw new Error(`Drafting turn not found for ${user.name}`);
+    }
+
+    await tx.insert(schema.usersSeasons).values({
+      userId: dbUser.id,
+      seasonId: season.id,
+      draftingTurn,
     });
   }
 

@@ -1,11 +1,42 @@
 import type { Route } from "./+types/home";
+import { database } from "~/database/context";
+import { events } from "~/database/schema";
+import { desc } from "drizzle-orm";
+import { Events } from "~/components/Events";
 
-export default function Home({}: Route.ComponentProps) {
+export async function loader({}: Route.LoaderArgs) {
+  const db = database();
+
+  const allEvents = await db.query.events.findMany({
+    with: {
+      user: true,
+      draft: {
+        with: {
+          player: true,
+          team: true,
+        },
+      },
+      seasonStateChange: true,
+    },
+    orderBy: [desc(events.createdAt)],
+    limit: 50,
+  });
+
+  return { events: allEvents };
+}
+
+export default function Home({ loaderData }: Route.ComponentProps) {
   return (
     <>
-      <main className="text-center flex-1 flex flex-col gap-6">
-        <h1 className="text-6xl font-bold font-happiness">Lil Slug Crew</h1>
-        <h2 className="text-2xl font-bold">Welcome to Season 3!</h2>
+      <main className="flex-1 flex flex-col gap-6">
+        <div className="text-center">
+          <h1 className="text-6xl font-bold font-happiness">Lil Slug Crew</h1>
+          <h2 className="text-2xl font-bold">Welcome to Season 3!</h2>
+        </div>
+        <div className="max-w-4xl mx-auto w-full">
+          <h3 className="text-xl font-semibold mb-4">Recent Events</h3>
+          <Events events={loaderData.events} />
+        </div>
       </main>
       <footer className="text-center">
         <p>

@@ -244,7 +244,7 @@ export async function action({ request }: Route.ActionArgs) {
     }
 
     try {
-      await setSeasonState(db, state);
+      await setSeasonState(db, state, user.id);
       return {
         success: true,
         message: `Season state updated to: ${state}`,

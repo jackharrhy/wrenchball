@@ -1,10 +1,32 @@
 CREATE TYPE "public"."ability" AS ENUM('Enlarge', 'Super Jump', 'Clamber', 'Quick Throw', 'Super Dive', 'Tongue Catch', 'Spin Attack', 'Laser Beam', 'Teleport', 'Suction Catch', 'Burrow', 'Ball Dash', 'Hammer Throw', 'Magical Catch', 'Piranha Catch', 'Scatter Dive', 'Angry Attack', 'Ink Dive', 'Keeper Catch');--> statement-breakpoint
 CREATE TYPE "public"."direction" AS ENUM('Left', 'Right');--> statement-breakpoint
+CREATE TYPE "public"."event_type" AS ENUM('draft', 'season_state_change');--> statement-breakpoint
 CREATE TYPE "public"."fielding_positions" AS ENUM('C', '1B', '2B', '3B', 'SS', 'LF', 'CF', 'RF', 'P');--> statement-breakpoint
 CREATE TYPE "public"."hitting_trajectory" AS ENUM('Low', 'Medium', 'High');--> statement-breakpoint
 CREATE TYPE "public"."season_state" AS ENUM('pre-season', 'drafting', 'playing', 'finished');--> statement-breakpoint
 CREATE TYPE "public"."trade_status" AS ENUM('pending', 'accepted', 'denied');--> statement-breakpoint
 CREATE TYPE "public"."user_role" AS ENUM('admin', 'user');--> statement-breakpoint
+CREATE TABLE IF NOT EXISTS "event_draft" (
+	"event_id" integer PRIMARY KEY NOT NULL,
+	"player_id" integer NOT NULL,
+	"team_id" integer NOT NULL,
+	"pick_number" integer NOT NULL
+);
+--> statement-breakpoint
+CREATE TABLE IF NOT EXISTS "event_season_state_change" (
+	"event_id" integer PRIMARY KEY NOT NULL,
+	"from_state" "season_state",
+	"to_state" "season_state" NOT NULL
+);
+--> statement-breakpoint
+CREATE TABLE IF NOT EXISTS "events" (
+	"id" integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY (sequence name "events_id_seq" INCREMENT BY 1 MINVALUE 1 MAXVALUE 2147483647 START WITH 1 CACHE 1),
+	"event_type" "event_type" NOT NULL,
+	"user_id" integer,
+	"season_id" integer NOT NULL,
+	"created_at" timestamp DEFAULT now() NOT NULL
+);
+--> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "players" (
 	"id" integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY (sequence name "players_id_seq" INCREMENT BY 1 MINVALUE 1 MAXVALUE 2147483647 START WITH 1 CACHE 1),
 	"name" text NOT NULL,
@@ -94,6 +116,42 @@ CREATE TABLE IF NOT EXISTS "users_seasons" (
 	"drafting_turn" integer NOT NULL,
 	"pre_draft_player_id" integer
 );
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "event_draft" ADD CONSTRAINT "event_draft_event_id_events_id_fk" FOREIGN KEY ("event_id") REFERENCES "public"."events"("id") ON DELETE cascade ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "event_draft" ADD CONSTRAINT "event_draft_player_id_players_id_fk" FOREIGN KEY ("player_id") REFERENCES "public"."players"("id") ON DELETE cascade ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "event_draft" ADD CONSTRAINT "event_draft_team_id_team_id_fk" FOREIGN KEY ("team_id") REFERENCES "public"."team"("id") ON DELETE cascade ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "event_season_state_change" ADD CONSTRAINT "event_season_state_change_event_id_events_id_fk" FOREIGN KEY ("event_id") REFERENCES "public"."events"("id") ON DELETE cascade ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "events" ADD CONSTRAINT "events_user_id_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."user"("id") ON DELETE set null ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "events" ADD CONSTRAINT "events_season_id_season_id_fk" FOREIGN KEY ("season_id") REFERENCES "public"."season"("id") ON DELETE cascade ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
 --> statement-breakpoint
 DO $$ BEGIN
  ALTER TABLE "players" ADD CONSTRAINT "players_team_id_team_id_fk" FOREIGN KEY ("team_id") REFERENCES "public"."team"("id") ON DELETE set null ON UPDATE no action;

@@ -3,6 +3,7 @@ import { TEAM_SIZE } from "~/consts";
 import { database } from "~/database/context";
 import { players, season, teams, usersSeasons, users } from "~/database/schema";
 import { getSeasonState } from "./admin";
+import { createDraftEvent } from "./events";
 
 export const validateDraftPick = async (
   db: ReturnType<typeof database>,
@@ -107,6 +108,21 @@ export const draftPlayer = async (
       .set({ teamId: userTeam[0].id })
       .where(eq(players.id, playerId));
 
+    const seasonState = await getSeasonState(tx);
+    if (!seasonState) {
+      throw new Error("Season state not found");
+    }
+    const eventResult = await createDraftEvent(
+      tx,
+      userId,
+      playerId,
+      userTeam[0].id,
+      seasonState.id
+    );
+    if (!eventResult.success) {
+      throw new Error("Failed to create draft event");
+    }
+
     // Clear pre-draft selections for this player from all users
     await clearPreDraftForPlayer(tx, playerId);
 
@@ -204,7 +220,12 @@ const advanceToNextDrafter = async (
 
       if (player.length > 0 && player[0].teamId === null) {
         // Player is still available, attempt to draft with skipAutoDraft=true to prevent infinite loop
-        const result = await draftPlayer(db, nextUserId, preDraftPlayerId, true);
+        const result = await draftPlayer(
+          db,
+          nextUserId,
+          preDraftPlayerId,
+          true
+        );
         if (!result.success) {
           // Failed to auto-draft, clear the pre-draft
           await clearPreDraft(db, nextUserId);
@@ -342,7 +363,7 @@ export const attemptAutoDraft = async (
   userId: number
 ): Promise<{ autoDrafted: boolean; playerId?: number; error?: string }> => {
   const preDraftPlayerId = await getPreDraft(db, userId);
-  
+
   if (!preDraftPlayerId) {
     return { autoDrafted: false };
   }
@@ -357,23 +378,23 @@ export const attemptAutoDraft = async (
   if (player.length === 0 || player[0].teamId !== null) {
     // Player was already drafted, clear the pre-draft
     await clearPreDraft(db, userId);
-    return { 
-      autoDrafted: false, 
-      error: "Pre-drafted player was already taken" 
+    return {
+      autoDrafted: false,
+      error: "Pre-drafted player was already taken",
     };
   }
 
   // Attempt to draft the player
   const result = await draftPlayer(db, userId, preDraftPlayerId);
-  
+
   if (result.success) {
     return { autoDrafted: true, playerId: preDraftPlayerId };
   } else {
     // Failed to draft, clear pre-draft
     await clearPreDraft(db, userId);
-    return { 
-      autoDrafted: false, 
-      error: result.error 
+    return {
+      autoDrafted: false,
+      error: result.error,
     };
   }
 };

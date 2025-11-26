@@ -48,23 +48,36 @@ export function Events({ events }: { events: EventWithRelations[] }) {
               </div>
               <div className="flex-1 min-w-0">
                 <div className="text-sm font-medium">
-                  <span className="text-blue-400">
+                  <span className="text-orange-300 font-bold">
                     Pick #{event.draft.pickNumber}
                   </span>
                   {" - "}
-                  <span className="font-semibold">
-                    {event.draft.player.name}
-                  </span>
+                  <a
+                    href={`/player/${event.draft.player.id}`}
+                    className="hover:underline"
+                  >
+                    <span className="font-semibold">
+                      {event.draft.player.name}
+                    </span>
+                  </a>
                   {" drafted by "}
-                  <span className="text-yellow-400">
-                    {event.user?.name || "Unknown"}
-                  </span>
-                  {" to "}
-                  <span className="text-green-400">
-                    {event.draft.team.abbreviation}
-                  </span>
+                  <a
+                    href={`/team/${event.draft.team.id}`}
+                    className="hover:underline"
+                  >
+                    <span className="text-yellow-300 font-bold">
+                      {event.user?.name || "Unknown"}
+                    </span>
+                    {" to "}
+                    <span className="text-green-300 font-bold">
+                      {event.draft.team.name}
+                    </span>
+                  </a>
                 </div>
-                <div className="text-xs text-gray-400 mt-1">
+                <div
+                  className="text-xs text-gray-400 mt-1"
+                  title={event.createdAt.toLocaleString()}
+                >
                   {formatTimeAgo(new Date(event.createdAt))}
                 </div>
               </div>
@@ -84,7 +97,7 @@ export function Events({ events }: { events: EventWithRelations[] }) {
             >
               <div className="flex-1 min-w-0">
                 <div className="text-sm font-medium">
-                  <span className="text-purple-400">Season State Change</span>
+                  <span className="text-purple-300">Season State Change</span>
                   {": "}
                   {fromState ? (
                     <>
@@ -92,17 +105,20 @@ export function Events({ events }: { events: EventWithRelations[] }) {
                       {" → "}
                     </>
                   ) : null}
-                  <span className="font-semibold text-purple-300">
-                    {toState}
-                  </span>
+                  <span className="font-semibold text-pink-300">{toState}</span>
                   {event.user && (
                     <>
                       {" by "}
-                      <span className="text-yellow-400">{event.user.name}</span>
+                      <span className="text-yellow-300 font-bold">
+                        {event.user.name}
+                      </span>
                     </>
                   )}
                 </div>
-                <div className="text-xs text-gray-400 mt-1">
+                <div
+                  className="text-xs text-gray-400 mt-1"
+                  title={event.createdAt.toLocaleString()}
+                >
                   {formatTimeAgo(new Date(event.createdAt))}
                 </div>
               </div>

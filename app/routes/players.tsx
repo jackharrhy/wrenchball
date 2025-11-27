@@ -1,42 +1,52 @@
-import { PlayerIcon } from "~/components/PlayerIcon";
 import type { Route } from "./+types/players";
-import { db } from "~/database/db";
+import { Link, Outlet, useLocation } from "react-router";
 import { cn } from "~/utils/cn";
-import { Link } from "react-router";
 
-export async function loader({ request }: Route.LoaderArgs) {
-  const allPlayers = await db.query.players.findMany({
-    with: {
-      team: true,
-    },
-    orderBy: (players, { asc }) => asc(players.sortPosition),
-  });
+export default function Players({}: Route.ComponentProps) {
+  const location = useLocation();
+  const isGrid = location.pathname === "/players";
+  const isChemistry = location.pathname === "/players/chemistry";
+  const isChemistryGraph = location.pathname === "/players/chemistry-graph";
 
-  return { players: allPlayers };
-}
-
-export default function Players({ loaderData }: Route.ComponentProps) {
   return (
-    <div className="flex flex-col gap-4">
-      <div className="flex flex-wrap gap-4 justify-center">
-        {loaderData.players.map((player) => (
-          <Link
-            key={player.id}
-            to={`/player/${player.id}`}
-            className="relative flex flex-col items-center gap-2 p-4 border-2 border-cell-gray/50 rounded-lg w-36 h-23 bg-cell-gray/40 hover:bg-cell-gray/60 transition-colors"
-          >
-            <PlayerIcon player={player} />
-            <span className="text-xs text-center">{player.name}</span>
-            <span
-              className={cn(
-                "text-xs absolute top-1 right-1.5 opacity-50 rotate-8",
-                player.team?.abbreviation ? "" : "text-green-300",
-              )}
-            >
-              {player.team?.abbreviation ?? "Free"}
-            </span>
-          </Link>
-        ))}
+    <div className="flex flex-col gap-4 flex-1 min-h-0">
+      <div className="flex gap-2 shrink-0">
+        <Link
+          to="/players"
+          className={cn(
+            "px-4 py-2 rounded border-2 transition-colors",
+            isGrid
+              ? "bg-cell-gray/60 border-cell-gray"
+              : "bg-cell-gray/40 border-cell-gray/50 hover:bg-cell-gray/60",
+          )}
+        >
+          Grid View
+        </Link>
+        <Link
+          to="/players/chemistry"
+          className={cn(
+            "px-4 py-2 rounded border-2 transition-colors",
+            isChemistry
+              ? "bg-cell-gray/60 border-cell-gray"
+              : "bg-cell-gray/40 border-cell-gray/50 hover:bg-cell-gray/60",
+          )}
+        >
+          Chemistry Table
+        </Link>
+        <Link
+          to="/players/chemistry-graph"
+          className={cn(
+            "px-4 py-2 rounded border-2 transition-colors",
+            isChemistryGraph
+              ? "bg-cell-gray/60 border-cell-gray"
+              : "bg-cell-gray/40 border-cell-gray/50 hover:bg-cell-gray/60",
+          )}
+        >
+          Chemistry Graph
+        </Link>
+      </div>
+      <div className="flex-1 min-h-0">
+        <Outlet />
       </div>
     </div>
   );

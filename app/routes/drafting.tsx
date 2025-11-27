@@ -213,7 +213,7 @@ export async function action({ request }: Route.ActionArgs) {
     }
   }
 
-  return { success: false, error: "Invalid action" };
+  return { success: false, error: `Invalid action: ${intent}` };
 }
 
 export default function Drafting({
@@ -233,6 +233,7 @@ export default function Drafting({
   const [selectedPlayer, setSelectedPlayer] = useState<
     (typeof freeAgents)[0] | null
   >(null);
+  const [isLuckySelected, setIsLuckySelected] = useState(false);
   const [localHoverPlayer, setLocalHoverPlayer] = useState<
     (typeof freeAgents)[0] | null
   >(null);
@@ -263,6 +264,10 @@ export default function Drafting({
       }
       prevDraftingUserIdRef.current = currentDraftingUserId;
     }
+
+    // Clear lucky selection when draft completes
+    setIsLuckySelected(false);
+    setSelectedPlayer(null);
 
     revalidator.revalidate();
   }, "draft-update");
@@ -360,6 +365,24 @@ export default function Drafting({
             </div>
           )}
           <div className="flex flex-wrap gap-2 p-4">
+            {/* Lucky slot */}
+            <div className="relative">
+              <button
+                type="button"
+                onClick={() => {
+                  setIsLuckySelected(true);
+                  setSelectedPlayer(null);
+                  setLocalHoverPlayer(null);
+                }}
+                className={`border-1 border-cell-gray/50 rounded-md p-0.75 cursor-pointer transition-all w-full ${
+                  isLuckySelected
+                    ? "ring-2 ring-blue-400 border-blue-400"
+                    : "hover:border-cell-gray hover:ring-1 hover:ring-cell-gray/50"
+                }`}
+              >
+                <PlayerIcon player={null} size="lg" />
+              </button>
+            </div>
             {filteredFreeAgents.map((player) => {
               const isSelected = selectedPlayer?.id === player.id;
               const isOtherPlayerHover =
@@ -375,12 +398,14 @@ export default function Drafting({
                       if (selectedPlayer?.id === player.id) {
                         setSelectedPlayer(null);
                         setLocalHoverPlayer(null);
+                        setIsLuckySelected(false);
                         e.preventDefault();
                         return;
                       }
 
                       setSelectedPlayer(player);
                       setLocalHoverPlayer(null);
+                      setIsLuckySelected(false);
 
                       if (!isActiveDrafter) {
                         e.preventDefault();
@@ -469,7 +494,70 @@ export default function Drafting({
         </div>
 
         <div className="stats flex flex-col gap-1 border-b border-cell-gray/50">
-          {selectedPlayer || localHoverPlayer ? (
+          {isLuckySelected ? (
+            <>
+              <div className="flex items-center justify-center">
+                <div className="border-b-2 border-cell-gray/50">
+                  <PlayerIcon player={null} size="xl" />
+                </div>
+              </div>
+              <div className="mt-4 flex flex-col gap-2">
+                {currentDraftingUserId === user.id ? (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (freeAgents.length === 0 || isDrafting) {
+                        return;
+                      }
+                      const randomIndex = Math.floor(
+                        Math.random() * freeAgents.length,
+                      );
+                      const randomPlayer = freeAgents[randomIndex];
+                      submit(
+                        {
+                          intent: "draft-player",
+                          playerId: randomPlayer.id.toString(),
+                        },
+                        { method: "post" },
+                      );
+                      setIsLuckySelected(false);
+                    }}
+                    disabled={isDrafting || freeAgents.length === 0}
+                    className={`w-full px-4 py-2 rounded font-semibold transition-colors ${
+                      !isDrafting && freeAgents.length > 0
+                        ? "bg-green-600 hover:bg-green-700 text-white cursor-pointer"
+                        : "bg-gray-500 opacity-50 cursor-not-allowed text-white"
+                    }`}
+                  >
+                    {isDrafting
+                      ? "Drafting..."
+                      : freeAgents.length === 0
+                        ? "No free agents"
+                        : "I'm feeling lucky"}
+                  </button>
+                ) : (
+                  <div className="text-center text-gray-400 text-sm">
+                    You can't pre draft randomly!
+                  </div>
+                )}
+                {actionData?.error && (
+                  <div className="mt-2 text-red-400 text-sm">
+                    {actionData.error}
+                  </div>
+                )}
+                {actionData?.success && actionData.message && (
+                  <div className="mt-2 text-green-400 text-sm">
+                    {actionData.message}
+                  </div>
+                )}
+              </div>
+              <div className="p-4 overflow-y-auto">
+                <div className="text-center text-gray-400">
+                  Randomly draft a free agent
+                </div>
+              </div>
+            </>
+          ) : selectedPlayer || localHoverPlayer ? (
             <>
               <div className="flex items-center justify-center">
                 <div className="border-b-2 border-cell-gray/50">

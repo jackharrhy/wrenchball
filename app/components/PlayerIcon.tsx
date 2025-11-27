@@ -5,7 +5,7 @@ export function PlayerIcon({
   player,
   size = "md",
 }: {
-  player?: Pick<Player, "imageUrl" | "name"> | null;
+  player?: Pick<Player, "imageUrl" | "name" | "statsCharacter"> | null;
   size?: "sm" | "md" | "lg" | "xl";
 }) {
   const imageUrl =
@@ -22,7 +22,7 @@ export function PlayerIcon({
   return (
     <div
       className={cn("relative shrink-0", sizeClasses[size])}
-      data-player={player?.name}
+      data-player={player?.statsCharacter}
     >
       <img
         src={imageUrl}
@@ -32,7 +32,9 @@ export function PlayerIcon({
           player === null && "filter brightness-0 opacity-20",
         )}
         onMouseOver={(event) => {
-          document.body.dataset.player = player?.name;
+          if (!player?.statsCharacter) return;
+
+          document.body.dataset.player = player?.statsCharacter;
         }}
         onMouseLeave={(event) => {
           delete document.body.dataset.player;

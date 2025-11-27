@@ -166,6 +166,37 @@ for (let rowNum = 3; rowNum <= chemistryWorksheet.rowCount; rowNum++) {
   });
 }
 
+// Generate chem.css file
+const chemCssPath = path.join(process.cwd(), "app", "chem.css");
+const cssLines: string[] = [];
+
+// Generate CSS for positive chemistry (opacity: 1)
+for (const [character, relationships] of chemistryLookup.entries()) {
+  for (const otherCharacter of relationships.chemPlus) {
+    cssLines.push(
+      `[data-player="${character}"] [data-player="${otherCharacter}"] span {opacity: 1;}`,
+    );
+  }
+}
+
+// Generate CSS for negative chemistry (red filter)
+for (const [character, relationships] of chemistryLookup.entries()) {
+  for (const otherCharacter of relationships.chemMinus) {
+    cssLines.push(
+      `[data-player="${character}"] [data-player="${otherCharacter}"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}`,
+    );
+  }
+}
+
+// Sort CSS lines for consistent output
+cssLines.sort();
+
+// Write the CSS file
+await fs.writeFile(chemCssPath, cssLines.join("\n") + "\n", "utf8");
+console.log(
+  `Generated ${cssLines.length} chemistry CSS rules in ${chemCssPath}`,
+);
+
 const imageDir = path.join(process.cwd(), "public", "images");
 
 const draftOrderLookup = {

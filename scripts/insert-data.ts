@@ -78,6 +78,94 @@ if (!worksheet) {
   throw new Error("Worksheet not found");
 }
 
+const chemistryWorksheet = workbook.getWorksheet("Chemistry");
+
+if (!chemistryWorksheet) {
+  throw new Error("Chemistry worksheet not found");
+}
+
+type ChemistryLookup = Map<string, { chemPlus: string[]; chemMinus: string[] }>;
+
+const chemistryLookup: ChemistryLookup = new Map();
+
+const CHEM_GREEN = "FF00FF00";
+const CHEM_YELLOW = "FFFFFF00";
+const CHEM_RED = "FFFF0000";
+const CHEM_WHITE = "FFFFFFFF";
+
+const headerRow = chemistryWorksheet.getRow(1);
+const columnCharacterNames: (string | null)[] = [];
+headerRow.eachCell({ includeEmpty: true }, (cell, colNumber) => {
+  if (colNumber >= 3) {
+    const value = cell.value;
+    columnCharacterNames[colNumber] =
+      value && typeof value === "string" ? value.trim() : null;
+  }
+});
+
+const rowCharacterNames: Map<number, string> = new Map();
+for (let rowNum = 3; rowNum <= chemistryWorksheet.rowCount; rowNum++) {
+  const columnIndex = rowNum;
+  const characterName = columnCharacterNames[columnIndex];
+
+  if (characterName) {
+    rowCharacterNames.set(rowNum, characterName);
+    chemistryLookup.set(characterName, { chemPlus: [], chemMinus: [] });
+  }
+}
+
+for (let rowNum = 3; rowNum <= chemistryWorksheet.rowCount; rowNum++) {
+  const rowCharacterName = rowCharacterNames.get(rowNum);
+  if (!rowCharacterName) {
+    continue;
+  }
+
+  const row = chemistryWorksheet.getRow(rowNum);
+  row.eachCell({ includeEmpty: true }, (cell, colNumber) => {
+    if (colNumber < 3) return;
+
+    const columnCharacterName = columnCharacterNames[colNumber];
+    if (!columnCharacterName) return;
+
+    if (rowCharacterName === columnCharacterName) return;
+
+    const fill = cell.fill;
+    if (!fill || fill.type !== "pattern" || fill.pattern !== "solid") {
+      return;
+    }
+
+    const bgColor = fill.bgColor;
+    if (!bgColor || !bgColor.argb) {
+      return;
+    }
+
+    const argb = bgColor.argb.toUpperCase();
+    const cellAddress = cell.address;
+
+    if (argb === CHEM_WHITE) {
+      return;
+    }
+
+    if (argb === CHEM_GREEN || argb === CHEM_YELLOW) {
+      const entry = chemistryLookup.get(rowCharacterName);
+      if (entry && !entry.chemPlus.includes(columnCharacterName)) {
+        entry.chemPlus.push(columnCharacterName);
+      }
+    } else if (argb === CHEM_RED) {
+      const entry = chemistryLookup.get(rowCharacterName);
+      if (entry && !entry.chemMinus.includes(columnCharacterName)) {
+        entry.chemMinus.push(columnCharacterName);
+      }
+    } else {
+      throw new Error(
+        `Unknown chemistry color ARGB value "${argb}" at cell ${cellAddress} ` +
+          `(Row: ${rowCharacterName}, Column: ${columnCharacterName}). ` +
+          `Please add this ARGB value to the known colors.`,
+      );
+    }
+  });
+}
+
 const imageDir = path.join(process.cwd(), "public", "images");
 
 const draftOrderLookup = {
@@ -236,7 +324,7 @@ await db.transaction(async (tx) => {
         "players",
         "sideview",
         "right",
-        `${baseCharacterImageName}.png`
+        `${baseCharacterImageName}.png`,
       );
       if (
         await fs
@@ -247,7 +335,7 @@ await db.transaction(async (tx) => {
         imageUrl = `/images/players/sideview/right/${baseCharacterImageName}.png`;
       } else {
         throw new Error(
-          `Image not found for ${character!.toString()} (${rightSideviewPath})`
+          `Image not found for ${character!.toString()} (${rightSideviewPath})`,
         );
       }
       await tx.insert(schema.players).values({
@@ -257,6 +345,44 @@ await db.transaction(async (tx) => {
         sortPosition,
       });
       sortPosition++;
+    }
+  }
+
+  // Insert chemistry relationships
+  console.log("Inserting chemistry relationships");
+  const insertedChemistryPairs = new Set<string>();
+  for (const [character, relationships] of chemistryLookup.entries()) {
+    for (const otherCharacter of relationships.chemPlus) {
+      // Normalize pair: always store with character1 < character2 lexicographically
+      const [char1, char2] =
+        character < otherCharacter
+          ? [character, otherCharacter]
+          : [otherCharacter, character];
+      const pairKey = `${char1}|${char2}`;
+      if (!insertedChemistryPairs.has(pairKey)) {
+        insertedChemistryPairs.add(pairKey);
+        await tx.insert(schema.chemistry).values({
+          character1: char1,
+          character2: char2,
+          relationship: "positive",
+        });
+      }
+    }
+    for (const otherCharacter of relationships.chemMinus) {
+      // Normalize pair: always store with character1 < character2 lexicographically
+      const [char1, char2] =
+        character < otherCharacter
+          ? [character, otherCharacter]
+          : [otherCharacter, character];
+      const pairKey = `${char1}|${char2}`;
+      if (!insertedChemistryPairs.has(pairKey)) {
+        insertedChemistryPairs.add(pairKey);
+        await tx.insert(schema.chemistry).values({
+          character1: char1,
+          character2: char2,
+          relationship: "negative",
+        });
+      }
     }
   }
 

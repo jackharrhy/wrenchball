@@ -97,6 +97,54 @@ export const stats = pgTable("stat", {
 
 export type Stats = typeof stats.$inferSelect;
 
+export const chemistryRelationship = pgEnum("chemistry_relationship", [
+  "positive",
+  "negative",
+]);
+
+export type ChemistryRelationship =
+  (typeof chemistryRelationship.enumValues)[number];
+
+export const chemistry = pgTable("chemistry", {
+  character1: text("character1")
+    .notNull()
+    .references(() => stats.character, { onDelete: "cascade" }),
+  character2: text("character2")
+    .notNull()
+    .references(() => stats.character, { onDelete: "cascade" }),
+  relationship: chemistryRelationship("relationship").notNull(),
+}, (table) => ({
+  pk: {
+    primaryKey: {
+      columns: [table.character1, table.character2],
+    },
+  },
+}));
+
+export type Chemistry = typeof chemistry.$inferSelect;
+
+export const chemistryRelations = relations(chemistry, ({ one }) => ({
+  character1Stats: one(stats, {
+    fields: [chemistry.character1],
+    references: [stats.character],
+    relationName: "character1Stats",
+  }),
+  character2Stats: one(stats, {
+    fields: [chemistry.character2],
+    references: [stats.character],
+    relationName: "character2Stats",
+  }),
+}));
+
+export const statsRelations = relations(stats, ({ many }) => ({
+  chemistryAsCharacter1: many(chemistry, {
+    relationName: "character1Stats",
+  }),
+  chemistryAsCharacter2: many(chemistry, {
+    relationName: "character2Stats",
+  }),
+}));
+
 export const players = pgTable("players", {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
   name: text("name").notNull().unique(),

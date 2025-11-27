@@ -1,9 +1,68 @@
 {
-  "id": "26598a3e-61d7-48a5-a94e-f1d13253c530",
+  "id": "f0f29a51-2304-437c-96ba-aaa2ef94c1d6",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
+    "public.chemistry": {
+      "name": "chemistry",
+      "schema": "",
+      "columns": {
+        "character1": {
+          "name": "character1",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "character2": {
+          "name": "character2",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "relationship": {
+          "name": "relationship",
+          "type": "chemistry_relationship",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "chemistry_character1_stat_character_fk": {
+          "name": "chemistry_character1_stat_character_fk",
+          "tableFrom": "chemistry",
+          "tableTo": "stat",
+          "columnsFrom": [
+            "character1"
+          ],
+          "columnsTo": [
+            "character"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "chemistry_character2_stat_character_fk": {
+          "name": "chemistry_character2_stat_character_fk",
+          "tableFrom": "chemistry",
+          "tableTo": "stat",
+          "columnsFrom": [
+            "character2"
+          ],
+          "columnsTo": [
+            "character"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
     "public.event_draft": {
       "name": "event_draft",
       "schema": "",
@@ -1057,6 +1116,14 @@
         "Angry Attack",
         "Ink Dive",
         "Keeper Catch"
+      ]
+    },
+    "public.chemistry_relationship": {
+      "name": "chemistry_relationship",
+      "schema": "public",
+      "values": [
+        "positive",
+        "negative"
       ]
     },
     "public.direction": {

@@ -1,4 +1,5 @@
 CREATE TYPE "public"."ability" AS ENUM('Enlarge', 'Super Jump', 'Clamber', 'Quick Throw', 'Super Dive', 'Tongue Catch', 'Spin Attack', 'Laser Beam', 'Teleport', 'Suction Catch', 'Burrow', 'Ball Dash', 'Hammer Throw', 'Magical Catch', 'Piranha Catch', 'Scatter Dive', 'Angry Attack', 'Ink Dive', 'Keeper Catch');--> statement-breakpoint
+CREATE TYPE "public"."chemistry_relationship" AS ENUM('positive', 'negative');--> statement-breakpoint
 CREATE TYPE "public"."direction" AS ENUM('Left', 'Right');--> statement-breakpoint
 CREATE TYPE "public"."event_type" AS ENUM('draft', 'season_state_change', 'trade');--> statement-breakpoint
 CREATE TYPE "public"."fielding_positions" AS ENUM('C', '1B', '2B', '3B', 'SS', 'LF', 'CF', 'RF', 'P');--> statement-breakpoint
@@ -7,6 +8,12 @@ CREATE TYPE "public"."season_state" AS ENUM('pre-season', 'drafting', 'playing',
 CREATE TYPE "public"."trade_action" AS ENUM('proposed', 'accepted', 'rejected', 'cancelled');--> statement-breakpoint
 CREATE TYPE "public"."trade_status" AS ENUM('pending', 'accepted', 'denied');--> statement-breakpoint
 CREATE TYPE "public"."user_role" AS ENUM('admin', 'user');--> statement-breakpoint
+CREATE TABLE IF NOT EXISTS "chemistry" (
+	"character1" text NOT NULL,
+	"character2" text NOT NULL,
+	"relationship" "chemistry_relationship" NOT NULL
+);
+--> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "event_draft" (
 	"event_id" integer PRIMARY KEY NOT NULL,
 	"player_id" integer NOT NULL,
@@ -125,6 +132,18 @@ CREATE TABLE IF NOT EXISTS "users_seasons" (
 	"drafting_turn" integer NOT NULL,
 	"pre_draft_player_id" integer
 );
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "chemistry" ADD CONSTRAINT "chemistry_character1_stat_character_fk" FOREIGN KEY ("character1") REFERENCES "public"."stat"("character") ON DELETE cascade ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "chemistry" ADD CONSTRAINT "chemistry_character2_stat_character_fk" FOREIGN KEY ("character2") REFERENCES "public"."stat"("character") ON DELETE cascade ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
 --> statement-breakpoint
 DO $$ BEGIN
  ALTER TABLE "event_draft" ADD CONSTRAINT "event_draft_event_id_events_id_fk" FOREIGN KEY ("event_id") REFERENCES "public"."events"("id") ON DELETE cascade ON UPDATE no action;

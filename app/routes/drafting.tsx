@@ -37,7 +37,7 @@ export async function loader({ request }: Route.LoaderArgs) {
 
   const freeAgents = await db.query.players.findMany({
     where: (players, { isNull }) => isNull(players.teamId),
-    orderBy: (players, { asc }) => asc(players.name),
+    orderBy: (players, { asc }) => asc(players.sortPosition),
     with: {
       stats: true,
     },

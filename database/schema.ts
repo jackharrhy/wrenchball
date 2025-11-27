@@ -105,6 +105,7 @@ export const players = pgTable("players", {
   }),
   imageUrl: text("image_url"),
   statsCharacter: text("stats_character").references(() => stats.character),
+  sortPosition: integer("sort_position").notNull().unique(),
 });
 
 export type Player = typeof players.$inferSelect;

@@ -9,6 +9,7 @@ export async function loader({ request }: Route.LoaderArgs) {
     with: {
       team: true,
     },
+    orderBy: (players, { asc }) => asc(players.sortPosition),
   });
 
   return { players: allPlayers };

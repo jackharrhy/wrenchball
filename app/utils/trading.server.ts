@@ -286,13 +286,10 @@ export const createTradeRequest = async (
     fromUserId,
     tradeId,
     seasonState.id,
-    "proposed"
+    "proposed",
   );
   if (!eventResult.success) {
-    console.error(
-      "Failed to create trade proposal event:",
-      eventResult.error
-    );
+    console.error("Failed to create trade proposal event:", eventResult.error);
     // Don't fail the trade creation if event creation fails
   }
 
@@ -408,12 +405,12 @@ export const acceptTrade = async (
       userId,
       tradeId,
       seasonState.id,
-      "accepted"
+      "accepted",
     );
     if (!eventResult.success) {
       console.error(
         "Failed to create trade acceptance event:",
-        eventResult.error
+        eventResult.error,
       );
       // Don't fail the trade acceptance if event creation fails
     }
@@ -470,12 +467,12 @@ export const denyTrade = async (
     userId,
     tradeId,
     seasonState.id,
-    action
+    action,
   );
   if (!eventResult.success) {
     console.error(
       "Failed to create trade rejection/cancellation event:",
-      eventResult.error
+      eventResult.error,
     );
     // Don't fail the trade denial if event creation fails
   }

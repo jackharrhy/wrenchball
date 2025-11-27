@@ -21,7 +21,7 @@ import { BASE_URL } from "~/server-consts";
  */
 export const getPickNumber = async (
   db: Database,
-  seasonId: number
+  seasonId: number,
 ): Promise<number> => {
   const draftEvents = await db
     .select({ count: count() })
@@ -40,7 +40,7 @@ export const createDraftEvent = async (
   userId: number,
   playerId: number,
   teamId: number,
-  seasonId: number
+  seasonId: number,
 ): Promise<{ success: boolean; error?: string }> => {
   try {
     const pickNumber = await getPickNumber(db, seasonId);
@@ -93,7 +93,7 @@ export const createDraftEvent = async (
 
     await postEvent(
       "draft",
-      `_Pick #${pickNumber}_: **[${player.name}](${BASE_URL}/player/${player.id})** drafted by **[${user.name}](${BASE_URL}/team/${team.id})** to **[${team.name}](${BASE_URL}/team/${team.id})**`
+      `_Pick #${pickNumber}_: **[${player.name}](${BASE_URL}/player/${player.id})** drafted by **[${user.name}](${BASE_URL}/team/${team.id})** to **[${team.name}](${BASE_URL}/team/${team.id})**`,
     );
 
     return { success: true };
@@ -116,7 +116,7 @@ export const createSeasonStateChangeEvent = async (
   userId: number,
   fromState: SeasonState | null,
   toState: SeasonState,
-  seasonId: number
+  seasonId: number,
 ): Promise<{ success: boolean; error?: string }> => {
   try {
     const [event] = await db
@@ -146,7 +146,7 @@ export const createSeasonStateChangeEvent = async (
 
     await postEvent(
       "season_state_change",
-      `_Season State Change_: ${fromState ?? "unknown"} → **${toState}** by **${user.name}**`
+      `_Season State Change_: ${fromState ?? "unknown"} → **${toState}** by **${user.name}**`,
     );
 
     return { success: true };
@@ -171,7 +171,7 @@ export const createTradeEvent = async (
   userId: number,
   tradeId: number,
   seasonId: number,
-  action: TradeAction
+  action: TradeAction,
 ): Promise<{ success: boolean; error?: string }> => {
   try {
     const [event] = await db
@@ -210,10 +210,10 @@ export const createTradeEvent = async (
     }
 
     const fromPlayers = trade.tradePlayers.filter(
-      (tp) => tp.fromTeamId === trade.fromTeam.id
+      (tp) => tp.fromTeamId === trade.fromTeam.id,
     );
     const toPlayers = trade.tradePlayers.filter(
-      (tp) => tp.fromTeamId === trade.toTeam.id
+      (tp) => tp.fromTeamId === trade.toTeam.id,
     );
 
     // Build Discord message

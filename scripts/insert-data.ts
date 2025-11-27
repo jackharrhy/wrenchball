@@ -55,6 +55,8 @@ for (const row of miiCsv.data as any[]) {
   let favoriteColor = row.favorite_color;
   if (favoriteColor === "DarkGreen") {
     favoriteColor = "Green";
+  } else if (favoriteColor === "Green") {
+    favoriteColor = "Light Green";
   }
   favoriteColor = favoriteColor.replace(/([a-z])([A-Z])/g, "$1 $2");
   const gender = row.gender;
@@ -138,6 +140,8 @@ await db.transaction(async (tx) => {
       draftingTurn,
     });
   }
+
+  let sortPosition = 1;
 
   for (let i = 4; i <= worksheet.rowCount; i++) {
     const row = worksheet.getRow(i);
@@ -250,11 +254,22 @@ await db.transaction(async (tx) => {
         name: character!.toString(),
         imageUrl,
         statsCharacter: character!.toString(),
+        sortPosition,
       });
+      sortPosition++;
     }
   }
 
-  for (const mii of miis) {
+  // Sort Miis by character first, then by name
+  const sortedMiis = [...miis].sort((a, b) => {
+    const characterCompare = a.character.localeCompare(b.character);
+    if (characterCompare !== 0) {
+      return characterCompare;
+    }
+    return a.name.localeCompare(b.name);
+  });
+
+  for (const mii of sortedMiis) {
     console.log(`Inserting Mii ${mii.name}`);
     let imageUrl: string | null = null;
     const miiImagePath = path.join(imageDir, "miis", `${mii.name}.png`);
@@ -272,7 +287,9 @@ await db.transaction(async (tx) => {
       name: mii.name,
       imageUrl,
       statsCharacter: mii.character,
+      sortPosition,
     });
+    sortPosition++;
   }
 
   console.log("Data inserted successfully");

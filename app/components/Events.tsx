@@ -144,10 +144,10 @@ export function Events({ events }: { events: EventWithRelations[] }) {
         if (event.eventType === "trade" && event.trade) {
           const { trade, action } = event.trade;
           const fromPlayers = trade.tradePlayers.filter(
-            (tp) => tp.fromTeamId === trade.fromTeam.id
+            (tp) => tp.fromTeamId === trade.fromTeam.id,
           );
           const toPlayers = trade.tradePlayers.filter(
-            (tp) => tp.fromTeamId === trade.toTeam.id
+            (tp) => tp.fromTeamId === trade.toTeam.id,
           );
 
           let actionText: string;

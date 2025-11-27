@@ -40,7 +40,9 @@ CREATE TABLE IF NOT EXISTS "players" (
 	"team_id" integer,
 	"image_url" text,
 	"stats_character" text,
-	CONSTRAINT "players_name_unique" UNIQUE("name")
+	"sort_position" integer NOT NULL,
+	CONSTRAINT "players_name_unique" UNIQUE("name"),
+	CONSTRAINT "players_sort_position_unique" UNIQUE("sort_position")
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "season" (

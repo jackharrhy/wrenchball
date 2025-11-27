@@ -1,5 +1,5 @@
 {
-  "id": "b8dc984a-2e99-4d3c-9e72-6ae0a48e2311",
+  "id": "0dc5e3cf-36d9-475f-a9aa-96e6ca283e1c",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -314,6 +314,12 @@
           "type": "text",
           "primaryKey": false,
           "notNull": false
+        },
+        "sort_position": {
+          "name": "sort_position",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
         }
       },
       "indexes": {},
@@ -352,6 +358,13 @@
           "nullsNotDistinct": false,
           "columns": [
             "name"
+          ]
+        },
+        "players_sort_position_unique": {
+          "name": "players_sort_position_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "sort_position"
           ]
         }
       },

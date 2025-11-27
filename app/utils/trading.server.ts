@@ -7,8 +7,10 @@ import {
   players,
   teams,
   teamLineups,
+  season,
 } from "~/database/schema";
 import { getSeasonState } from "./admin.server";
+import { createTradeEvent } from "./events.server";
 
 export interface CreateTradeRequestParams {
   fromUserId: number;
@@ -273,6 +275,27 @@ export const createTradeRequest = async (
     return { success: false, error: "Failed to create trade" };
   }
 
+  // Create trade proposal event
+  const seasonState = await getSeasonState(db);
+  if (!seasonState) {
+    return { success: false, error: "No active season found" };
+  }
+
+  const eventResult = await createTradeEvent(
+    db,
+    fromUserId,
+    tradeId,
+    seasonState.id,
+    "proposed"
+  );
+  if (!eventResult.success) {
+    console.error(
+      "Failed to create trade proposal event:",
+      eventResult.error
+    );
+    // Don't fail the trade creation if event creation fails
+  }
+
   return { success: true, tradeId };
 };
 
@@ -373,6 +396,27 @@ export const acceptTrade = async (
       .update(trades)
       .set({ status: "accepted", updatedAt: new Date() })
       .where(eq(trades.id, tradeId));
+
+    // Create trade acceptance event
+    const seasonState = await getSeasonState(tx);
+    if (!seasonState) {
+      throw new Error("No active season found");
+    }
+
+    const eventResult = await createTradeEvent(
+      tx,
+      userId,
+      tradeId,
+      seasonState.id,
+      "accepted"
+    );
+    if (!eventResult.success) {
+      console.error(
+        "Failed to create trade acceptance event:",
+        eventResult.error
+      );
+      // Don't fail the trade acceptance if event creation fails
+    }
   });
 
   return { success: true };
@@ -406,10 +450,35 @@ export const denyTrade = async (
     };
   }
 
+  // Determine if it's a cancellation (by initiator) or rejection (by recipient)
+  const isCancellation = tradeData.fromUserId === userId;
+  const action = isCancellation ? "cancelled" : "rejected";
+
   await db
     .update(trades)
     .set({ status: "denied", updatedAt: new Date() })
     .where(eq(trades.id, tradeId));
+
+  // Create trade rejection/cancellation event
+  const seasonState = await getSeasonState(db);
+  if (!seasonState) {
+    return { success: false, error: "No active season found" };
+  }
+
+  const eventResult = await createTradeEvent(
+    db,
+    userId,
+    tradeId,
+    seasonState.id,
+    action
+  );
+  if (!eventResult.success) {
+    console.error(
+      "Failed to create trade rejection/cancellation event:",
+      eventResult.error
+    );
+    // Don't fail the trade denial if event creation fails
+  }
 
   return { success: true };
 };

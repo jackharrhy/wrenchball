@@ -150,7 +150,11 @@ export const seasonState = pgEnum("season_state", [
 
 export type SeasonState = (typeof seasonState.enumValues)[number];
 
-export const eventType = pgEnum("event_type", ["draft", "season_state_change"]);
+export const eventType = pgEnum("event_type", [
+  "draft",
+  "season_state_change",
+  "trade",
+]);
 
 export type EventType = (typeof eventType.enumValues)[number];
 
@@ -344,6 +348,27 @@ export const eventSeasonStateChange = pgTable("event_season_state_change", {
 
 export type EventSeasonStateChange = typeof eventSeasonStateChange.$inferSelect;
 
+export const tradeAction = pgEnum("trade_action", [
+  "proposed",
+  "accepted",
+  "rejected",
+  "cancelled",
+]);
+
+export type TradeAction = (typeof tradeAction.enumValues)[number];
+
+export const eventTrade = pgTable("event_trade", {
+  eventId: integer("event_id")
+    .primaryKey()
+    .references(() => events.id, { onDelete: "cascade" }),
+  tradeId: integer("trade_id")
+    .notNull()
+    .references(() => trades.id, { onDelete: "cascade" }),
+  action: tradeAction("action").notNull(),
+});
+
+export type EventTrade = typeof eventTrade.$inferSelect;
+
 export const eventsRelations = relations(events, ({ one, many }) => ({
   user: one(users, {
     fields: [events.userId],
@@ -360,6 +385,10 @@ export const eventsRelations = relations(events, ({ one, many }) => ({
   seasonStateChange: one(eventSeasonStateChange, {
     fields: [events.id],
     references: [eventSeasonStateChange.eventId],
+  }),
+  trade: one(eventTrade, {
+    fields: [events.id],
+    references: [eventTrade.eventId],
   }),
 }));
 
@@ -387,3 +416,14 @@ export const eventSeasonStateChangeRelations = relations(
     }),
   })
 );
+
+export const eventTradeRelations = relations(eventTrade, ({ one }) => ({
+  event: one(events, {
+    fields: [eventTrade.eventId],
+    references: [events.id],
+  }),
+  trade: one(trades, {
+    fields: [eventTrade.tradeId],
+    references: [trades.id],
+  }),
+}));

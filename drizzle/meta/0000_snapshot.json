@@ -1,5 +1,5 @@
 {
-  "id": "90df0431-27ed-40bc-b1ce-0532e2ce8f79",
+  "id": "b8dc984a-2e99-4d3c-9e72-6ae0a48e2311",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -114,6 +114,65 @@
           "tableTo": "events",
           "columnsFrom": [
             "event_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.event_trade": {
+      "name": "event_trade",
+      "schema": "",
+      "columns": {
+        "event_id": {
+          "name": "event_id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "trade_id": {
+          "name": "trade_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "action": {
+          "name": "action",
+          "type": "trade_action",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "event_trade_event_id_events_id_fk": {
+          "name": "event_trade_event_id_events_id_fk",
+          "tableFrom": "event_trade",
+          "tableTo": "events",
+          "columnsFrom": [
+            "event_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "event_trade_trade_id_trades_id_fk": {
+          "name": "event_trade_trade_id_trades_id_fk",
+          "tableFrom": "event_trade",
+          "tableTo": "trades",
+          "columnsFrom": [
+            "trade_id"
           ],
           "columnsTo": [
             "id"
@@ -1000,7 +1059,8 @@
       "schema": "public",
       "values": [
         "draft",
-        "season_state_change"
+        "season_state_change",
+        "trade"
       ]
     },
     "public.fielding_positions": {
@@ -1035,6 +1095,16 @@
         "drafting",
         "playing",
         "finished"
+      ]
+    },
+    "public.trade_action": {
+      "name": "trade_action",
+      "schema": "public",
+      "values": [
+        "proposed",
+        "accepted",
+        "rejected",
+        "cancelled"
       ]
     },
     "public.trade_status": {

@@ -4,10 +4,14 @@ import {
   events,
   eventDraft,
   eventSeasonStateChange,
+  eventTrade,
   type SeasonState,
+  type TradeAction,
   users,
   players,
   teams,
+  trades,
+  tradePlayers,
 } from "~/database/schema";
 import { postEvent } from "~/discord/client.server";
 import { BASE_URL } from "~/server-consts";
@@ -17,7 +21,7 @@ import { BASE_URL } from "~/server-consts";
  */
 export const getPickNumber = async (
   db: Database,
-  seasonId: number,
+  seasonId: number
 ): Promise<number> => {
   const draftEvents = await db
     .select({ count: count() })
@@ -36,7 +40,7 @@ export const createDraftEvent = async (
   userId: number,
   playerId: number,
   teamId: number,
-  seasonId: number,
+  seasonId: number
 ): Promise<{ success: boolean; error?: string }> => {
   try {
     const pickNumber = await getPickNumber(db, seasonId);
@@ -89,7 +93,7 @@ export const createDraftEvent = async (
 
     await postEvent(
       "draft",
-      `_Pick #${pickNumber}_: **[${player.name}](${BASE_URL}/player/${player.id})** drafted by **[${user.name}](${BASE_URL}/team/${team.id})** to **[${team.name}](${BASE_URL}/team/${team.id})**`,
+      `_Pick #${pickNumber}_: **[${player.name}](${BASE_URL}/player/${player.id})** drafted by **[${user.name}](${BASE_URL}/team/${team.id})** to **[${team.name}](${BASE_URL}/team/${team.id})**`
     );
 
     return { success: true };
@@ -112,7 +116,7 @@ export const createSeasonStateChangeEvent = async (
   userId: number,
   fromState: SeasonState | null,
   toState: SeasonState,
-  seasonId: number,
+  seasonId: number
 ): Promise<{ success: boolean; error?: string }> => {
   try {
     const [event] = await db
@@ -142,7 +146,7 @@ export const createSeasonStateChangeEvent = async (
 
     await postEvent(
       "season_state_change",
-      `_Season State Change_: ${fromState ?? "unknown"} → **${toState}** by **${user.name}**`,
+      `_Season State Change_: ${fromState ?? "unknown"} → **${toState}** by **${user.name}**`
     );
 
     return { success: true };
@@ -154,6 +158,101 @@ export const createSeasonStateChangeEvent = async (
         error instanceof Error
           ? error.message
           : "Failed to create season state change event",
+    };
+  }
+};
+
+/**
+ * Creates a trade event record
+ * Works within an existing transaction or creates its own if needed
+ */
+export const createTradeEvent = async (
+  db: Database,
+  userId: number,
+  tradeId: number,
+  seasonId: number,
+  action: TradeAction
+): Promise<{ success: boolean; error?: string }> => {
+  try {
+    const [event] = await db
+      .insert(events)
+      .values({
+        eventType: "trade",
+        userId,
+        seasonId,
+      })
+      .returning({ id: events.id });
+
+    await db.insert(eventTrade).values({
+      eventId: event.id,
+      tradeId,
+      action,
+    });
+
+    // Fetch trade with all relations for Discord message
+    const trade = await db.query.trades.findFirst({
+      where: eq(trades.id, tradeId),
+      with: {
+        fromUser: true,
+        toUser: true,
+        fromTeam: true,
+        toTeam: true,
+        tradePlayers: {
+          with: {
+            player: true,
+          },
+        },
+      },
+    });
+
+    if (!trade) {
+      throw new Error("Trade not found");
+    }
+
+    const fromPlayers = trade.tradePlayers.filter(
+      (tp) => tp.fromTeamId === trade.fromTeam.id
+    );
+    const toPlayers = trade.tradePlayers.filter(
+      (tp) => tp.fromTeamId === trade.toTeam.id
+    );
+
+    // Build Discord message
+    const fromPlayerLinks = fromPlayers
+      .map((tp) => `[${tp.player.name}](${BASE_URL}/player/${tp.player.id})`)
+      .join(", ");
+    const toPlayerLinks = toPlayers
+      .map((tp) => `[${tp.player.name}](${BASE_URL}/player/${tp.player.id})`)
+      .join(", ");
+
+    let actionPrefix: string;
+    if (action === "proposed") {
+      actionPrefix = "_Trade Proposed_";
+    } else if (action === "accepted") {
+      actionPrefix = "_Trade Accepted_";
+    } else if (action === "rejected") {
+      actionPrefix = "_Trade Rejected_";
+    } else {
+      actionPrefix = "_Trade Cancelled_";
+    }
+
+    let message = `${actionPrefix}: **[${trade.fromTeam.name}](${BASE_URL}/team/${trade.fromTeam.id})** `;
+    if (fromPlayers.length > 0) {
+      message += `sends ${fromPlayerLinks} `;
+    }
+    message += `↔ **[${trade.toTeam.name}](${BASE_URL}/team/${trade.toTeam.id})** `;
+    if (toPlayers.length > 0) {
+      message += `sends ${toPlayerLinks}`;
+    }
+
+    await postEvent("trade", message);
+
+    return { success: true };
+  } catch (error) {
+    console.error("Error creating trade event:", error);
+    return {
+      success: false,
+      error:
+        error instanceof Error ? error.message : "Failed to create trade event",
     };
   }
 };

@@ -15,6 +15,21 @@ export async function loader({}: Route.LoaderArgs) {
         },
       },
       seasonStateChange: true,
+      trade: {
+        with: {
+          trade: {
+            with: {
+              fromTeam: true,
+              toTeam: true,
+              tradePlayers: {
+                with: {
+                  player: true,
+                },
+              },
+            },
+          },
+        },
+      },
     },
     orderBy: [desc(events.createdAt)],
     limit: 50,

@@ -1,7 +1,15 @@
 import { eq, sql, asc } from "drizzle-orm";
-import { TEAM_SIZE } from "~/consts";
+import { TEAM_SIZE, LINEUP_SIZE } from "~/consts";
 import { type Database } from "~/database/db";
-import { players, season, teams, usersSeasons, users } from "~/database/schema";
+import {
+  players,
+  season,
+  teams,
+  usersSeasons,
+  users,
+  teamLineups,
+  type FieldingPosition,
+} from "~/database/schema";
 import { getSeasonState } from "./admin.server";
 import { createDraftEvent } from "./events.server";
 
@@ -79,6 +87,91 @@ export const validateDraftPick = async (
 };
 
 /**
+ * Adds a player to the team lineup if there's space, randomly assigning
+ * fielding position and batting order
+ */
+const addPlayerToLineup = async (
+  db: Database,
+  teamId: number,
+  playerId: number,
+): Promise<void> => {
+  // Get current lineup entries for this team
+  const currentLineup = await db
+    .select({
+      fieldingPosition: teamLineups.fieldingPosition,
+      battingOrder: teamLineups.battingOrder,
+    })
+    .from(teamLineups)
+    .innerJoin(players, eq(teamLineups.playerId, players.id))
+    .where(eq(players.teamId, teamId));
+
+  // If lineup is already full, don't add
+  if (currentLineup.length >= LINEUP_SIZE) {
+    return;
+  }
+
+  // Get all possible fielding positions
+  const allFieldingPositions: FieldingPosition[] = [
+    "C",
+    "1B",
+    "2B",
+    "3B",
+    "SS",
+    "LF",
+    "CF",
+    "RF",
+    "P",
+  ];
+
+  // Get used fielding positions and batting orders
+  const usedFieldingPositions = new Set(
+    currentLineup
+      .map((entry) => entry.fieldingPosition)
+      .filter((pos): pos is FieldingPosition => pos !== null),
+  );
+  const usedBattingOrders = new Set(
+    currentLineup
+      .map((entry) => entry.battingOrder)
+      .filter((order): order is number => order !== null),
+  );
+
+  // Find available fielding positions and batting orders
+  const availableFieldingPositions = allFieldingPositions.filter(
+    (pos) => !usedFieldingPositions.has(pos),
+  );
+  const availableBattingOrders = Array.from(
+    { length: LINEUP_SIZE },
+    (_, i) => i + 1,
+  ).filter((order) => !usedBattingOrders.has(order));
+
+  // If no available positions or batting orders, don't add
+  if (
+    availableFieldingPositions.length === 0 ||
+    availableBattingOrders.length === 0
+  ) {
+    return;
+  }
+
+  // Randomly select from available options
+  const randomFieldingPosition =
+    availableFieldingPositions[
+      Math.floor(Math.random() * availableFieldingPositions.length)
+    ];
+  const randomBattingOrder =
+    availableBattingOrders[
+      Math.floor(Math.random() * availableBattingOrders.length)
+    ];
+
+  // Insert into lineup
+  await db.insert(teamLineups).values({
+    playerId,
+    fieldingPosition: randomFieldingPosition,
+    battingOrder: randomBattingOrder,
+    isStarred: false,
+  });
+};
+
+/**
  * Drafts a player for a user and advances to the next drafter
  */
 export const draftPlayer = async (
@@ -107,6 +200,9 @@ export const draftPlayer = async (
       .update(players)
       .set({ teamId: userTeam[0].id })
       .where(eq(players.id, playerId));
+
+    // Add player to lineup if there's space
+    await addPlayerToLineup(tx, userTeam[0].id, playerId);
 
     const seasonState = await getSeasonState(tx);
     if (!seasonState) {

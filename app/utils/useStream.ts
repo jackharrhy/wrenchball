@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 
 export function useStream(
   onMessage: (data: any) => void,
-  eventType: string = "draft-update"
+  eventType: string = "draft-update",
 ) {
   const onMessageRef = useRef(onMessage);
 

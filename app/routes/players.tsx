@@ -1,11 +1,10 @@
 import { PlayerIcon } from "~/components/PlayerIcon";
 import type { Route } from "./+types/players";
-import { database } from "~/database/context";
+import { db } from "~/database/db";
 import { cn } from "~/utils/cn";
 import { Link } from "react-router";
 
 export async function loader({ request }: Route.LoaderArgs) {
-  const db = database();
   const allPlayers = await db.query.players.findMany({
     with: {
       team: true,
@@ -30,7 +29,7 @@ export default function Players({ loaderData }: Route.ComponentProps) {
             <span
               className={cn(
                 "text-xs absolute top-1 right-1.5 opacity-50 rotate-8",
-                player.team?.abbreviation ? "" : "text-green-300"
+                player.team?.abbreviation ? "" : "text-green-300",
               )}
             >
               {player.team?.abbreviation ?? "Free"}

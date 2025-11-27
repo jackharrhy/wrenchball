@@ -1,5 +1,5 @@
 import type { User } from "~/database/schema";
-import { database } from "~/database/context";
+import { db, type Database } from "~/database/db";
 import { TEAM_SIZE } from "~/consts";
 import { eq } from "drizzle-orm";
 import { teams } from "~/database/schema";
@@ -8,8 +8,6 @@ import { teams } from "~/database/schema";
  * Fetches a team with its players and lineup data
  */
 export async function getTeamWithPlayers(teamId: string | number) {
-  const db = database();
-
   const team = await db.query.teams.findFirst({
     where: (teams, { eq }) => eq(teams.id, Number(teamId)),
     with: {
@@ -51,9 +49,9 @@ export function checkCanEdit(user: User | null, teamUserId: number): boolean {
  * Returns an object with success status and optional error message
  */
 export async function updateTeamName(
-  db: ReturnType<typeof database>,
+  db: Database,
   teamId: string | number,
-  name: string | null
+  name: string | null,
 ): Promise<{ success: boolean; message?: string }> {
   if (typeof name !== "string" || !name.trim()) {
     return { success: true };

@@ -1,14 +1,14 @@
 import { eq, sql, asc } from "drizzle-orm";
 import { TEAM_SIZE } from "~/consts";
-import { database } from "~/database/context";
+import { type Database } from "~/database/db";
 import { players, season, teams, usersSeasons, users } from "~/database/schema";
-import { getSeasonState } from "./admin";
-import { createDraftEvent } from "./events";
+import { getSeasonState } from "./admin.server";
+import { createDraftEvent } from "./events.server";
 
 export const validateDraftPick = async (
-  db: ReturnType<typeof database>,
+  db: Database,
   userId: number,
-  playerId: number
+  playerId: number,
 ): Promise<{ valid: boolean; error?: string }> => {
   // 1. Check season is in drafting state
   const seasonState = await getSeasonState(db);
@@ -82,10 +82,10 @@ export const validateDraftPick = async (
  * Drafts a player for a user and advances to the next drafter
  */
 export const draftPlayer = async (
-  db: ReturnType<typeof database>,
+  db: Database,
   userId: number,
   playerId: number,
-  skipAutoDraft = false
+  skipAutoDraft = false,
 ): Promise<{ success: boolean; error?: string }> => {
   const validation = await validateDraftPick(db, userId, playerId);
   if (!validation.valid) {
@@ -117,7 +117,7 @@ export const draftPlayer = async (
       userId,
       playerId,
       userTeam[0].id,
-      seasonState.id
+      seasonState.id,
     );
     if (!eventResult.success) {
       throw new Error("Failed to create draft event");
@@ -142,9 +142,9 @@ export const draftPlayer = async (
  * Round 3 (forward): A picks, B picks, C picks
  */
 const advanceToNextDrafter = async (
-  db: ReturnType<typeof database>,
+  db: Database,
   currentUserId: number,
-  skipAutoDraft = false
+  skipAutoDraft = false,
 ): Promise<void> => {
   const seasonState = await db
     .select()
@@ -224,7 +224,7 @@ const advanceToNextDrafter = async (
           db,
           nextUserId,
           preDraftPlayerId,
-          true
+          true,
         );
         if (!result.success) {
           // Failed to auto-draft, clear the pre-draft
@@ -243,9 +243,9 @@ const advanceToNextDrafter = async (
  * Sets a pre-draft selection for a user
  */
 export const setPreDraft = async (
-  db: ReturnType<typeof database>,
+  db: Database,
   userId: number,
-  playerId: number
+  playerId: number,
 ): Promise<{ success: boolean; error?: string }> => {
   const seasonState = await getSeasonState(db);
   if (!seasonState) {
@@ -279,7 +279,7 @@ export const setPreDraft = async (
     .update(usersSeasons)
     .set({ preDraftPlayerId: playerId })
     .where(
-      sql`${usersSeasons.userId} = ${userId} AND ${usersSeasons.seasonId} = ${seasonState.id}`
+      sql`${usersSeasons.userId} = ${userId} AND ${usersSeasons.seasonId} = ${seasonState.id}`,
     );
 
   return { success: true };
@@ -289,8 +289,8 @@ export const setPreDraft = async (
  * Clears a pre-draft selection for a user
  */
 export const clearPreDraft = async (
-  db: ReturnType<typeof database>,
-  userId: number
+  db: Database,
+  userId: number,
 ): Promise<{ success: boolean; error?: string }> => {
   const seasonState = await getSeasonState(db);
   if (!seasonState) {
@@ -301,7 +301,7 @@ export const clearPreDraft = async (
     .update(usersSeasons)
     .set({ preDraftPlayerId: null })
     .where(
-      sql`${usersSeasons.userId} = ${userId} AND ${usersSeasons.seasonId} = ${seasonState.id}`
+      sql`${usersSeasons.userId} = ${userId} AND ${usersSeasons.seasonId} = ${seasonState.id}`,
     );
 
   return { success: true };
@@ -311,8 +311,8 @@ export const clearPreDraft = async (
  * Gets the pre-draft selection for a user
  */
 export const getPreDraft = async (
-  db: ReturnType<typeof database>,
-  userId: number
+  db: Database,
+  userId: number,
 ): Promise<number | null> => {
   const seasonState = await getSeasonState(db);
   if (!seasonState) {
@@ -323,7 +323,7 @@ export const getPreDraft = async (
     .select({ preDraftPlayerId: usersSeasons.preDraftPlayerId })
     .from(usersSeasons)
     .where(
-      sql`${usersSeasons.userId} = ${userId} AND ${usersSeasons.seasonId} = ${seasonState.id}`
+      sql`${usersSeasons.userId} = ${userId} AND ${usersSeasons.seasonId} = ${seasonState.id}`,
     )
     .limit(1);
 
@@ -338,8 +338,8 @@ export const getPreDraft = async (
  * Clears pre-draft selections for all users if the player is the pre-drafted player
  */
 export const clearPreDraftForPlayer = async (
-  db: ReturnType<typeof database>,
-  playerId: number
+  db: Database,
+  playerId: number,
 ): Promise<void> => {
   const seasonState = await getSeasonState(db);
   if (!seasonState) {
@@ -350,7 +350,7 @@ export const clearPreDraftForPlayer = async (
     .update(usersSeasons)
     .set({ preDraftPlayerId: null })
     .where(
-      sql`${usersSeasons.preDraftPlayerId} = ${playerId} AND ${usersSeasons.seasonId} = ${seasonState.id}`
+      sql`${usersSeasons.preDraftPlayerId} = ${playerId} AND ${usersSeasons.seasonId} = ${seasonState.id}`,
     );
 };
 
@@ -359,8 +359,8 @@ export const clearPreDraftForPlayer = async (
  * This should be called when it becomes a user's turn
  */
 export const attemptAutoDraft = async (
-  db: ReturnType<typeof database>,
-  userId: number
+  db: Database,
+  userId: number,
 ): Promise<{ autoDrafted: boolean; playerId?: number; error?: string }> => {
   const preDraftPlayerId = await getPreDraft(db, userId);
 

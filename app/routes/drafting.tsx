@@ -1,12 +1,12 @@
 import type { Route } from "./+types/drafting";
-import { database } from "~/database/context";
-import { getSeasonState, getDraftingOrder } from "~/utils/admin";
+import { db } from "~/database/db";
+import { getSeasonState, getDraftingOrder } from "~/utils/admin.server";
 import {
   draftPlayer,
   getPreDraft,
   setPreDraft,
   clearPreDraft,
-} from "~/utils/draft";
+} from "~/utils/draft.server";
 import { users, players } from "~/database/schema";
 import { eq, sql } from "drizzle-orm";
 import { PlayerIcon } from "~/components/PlayerIcon";
@@ -19,7 +19,7 @@ import { useStream } from "~/utils/useStream";
 
 export async function loader({ request }: Route.LoaderArgs) {
   const user = await requireUser(request);
-  const db = database();
+
   const seasonState = await getSeasonState(db);
 
   let currentDraftingUserName: string | null = null;
@@ -92,7 +92,6 @@ export async function action({ request }: Route.ActionArgs) {
       return { success: false, error: "Invalid player ID" };
     }
 
-    const db = database();
     const result = await draftPlayer(db, user.id, playerId);
 
     if (result.success) {
@@ -117,7 +116,6 @@ export async function action({ request }: Route.ActionArgs) {
       return { success: false, error: "Invalid player ID" };
     }
 
-    const db = database();
     const seasonState = await getSeasonState(db);
 
     if (
@@ -144,7 +142,6 @@ export async function action({ request }: Route.ActionArgs) {
       return { success: false, error: "Invalid player ID" };
     }
 
-    const db = database();
     const seasonState = await getSeasonState(db);
 
     if (
@@ -171,7 +168,6 @@ export async function action({ request }: Route.ActionArgs) {
       return { success: false, error: "Invalid player ID" };
     }
 
-    const db = database();
     const result = await setPreDraft(db, user.id, playerId);
 
     if (result.success) {
@@ -186,7 +182,6 @@ export async function action({ request }: Route.ActionArgs) {
   }
 
   if (intent === "clear-pre-draft") {
-    const db = database();
     const result = await clearPreDraft(db, user.id);
 
     if (result.success) {
@@ -291,7 +286,7 @@ export default function Drafting({
   }
 
   const filteredFreeAgents = freeAgents.filter((player) =>
-    player.name.toLowerCase().includes(searchQuery.toLowerCase())
+    player.name.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
   const orderedDraftingList = (() => {
@@ -309,7 +304,7 @@ export default function Drafting({
     }
 
     const currentIndexInRound = currentRoundOrder.findIndex(
-      (item) => item.userId === currentDraftingUserId
+      (item) => item.userId === currentDraftingUserId,
     );
 
     if (currentIndexInRound === -1) {
@@ -390,7 +385,7 @@ export default function Drafting({
                               intent: "drafting-player-hover",
                               playerId: player.id.toString(),
                             },
-                            { method: "post" }
+                            { method: "post" },
                           );
                         }
                       }}
@@ -560,7 +555,7 @@ export default function Drafting({
                 const isCurrentDrafter =
                   currentDraftingUserId === item.userId &&
                   orderedDraftingList.findIndex(
-                    (i) => i.userId === currentDraftingUserId
+                    (i) => i.userId === currentDraftingUserId,
                   ) === index;
                 return (
                   <div

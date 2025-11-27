@@ -1,6 +1,6 @@
 import { eq } from "drizzle-orm";
 import { createCookieSessionStorage, redirect } from "react-router";
-import { database } from "~/database/context";
+import { db } from "~/database/db";
 import { users } from "~/database/schema";
 
 type SessionData = {
@@ -24,7 +24,7 @@ const discordRedirectUri = process.env.DISCORD_REDIRECT_URI;
 
 if (!discordClientId || !discordRedirectUri || !discordClientSecret) {
   throw new Error(
-    "DISCORD_CLIENT_ID or DISCORD_REDIRECT_URI or DISCORD_CLIENT_SECRET is not set"
+    "DISCORD_CLIENT_ID or DISCORD_REDIRECT_URI or DISCORD_CLIENT_SECRET is not set",
   );
 }
 
@@ -80,8 +80,6 @@ export async function handleDiscordAuthCallback(request: Request) {
     if (!discordId) {
       return new Response("Failed to get Discord user ID", { status: 400 });
     }
-
-    const db = database();
 
     let user = await db
       .select()
@@ -162,8 +160,6 @@ export const requireUser = async (request: Request) => {
     throw redirect("/login");
   }
 
-  const db = database();
-
   const user = await db
     .select()
     .from(users)
@@ -184,7 +180,6 @@ export const getUser = async (request: Request) => {
     return null;
   }
 
-  const db = database();
   const user = await db
     .select()
     .from(users)
@@ -199,7 +194,7 @@ export const getUser = async (request: Request) => {
 
 export const impersonateUser = async (
   request: Request,
-  targetUserId: number
+  targetUserId: number,
 ) => {
   const currentUser = await requireUser(request);
 
@@ -207,7 +202,6 @@ export const impersonateUser = async (
     throw new Error("Only admins can impersonate users");
   }
 
-  const db = database();
   const targetUser = await db
     .select()
     .from(users)
@@ -241,7 +235,6 @@ export const getImpersonationInfo = async (request: Request) => {
     return null;
   }
 
-  const db = database();
   const originalUser = await db
     .select()
     .from(users)
@@ -266,7 +259,6 @@ export const returnToOriginalUser = async (request: Request) => {
     throw new Error("No original user found");
   }
 
-  const db = database();
   const originalUser = await db
     .select()
     .from(users)

@@ -1,13 +1,11 @@
 import type { Player } from "~/database/schema";
 import type { Route } from "./+types/teams";
-import { database } from "~/database/context";
+import { db } from "~/database/db";
 import { Link } from "react-router";
 import { TeamPlayerList } from "~/components/TeamPlayerList";
 import { TEAM_SIZE } from "~/consts";
 
 export async function loader({ request }: Route.LoaderArgs) {
-  const db = database();
-
   const allTeams = await db.query.teams.findMany({
     with: {
       players: true,

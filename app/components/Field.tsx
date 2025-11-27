@@ -10,7 +10,7 @@ const Position = ({
   players: (Player & { lineup?: TeamLineup })[];
 }) => {
   const player = players.find(
-    (player) => player.lineup?.fieldingPosition === position
+    (player) => player.lineup?.fieldingPosition === position,
   );
 
   let offset = "";

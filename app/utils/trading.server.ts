@@ -1,6 +1,6 @@
-import { eq, and, or, sql, desc, inArray } from "drizzle-orm";
+import { eq, and, or, sql, inArray } from "drizzle-orm";
 import { TEAM_SIZE, LINEUP_SIZE } from "~/consts";
-import { database } from "~/database/context";
+import { type Database } from "~/database/db";
 import {
   trades,
   tradePlayers,
@@ -8,7 +8,7 @@ import {
   teams,
   teamLineups,
 } from "~/database/schema";
-import { getSeasonState } from "./admin";
+import { getSeasonState } from "./admin.server";
 
 export interface CreateTradeRequestParams {
   fromUserId: number;
@@ -18,9 +18,9 @@ export interface CreateTradeRequestParams {
 }
 
 export const validateTradeRequest = async (
-  db: ReturnType<typeof database>,
+  db: Database,
   params: CreateTradeRequestParams,
-  excludeTradeId?: number
+  excludeTradeId?: number,
 ): Promise<{ valid: boolean; error?: string }> => {
   const { fromUserId, toUserId, fromPlayerIds, toPlayerIds } = params;
 
@@ -121,7 +121,7 @@ export const validateTradeRequest = async (
         eq(trades.fromUserId, fromUserId),
         eq(trades.toUserId, fromUserId),
         eq(trades.fromUserId, toUserId),
-        eq(trades.toUserId, toUserId)
+        eq(trades.toUserId, toUserId),
       ),
     ];
 
@@ -142,12 +142,12 @@ export const validateTradeRequest = async (
 
     // Group by player to see which specific players are already in pending trades
     const playersInPendingTrades = new Set(
-      pendingTradesWithPlayers.map((p) => p.playerId)
+      pendingTradesWithPlayers.map((p) => p.playerId),
     );
 
     // Check if any of the players we're trying to trade are already in pending trades
     const conflictingPlayers = allPlayerIds.filter((playerId) =>
-      playersInPendingTrades.has(playerId)
+      playersInPendingTrades.has(playerId),
     );
 
     if (conflictingPlayers.length > 0) {
@@ -204,8 +204,8 @@ export const validateTradeRequest = async (
 };
 
 export const createTradeRequest = async (
-  db: ReturnType<typeof database>,
-  params: CreateTradeRequestParams
+  db: Database,
+  params: CreateTradeRequestParams,
 ): Promise<{ success: boolean; error?: string; tradeId?: number }> => {
   const validation = await validateTradeRequest(db, params);
   if (!validation.valid) {
@@ -252,7 +252,7 @@ export const createTradeRequest = async (
           playerId,
           fromTeamId,
           toTeamId,
-        }))
+        })),
       );
     }
 
@@ -264,7 +264,7 @@ export const createTradeRequest = async (
           playerId,
           fromTeamId: toTeamId,
           toTeamId: fromTeamId,
-        }))
+        })),
       );
     }
   });
@@ -277,9 +277,9 @@ export const createTradeRequest = async (
 };
 
 export const acceptTrade = async (
-  db: ReturnType<typeof database>,
+  db: Database,
   tradeId: number,
-  userId: number
+  userId: number,
 ): Promise<{ success: boolean; error?: string }> => {
   const trade = await db
     .select()
@@ -340,7 +340,7 @@ export const acceptTrade = async (
       fromPlayerIds,
       toPlayerIds,
     },
-    tradeId
+    tradeId,
   );
 
   if (!validation.valid) {
@@ -379,9 +379,9 @@ export const acceptTrade = async (
 };
 
 export const denyTrade = async (
-  db: ReturnType<typeof database>,
+  db: Database,
   tradeId: number,
-  userId: number
+  userId: number,
 ): Promise<{ success: boolean; error?: string }> => {
   const trade = await db
     .select()
@@ -400,7 +400,10 @@ export const denyTrade = async (
   }
 
   if (tradeData.fromUserId !== userId && tradeData.toUserId !== userId) {
-    return { success: false, error: "You are not authorized to deny this trade" };
+    return {
+      success: false,
+      error: "You are not authorized to deny this trade",
+    };
   }
 
   await db
@@ -411,15 +414,12 @@ export const denyTrade = async (
   return { success: true };
 };
 
-export const getPendingTradesForUser = async (
-  db: ReturnType<typeof database>,
-  userId: number
-) => {
+export const getPendingTradesForUser = async (db: Database, userId: number) => {
   const pendingTrades = await db.query.trades.findMany({
     where: (trades, { and, eq }) =>
       and(
         or(eq(trades.toUserId, userId), eq(trades.fromUserId, userId)),
-        eq(trades.status, "pending")
+        eq(trades.status, "pending"),
       ),
     orderBy: (trades, { desc }) => desc(trades.createdAt),
     with: {
@@ -439,7 +439,7 @@ export const getPendingTradesForUser = async (
 };
 
 export const getTrades = async (
-  db: ReturnType<typeof database>,
+  db: Database,
   {
     page = 1,
     pageSize = 20,
@@ -450,7 +450,7 @@ export const getTrades = async (
     pageSize?: number;
     userId?: number;
     order?: "asc" | "desc";
-  } = {}
+  } = {},
 ) => {
   const offset = (page - 1) * pageSize;
 
@@ -458,7 +458,7 @@ export const getTrades = async (
   if (userId !== undefined) {
     whereClause = or(
       eq(trades.fromUserId, userId),
-      eq(trades.toUserId, userId)
+      eq(trades.toUserId, userId),
     );
   }
 

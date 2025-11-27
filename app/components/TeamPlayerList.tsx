@@ -19,7 +19,7 @@ export const TeamPlayer = ({
         <p
           className={cn(
             "text-xs w-full italic opacity-60",
-            size === "sm" ? "text-xs" : "text-sm"
+            size === "sm" ? "text-xs" : "text-sm",
           )}
         >
           Empty
@@ -39,7 +39,7 @@ export const TeamPlayer = ({
           className={cn(
             "text-xs w-full transition-all",
             size === "sm" ? "text-xs" : "text-sm",
-            "group-hover:underline"
+            "group-hover:underline",
           )}
         >
           {player.name ?? "Empty"}

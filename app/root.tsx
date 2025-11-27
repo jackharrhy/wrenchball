@@ -12,10 +12,10 @@ import "./app.css";
 import "./chem.css";
 import { Nav } from "./components/Nav";
 import { getUser, getImpersonationInfo } from "./auth.server";
-import { database } from "~/database/context";
+import { db } from "~/database/db";
 import { teams } from "~/database/schema";
 import { eq } from "drizzle-orm";
-import { getSeasonState } from "./utils/admin";
+import { getSeasonState } from "./utils/admin.server";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -47,13 +47,13 @@ export function Layout({ children }: { children: React.ReactNode }) {
 export async function loader({ request }: Route.LoaderArgs) {
   const [userResult, seasonStateResult, impersonationInfo] = await Promise.all([
     getUser(request),
-    getSeasonState(database()),
+    getSeasonState(db),
     getImpersonationInfo(request),
   ]);
   const user = userResult ?? undefined;
   const team =
     user &&
-    (await database().query.teams.findFirst({
+    (await db.query.teams.findFirst({
       where: eq(teams.userId, user.id),
     }));
   const seasonState = seasonStateResult?.state ?? undefined;

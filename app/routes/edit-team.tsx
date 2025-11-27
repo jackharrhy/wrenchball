@@ -1,5 +1,5 @@
 import type { Route } from "./+types/edit-team";
-import { database } from "~/database/context";
+import { db } from "~/database/db";
 import { TeamPlayerList } from "~/components/TeamPlayerList";
 import { getUser } from "~/auth.server";
 import { useSubmit } from "react-router";
@@ -10,11 +10,10 @@ import {
   fillPlayersToTeamSize,
   checkCanEdit,
   updateTeamName,
-} from "~/utils/team";
+} from "~/utils/team.server";
 
 async function getTeamWithPermissionCheck(teamId: string, request: Request) {
   const user = await getUser(request);
-  const db = database();
 
   const team = await getTeamWithPlayers(teamId);
 
@@ -55,7 +54,7 @@ export async function action({
     return await updateTeamName(
       db,
       teamId,
-      typeof name === "string" ? name : null
+      typeof name === "string" ? name : null,
     );
   }
 

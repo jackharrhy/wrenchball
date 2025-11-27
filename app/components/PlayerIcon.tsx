@@ -29,7 +29,7 @@ export function PlayerIcon({
         alt={alt}
         className={cn(
           "object-fit drop-shadow-sm h-full w-full",
-          player === null && "filter brightness-0 opacity-20"
+          player === null && "filter brightness-0 opacity-20",
         )}
         onMouseOver={(event) => {
           document.body.dataset.player = player?.name;

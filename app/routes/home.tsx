@@ -1,12 +1,10 @@
 import type { Route } from "./+types/home";
-import { database } from "~/database/context";
+import { db } from "~/database/db";
 import { events } from "~/database/schema";
 import { desc } from "drizzle-orm";
 import { Events } from "~/components/Events";
 
 export async function loader({}: Route.LoaderArgs) {
-  const db = database();
-
   const allEvents = await db.query.events.findMany({
     with: {
       user: true,

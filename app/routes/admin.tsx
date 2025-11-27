@@ -1,7 +1,7 @@
 import { redirect, Form, Link } from "react-router";
 import type { Route } from "./+types/admin";
 import { requireUser, impersonateUser } from "~/auth.server";
-import { database } from "~/database/context";
+import { db } from "~/database/db";
 import { seasonState, type SeasonState } from "~/database/schema";
 import {
   randomAssignTeams,
@@ -16,7 +16,7 @@ import {
   deleteUser,
   createUser,
   setCurrentDraftingUser,
-} from "~/utils/admin";
+} from "~/utils/admin.server";
 
 export async function loader({ request }: Route.LoaderArgs) {
   const user = await requireUser(request);
@@ -25,7 +25,6 @@ export async function loader({ request }: Route.LoaderArgs) {
     throw redirect("/");
   }
 
-  const db = database();
   const currentState = await getSeasonState(db);
   const draftingOrder = await getDraftingOrder(db);
 
@@ -47,7 +46,7 @@ export async function clientAction({
   if (intent === "set-season-state") {
     const state = formData.get("state") as string;
     const confirmed = confirm(
-      `Are you sure you want to change the season state to "${state}"?`
+      `Are you sure you want to change the season state to "${state}"?`,
     );
     if (!confirmed) {
       return { success: false, message: "State change cancelled" };
@@ -56,7 +55,7 @@ export async function clientAction({
 
   if (intent === "wipe-teams") {
     const confirmed = confirm(
-      "Are you sure you want to remove all players from teams? This cannot be undone."
+      "Are you sure you want to remove all players from teams? This cannot be undone.",
     );
     if (!confirmed) {
       return { success: false, message: "Team wipe cancelled" };
@@ -65,7 +64,7 @@ export async function clientAction({
 
   if (intent === "wipe-trades") {
     const confirmed = confirm(
-      "Are you sure you want to delete all trades? This cannot be undone."
+      "Are you sure you want to delete all trades? This cannot be undone.",
     );
     if (!confirmed) {
       return { success: false, message: "Trade wipe cancelled" };
@@ -74,7 +73,7 @@ export async function clientAction({
 
   if (intent === "create-draft-entries") {
     const confirmed = confirm(
-      "Are you sure you want to add all users to the current season's draft order?"
+      "Are you sure you want to add all users to the current season's draft order?",
     );
     if (!confirmed) {
       return { success: false, message: "Draft entry creation cancelled" };
@@ -83,7 +82,7 @@ export async function clientAction({
 
   if (intent === "random-assign-players") {
     const confirmed = confirm(
-      "Are you sure you want to randomly assign players to teams?"
+      "Are you sure you want to randomly assign players to teams?",
     );
     if (!confirmed) {
       return { success: false, message: "Player assignment cancelled" };
@@ -92,7 +91,7 @@ export async function clientAction({
 
   if (intent === "random-assign-draft-order") {
     const confirmed = confirm(
-      "Are you sure you want to randomly assign the draft order?"
+      "Are you sure you want to randomly assign the draft order?",
     );
     if (!confirmed) {
       return { success: false, message: "Draft order randomization cancelled" };
@@ -103,7 +102,7 @@ export async function clientAction({
     const userId = formData.get("userId");
     const userName = formData.get("userName");
     const confirmed = confirm(
-      `Are you sure you want to delete user "${userName}"? This will also delete their team, remove players from their team, and cannot be undone.`
+      `Are you sure you want to delete user "${userName}"? This will also delete their team, remove players from their team, and cannot be undone.`,
     );
     if (!confirmed) {
       return { success: false, message: "User deletion cancelled" };
@@ -124,7 +123,7 @@ export async function clientAction({
     const userId = formData.get("userId");
     const userName = formData.get("userName");
     const confirmed = confirm(
-      `Are you sure you want to set "${userName}" as the current drafting user?`
+      `Are you sure you want to set "${userName}" as the current drafting user?`,
     );
     if (!confirmed) {
       return { success: false, message: "Action cancelled" };
@@ -135,7 +134,7 @@ export async function clientAction({
     const userId = formData.get("userId");
     const userName = formData.get("userName");
     const confirmed = confirm(
-      `Are you sure you want to impersonate "${userName}"? You will be logged in as this user.`
+      `Are you sure you want to impersonate "${userName}"? You will be logged in as this user.`,
     );
     if (!confirmed) {
       return { success: false, message: "Impersonation cancelled" };
@@ -154,7 +153,6 @@ export async function action({ request }: Route.ActionArgs) {
 
   const formData = await request.formData();
   const intent = formData.get("intent");
-  const db = database();
 
   if (intent === "wipe-teams") {
     try {

@@ -1,18 +1,23 @@
 import { eq, and, count } from "drizzle-orm";
-import { database } from "~/database/context";
+import { type Database } from "~/database/db";
 import {
   events,
   eventDraft,
   eventSeasonStateChange,
   type SeasonState,
+  users,
+  players,
+  teams,
 } from "~/database/schema";
+import { postEvent } from "~/discord/client.server";
+import { BASE_URL } from "~/server-consts";
 
 /**
  * Calculates the next pick number for a season by counting existing draft events
  */
 export const getPickNumber = async (
-  db: ReturnType<typeof database>,
-  seasonId: number
+  db: Database,
+  seasonId: number,
 ): Promise<number> => {
   const draftEvents = await db
     .select({ count: count() })
@@ -27,11 +32,11 @@ export const getPickNumber = async (
  * Works within an existing transaction or creates its own if needed
  */
 export const createDraftEvent = async (
-  db: ReturnType<typeof database>,
+  db: Database,
   userId: number,
   playerId: number,
   teamId: number,
-  seasonId: number
+  seasonId: number,
 ): Promise<{ success: boolean; error?: string }> => {
   try {
     const pickNumber = await getPickNumber(db, seasonId);
@@ -52,6 +57,41 @@ export const createDraftEvent = async (
       pickNumber,
     });
 
+    const [user] = await db
+      .select()
+      .from(users)
+      .where(eq(users.id, userId))
+      .limit(1);
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    const [player] = await db
+      .select()
+      .from(players)
+      .where(eq(players.id, playerId))
+      .limit(1);
+
+    if (!player) {
+      throw new Error("Player not found");
+    }
+
+    const [team] = await db
+      .select()
+      .from(teams)
+      .where(eq(teams.id, teamId))
+      .limit(1);
+
+    if (!team) {
+      throw new Error("Team not found");
+    }
+
+    await postEvent(
+      "draft",
+      `_Pick #${pickNumber}_: **[${player.name}](${BASE_URL}/player/${player.id})** drafted by **[${user.name}](${BASE_URL}/team/${team.id})** to **[${team.name}](${BASE_URL}/team/${team.id})**`,
+    );
+
     return { success: true };
   } catch (error) {
     console.error("Error creating draft event:", error);
@@ -68,11 +108,11 @@ export const createDraftEvent = async (
  * Works within an existing transaction or creates its own if needed
  */
 export const createSeasonStateChangeEvent = async (
-  db: ReturnType<typeof database>,
-  userId: number | null,
+  db: Database,
+  userId: number,
   fromState: SeasonState | null,
   toState: SeasonState,
-  seasonId: number
+  seasonId: number,
 ): Promise<{ success: boolean; error?: string }> => {
   try {
     const [event] = await db
@@ -89,6 +129,21 @@ export const createSeasonStateChangeEvent = async (
       fromState,
       toState,
     });
+
+    const [user] = await db
+      .select()
+      .from(users)
+      .where(eq(users.id, userId))
+      .limit(1);
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    await postEvent(
+      "season_state_change",
+      `_Season State Change_: ${fromState ?? "unknown"} → **${toState}** by **${user.name}**`,
+    );
 
     return { success: true };
   } catch (error) {

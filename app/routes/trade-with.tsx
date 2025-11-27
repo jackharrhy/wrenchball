@@ -1,8 +1,8 @@
 import type { Route } from "./+types/trade-with";
-import { database } from "~/database/context";
+import { db } from "~/database/db";
 import { requireUser } from "~/auth.server";
-import { getSeasonState } from "~/utils/admin";
-import { createTradeRequest } from "~/utils/trading";
+import { getSeasonState } from "~/utils/admin.server";
+import { createTradeRequest } from "~/utils/trading.server";
 import { PlayerIcon } from "~/components/PlayerIcon";
 import { Form, redirect, useActionData, useNavigation } from "react-router";
 import { useState } from "react";
@@ -12,7 +12,7 @@ export async function loader({
   request,
 }: Route.LoaderArgs) {
   const user = await requireUser(request);
-  const db = database();
+
   const seasonState = await getSeasonState(db);
 
   if (seasonState?.state !== "playing") {
@@ -70,7 +70,7 @@ export async function action({
   request,
 }: Route.ActionArgs) {
   const user = await requireUser(request);
-  const db = database();
+
   const formData = await request.formData();
 
   const fromPlayerIdsStr = formData.get("fromPlayerIds");
@@ -130,7 +130,7 @@ function usePlayerSelection() {
     setSelectedPlayerIds((prev) =>
       prev.includes(playerId)
         ? prev.filter((id) => id !== playerId)
-        : [...prev, playerId]
+        : [...prev, playerId],
     );
   };
 

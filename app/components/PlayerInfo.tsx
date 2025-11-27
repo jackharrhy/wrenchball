@@ -15,14 +15,14 @@ export function PlayerInfo({
       className={cn(
         isCompact
           ? "flex flex-col gap-3"
-          : "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8"
+          : "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8",
       )}
     >
       <div className={cn(isCompact ? "space-y-1" : "space-y-2")}>
         <h3
           className={cn(
             "font-semibold border-b border-gray-300 pb-1",
-            isCompact ? "text-sm" : "text-lg"
+            isCompact ? "text-sm" : "text-lg",
           )}
         >
           Basic Info
@@ -59,7 +59,7 @@ export function PlayerInfo({
         <h3
           className={cn(
             "font-semibold border-b border-gray-300 pb-1",
-            isCompact ? "text-sm" : "text-lg"
+            isCompact ? "text-sm" : "text-lg",
           )}
         >
           Batting
@@ -100,7 +100,7 @@ export function PlayerInfo({
         <h3
           className={cn(
             "font-semibold border-b border-gray-300 pb-1",
-            isCompact ? "text-sm" : "text-lg"
+            isCompact ? "text-sm" : "text-lg",
           )}
         >
           Pitching & Fielding
@@ -141,7 +141,7 @@ export function PlayerInfo({
         <h3
           className={cn(
             "font-semibold border-b border-gray-300 pb-1",
-            isCompact ? "text-sm" : "text-lg"
+            isCompact ? "text-sm" : "text-lg",
           )}
         >
           Displayed Stats

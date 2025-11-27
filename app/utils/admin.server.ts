@@ -1,6 +1,6 @@
 import { eq, isNull, and, asc } from "drizzle-orm";
 import { LINEUP_SIZE, TEAM_SIZE } from "~/consts";
-import { database } from "~/database/context";
+import { type Database } from "~/database/db";
 import {
   players,
   season,
@@ -14,23 +14,23 @@ import {
   type Season as SeasonType,
   type SeasonState,
 } from "~/database/schema";
-import { createSeasonStateChangeEvent } from "./events";
+import { createSeasonStateChangeEvent } from "./events.server";
 
-export const wipeTeams = async (db: ReturnType<typeof database>) => {
+export const wipeTeams = async (db: Database) => {
   await db.transaction(async (tx) => {
     await tx.delete(teamLineups);
     await tx.update(players).set({ teamId: null });
   });
 };
 
-export const wipeTrades = async (db: ReturnType<typeof database>) => {
+export const wipeTrades = async (db: Database) => {
   await db.transaction(async (tx) => {
     await tx.delete(tradePlayers);
     await tx.delete(trades);
   });
 };
 
-export const randomAssignTeams = async (db: ReturnType<typeof database>) => {
+export const randomAssignTeams = async (db: Database) => {
   await db.transaction(async (tx) => {
     const allTeams = await tx.select({ id: teams.id }).from(teams);
     const unassignedPlayers = await tx
@@ -43,7 +43,7 @@ export const randomAssignTeams = async (db: ReturnType<typeof database>) => {
     }
 
     const shuffledPlayers = [...unassignedPlayers].sort(
-      () => Math.random() - 0.5
+      () => Math.random() - 0.5,
     );
 
     let teamIndex = 0;
@@ -100,7 +100,7 @@ export const randomAssignTeams = async (db: ReturnType<typeof database>) => {
       }
 
       const shuffledTeamPlayers = [...teamPlayers].sort(
-        () => Math.random() - 0.5
+        () => Math.random() - 0.5,
       );
 
       const positions = [
@@ -134,7 +134,7 @@ export const randomAssignTeams = async (db: ReturnType<typeof database>) => {
 };
 
 export const getSeasonState = async (
-  db: ReturnType<typeof database>
+  db: Database,
 ): Promise<SeasonType | null> => {
   const state = await db.select().from(season).where(eq(season.id, 1)).limit(1);
 
@@ -142,9 +142,9 @@ export const getSeasonState = async (
 };
 
 export const setSeasonState = async (
-  db: ReturnType<typeof database>,
+  db: Database,
   newState: SeasonState,
-  userId: number | null = null
+  userId: number,
 ) => {
   const currentState = await getSeasonState(db);
   const fromState = currentState?.state || null;
@@ -199,12 +199,12 @@ export const setSeasonState = async (
       userId,
       fromState,
       newState,
-      seasonId
+      seasonId,
     );
     if (!eventResult.success) {
       console.error(
         "Failed to create season state change event:",
-        eventResult.error
+        eventResult.error,
       );
       // Don't fail the state change if event creation fails
     }
@@ -214,7 +214,7 @@ export const setSeasonState = async (
 };
 
 export const getDraftingOrder = async (
-  db: ReturnType<typeof database>
+  db: Database,
 ): Promise<
   Array<{
     userId: number;
@@ -242,9 +242,9 @@ export const getDraftingOrder = async (
 };
 
 export const adjustDraftingOrder = async (
-  db: ReturnType<typeof database>,
+  db: Database,
   userId: number,
-  direction: "up" | "down"
+  direction: "up" | "down",
 ) => {
   const currentSeason = await getSeasonState(db);
   if (!currentSeason) {
@@ -258,8 +258,8 @@ export const adjustDraftingOrder = async (
       .where(
         and(
           eq(usersSeasons.userId, userId),
-          eq(usersSeasons.seasonId, currentSeason.id)
-        )
+          eq(usersSeasons.seasonId, currentSeason.id),
+        ),
       )
       .limit(1);
 
@@ -276,8 +276,8 @@ export const adjustDraftingOrder = async (
       .where(
         and(
           eq(usersSeasons.seasonId, currentSeason.id),
-          eq(usersSeasons.draftingTurn, newTurn)
-        )
+          eq(usersSeasons.draftingTurn, newTurn),
+        ),
       )
       .limit(1);
 
@@ -293,8 +293,8 @@ export const adjustDraftingOrder = async (
       .where(
         and(
           eq(usersSeasons.userId, userId),
-          eq(usersSeasons.seasonId, currentSeason.id)
-        )
+          eq(usersSeasons.seasonId, currentSeason.id),
+        ),
       );
 
     await tx
@@ -303,8 +303,8 @@ export const adjustDraftingOrder = async (
       .where(
         and(
           eq(usersSeasons.userId, targetUserId),
-          eq(usersSeasons.seasonId, currentSeason.id)
-        )
+          eq(usersSeasons.seasonId, currentSeason.id),
+        ),
       );
 
     const allUsers = await tx
@@ -323,16 +323,14 @@ export const adjustDraftingOrder = async (
         .where(
           and(
             eq(usersSeasons.userId, allUsers[i].userId),
-            eq(usersSeasons.seasonId, currentSeason.id)
-          )
+            eq(usersSeasons.seasonId, currentSeason.id),
+          ),
         );
     }
   });
 };
 
-export const randomAssignDraftOrder = async (
-  db: ReturnType<typeof database>
-) => {
+export const randomAssignDraftOrder = async (db: Database) => {
   const currentSeason = await getSeasonState(db);
   if (!currentSeason) {
     throw new Error("No current season found");
@@ -359,16 +357,14 @@ export const randomAssignDraftOrder = async (
         .where(
           and(
             eq(usersSeasons.userId, shuffledUsers[i].userId),
-            eq(usersSeasons.seasonId, currentSeason.id)
-          )
+            eq(usersSeasons.seasonId, currentSeason.id),
+          ),
         );
     }
   });
 };
 
-export const createDraftEntriesForAllUsers = async (
-  db: ReturnType<typeof database>
-) => {
+export const createDraftEntriesForAllUsers = async (db: Database) => {
   const currentSeason = await getSeasonState(db);
   if (!currentSeason) {
     throw new Error("No current season found");
@@ -411,10 +407,7 @@ export const createDraftEntriesForAllUsers = async (
   });
 };
 
-export const deleteUser = async (
-  db: ReturnType<typeof database>,
-  userId: number
-) => {
+export const deleteUser = async (db: Database, userId: number) => {
   await db.transaction(async (tx) => {
     const userTeam = await tx
       .select({ id: teams.id })
@@ -439,10 +432,10 @@ export const deleteUser = async (
 };
 
 export const createUser = async (
-  db: ReturnType<typeof database>,
+  db: Database,
   name: string,
   role: "admin" | "user",
-  discordSnowflake: string
+  discordSnowflake: string,
 ) => {
   const [user] = await db
     .insert(users)
@@ -472,10 +465,7 @@ export const createUser = async (
   await createDraftEntriesForAllUsers(db);
 };
 
-export const setCurrentDraftingUser = async (
-  db: ReturnType<typeof database>,
-  userId: number
-) => {
+export const setCurrentDraftingUser = async (db: Database, userId: number) => {
   const currentSeason = await getSeasonState(db);
   if (!currentSeason) {
     throw new Error("No current season found");

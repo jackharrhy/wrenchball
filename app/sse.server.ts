@@ -18,7 +18,7 @@ export function removeClient(id: string) {
 export function broadcast(
   user: Pick<User, "id" | "name">,
   event: string,
-  payload: any
+  payload: any,
 ) {
   const msg = `event: ${event}\ndata: ${JSON.stringify({
     user: {

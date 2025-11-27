@@ -7,7 +7,7 @@ import {
   getTeamWithPlayers,
   fillPlayersToTeamSize,
   checkCanEdit,
-} from "~/utils/team";
+} from "~/utils/team.server";
 
 export async function loader({
   params: { teamId },

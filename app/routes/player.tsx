@@ -1,13 +1,11 @@
 import type { Route } from "./+types/player";
-import { database } from "~/database/context";
+import { db } from "~/database/db";
 import { PlayerIcon } from "~/components/PlayerIcon";
 import { PlayerInfo } from "~/components/PlayerInfo";
 import { cn } from "~/utils/cn";
 import { Link } from "react-router";
 
 export async function loader({ params: { playerId } }: Route.LoaderArgs) {
-  const db = database();
-
   const player = await db.query.players.findFirst({
     where: (players, { eq }) => eq(players.id, Number(playerId)),
     with: {

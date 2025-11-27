@@ -1,12 +1,12 @@
 import type { Route } from "./+types/trading";
-import { database } from "~/database/context";
-import { getSeasonState } from "~/utils/admin";
+import { db } from "~/database/db";
+import { getSeasonState } from "~/utils/admin.server";
 import {
   getPendingTradesForUser,
   getTrades,
   acceptTrade,
   denyTrade,
-} from "~/utils/trading";
+} from "~/utils/trading.server";
 import { requireUser } from "~/auth.server";
 import { Link, useRevalidator, Form, useActionData } from "react-router";
 import { useStream } from "~/utils/useStream";
@@ -18,7 +18,7 @@ import type { users } from "~/database/schema";
 
 export async function loader({ request }: Route.LoaderArgs) {
   const user = await requireUser(request);
-  const db = database();
+
   const seasonState = await getSeasonState(db);
 
   if (seasonState?.state !== "playing") {
@@ -70,7 +70,7 @@ export async function loader({ request }: Route.LoaderArgs) {
 
 export async function action({ request }: Route.ActionArgs) {
   const user = await requireUser(request);
-  const db = database();
+
   const formData = await request.formData();
 
   const intent = formData.get("intent");
@@ -141,7 +141,7 @@ const Trade = ({
           "relative w-full max-w-2xl shrink-0 flex justify-center items-center gap-4 border rounded-md p-2",
           trade.status === "pending" && "bg-yellow-400/35 border-yellow-400/40",
           trade.status === "accepted" && "bg-green-400/35 border-green-400/40",
-          trade.status === "denied" && "bg-red-400/35 border-red-400/40"
+          trade.status === "denied" && "bg-red-400/35 border-red-400/40",
         )}
       >
         <p className="absolute top-1 right-1.5 rotate-3 text-sm text-gray-300">
@@ -176,7 +176,7 @@ const Trade = ({
                 "w-24 h-auto lg:h-full shrink-0 px-3 py-1 rounded text-white cursor-pointer border border-green-800/50",
                 canAccept
                   ? "bg-green-800/80 hover:bg-green-700/80"
-                  : "bg-green-800/60 cursor-not-allowed text-gray-400"
+                  : "bg-green-800/60 cursor-not-allowed text-gray-400",
               )}
               disabled={!canAccept}
             >
@@ -192,7 +192,7 @@ const Trade = ({
                 "w-24 h-auto lg:h-full shrink-0 px-3 py-1 rounded text-white cursor-pointer border border-red-800/50",
                 canDeny
                   ? "bg-red-800/80 hover:bg-red-700/80"
-                  : "bg-red-800/60 cursor-not-allowed text-gray-400"
+                  : "bg-red-800/60 cursor-not-allowed text-gray-400",
               )}
               disabled={!canDeny}
             >

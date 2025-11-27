@@ -7,7 +7,7 @@ import {
   setPreDraft,
   clearPreDraft,
 } from "~/utils/draft.server";
-import { users, players } from "~/database/schema";
+import { users, players, type Player } from "~/database/schema";
 import { eq, sql } from "drizzle-orm";
 import { PlayerIcon } from "~/components/PlayerIcon";
 import { PlayerInfo } from "~/components/PlayerInfo";
@@ -16,6 +16,7 @@ import { Form, useNavigation, useRevalidator, useSubmit } from "react-router";
 import { requireUser } from "~/auth.server";
 import { broadcast } from "~/sse.server";
 import { useStream } from "~/utils/useStream";
+import { TEAM_SIZE } from "~/consts";
 
 export async function loader({ request }: Route.LoaderArgs) {
   const user = await requireUser(request);
@@ -64,6 +65,22 @@ export async function loader({ request }: Route.LoaderArgs) {
     preDraftPlayer = playerData || null;
   }
 
+  const allTeams = await db.query.teams.findMany({
+    with: {
+      players: true,
+    },
+    orderBy: (teams, { asc }) => asc(teams.id),
+  });
+
+  const teamsWithFullPlayers = allTeams.map((team) => {
+    const players = team.players ?? [];
+    const filledPlayers: (Player | null)[] = [...players];
+    while (filledPlayers.length < TEAM_SIZE) {
+      filledPlayers.push(null);
+    }
+    return { ...team, players: filledPlayers };
+  });
+
   return {
     user,
     seasonState: seasonState?.state || null,
@@ -73,6 +90,7 @@ export async function loader({ request }: Route.LoaderArgs) {
     draftingOrder,
     totalPicksMade,
     preDraftPlayer,
+    allTeams: teamsWithFullPlayers,
   };
 }
 
@@ -207,6 +225,7 @@ export default function Drafting({
     draftingOrder,
     totalPicksMade,
     preDraftPlayer,
+    allTeams,
   },
   actionData,
 }: Route.ComponentProps) {
@@ -334,7 +353,7 @@ export default function Drafting({
             className="w-full border border-cell-gray/50 outline-none focus:ring-1 ring-cell-gray/70 rounded-md p-2 bg-transparent"
           />
         </div>
-        <div className="free-agents">
+        <div className="free-agents overflow-y-auto border-b border-cell-gray/50">
           {freeAgents.length === 0 && (
             <div className="text-lg italic opacity-90 px-4 py-1">
               All players have been drafted!
@@ -419,6 +438,36 @@ export default function Drafting({
             })}
           </div>
         </div>
+
+        <div className="teams">
+          <div className="flex flex-col gap-2 p-4">
+            {allTeams.map((team) => {
+              return (
+                <div
+                  key={team.id}
+                  className="flex flex-wrap gap-2 items-center border border-cell-gray/50 bg-cell-gray/40 rounded-md px-4 py-1.5"
+                >
+                  <p className="text-sm font-semibold w-16 mr-2">{team.name}</p>
+                  {team.players.slice(0, TEAM_SIZE - 3).map((player, index) => (
+                    <div
+                      key={player?.id || index}
+                      className={player ? "" : "opacity-50"}
+                    >
+                      {player ? (
+                        <a href={`/player/${player.id}`}>
+                          <PlayerIcon player={player} size="lg" />
+                        </a>
+                      ) : (
+                        <PlayerIcon player={null} size="lg" />
+                      )}
+                    </div>
+                  ))}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
         <div className="stats flex flex-col gap-1 border-b border-cell-gray/50">
           {selectedPlayer || localHoverPlayer ? (
             <>

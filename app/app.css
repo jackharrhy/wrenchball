@@ -205,7 +205,8 @@ body {
   grid-template-areas:
     "search stats"
     "free-agents stats"
-    "free-agents drafting";
+    "free-agents drafting"
+    "teams drafting";
 }
 
 .drafting-container .search {
@@ -218,6 +219,10 @@ body {
 
 .drafting-container .free-agents {
   grid-area: free-agents;
+}
+
+.drafting-container .teams {
+  grid-area: teams;
 }
 
 .drafting-container .drafting {

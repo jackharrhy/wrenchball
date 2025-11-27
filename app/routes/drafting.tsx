@@ -7,8 +7,8 @@ import {
   setPreDraft,
   clearPreDraft,
 } from "~/utils/draft.server";
-import { users, players, type Player } from "~/database/schema";
-import { eq, sql } from "drizzle-orm";
+import { users, players, type Player, events } from "~/database/schema";
+import { desc, eq, sql } from "drizzle-orm";
 import { PlayerIcon } from "~/components/PlayerIcon";
 import { PlayerInfo } from "~/components/PlayerInfo";
 import { useState, useRef } from "react";
@@ -17,6 +17,7 @@ import { requireUser } from "~/auth.server";
 import { broadcast } from "~/sse.server";
 import { useStream } from "~/utils/useStream";
 import { TEAM_SIZE } from "~/consts";
+import { Events } from "~/components/Events";
 
 export async function loader({ request }: Route.LoaderArgs) {
   const user = await requireUser(request);
@@ -81,6 +82,20 @@ export async function loader({ request }: Route.LoaderArgs) {
     return { ...team, players: filledPlayers };
   });
 
+  const draftEvents = await db.query.events.findMany({
+    with: {
+      user: true,
+      draft: {
+        with: {
+          player: true,
+          team: true,
+        },
+      },
+    },
+    where: (events, { eq }) => eq(events.eventType, "draft"),
+    orderBy: [desc(events.createdAt)],
+  });
+
   return {
     user,
     seasonState: seasonState?.state || null,
@@ -91,6 +106,7 @@ export async function loader({ request }: Route.LoaderArgs) {
     totalPicksMade,
     preDraftPlayer,
     allTeams: teamsWithFullPlayers,
+    draftEvents,
   };
 }
 
@@ -226,6 +242,7 @@ export default function Drafting({
     totalPicksMade,
     preDraftPlayer,
     allTeams,
+    draftEvents,
   },
   actionData,
 }: Route.ComponentProps) {
@@ -652,7 +669,7 @@ export default function Drafting({
             </div>
           )}
         </div>
-        <div className="drafting">
+        <div className="drafting overflow-y-auto border-b border-cell-gray/50">
           {preDraftPlayer && (
             <div className="px-4 pb-4 border-b border-cell-gray/50 mb-4">
               <h3 className="text-sm font-semibold mb-2 text-gray-300">
@@ -718,6 +735,9 @@ export default function Drafting({
               })}
             </div>
           )}
+        </div>
+        <div className="events overflow-y-auto border-b border-cell-gray/50 max-h-[40rem]">
+          <Events events={draftEvents} />
         </div>
       </div>
     </>

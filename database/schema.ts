@@ -105,21 +105,25 @@ export const chemistryRelationship = pgEnum("chemistry_relationship", [
 export type ChemistryRelationship =
   (typeof chemistryRelationship.enumValues)[number];
 
-export const chemistry = pgTable("chemistry", {
-  character1: text("character1")
-    .notNull()
-    .references(() => stats.character, { onDelete: "cascade" }),
-  character2: text("character2")
-    .notNull()
-    .references(() => stats.character, { onDelete: "cascade" }),
-  relationship: chemistryRelationship("relationship").notNull(),
-}, (table) => ({
-  pk: {
-    primaryKey: {
-      columns: [table.character1, table.character2],
-    },
+export const chemistry = pgTable(
+  "chemistry",
+  {
+    character1: text("character1")
+      .notNull()
+      .references(() => stats.character, { onDelete: "cascade" }),
+    character2: text("character2")
+      .notNull()
+      .references(() => stats.character, { onDelete: "cascade" }),
+    relationship: chemistryRelationship("relationship").notNull(),
   },
-}));
+  (table) => ({
+    pk: {
+      primaryKey: {
+        columns: [table.character1, table.character2],
+      },
+    },
+  }),
+);
 
 export type Chemistry = typeof chemistry.$inferSelect;
 
@@ -203,6 +207,7 @@ export const eventType = pgEnum("event_type", [
   "draft",
   "season_state_change",
   "trade",
+  "match_state_change",
 ]);
 
 export type EventType = (typeof eventType.enumValues)[number];
@@ -212,7 +217,7 @@ export const season = pgTable("season", {
   state: seasonState("state").notNull().default("pre-season"),
   currentDraftingUserId: integer("current_drafting_user_id").references(
     () => users.id,
-    { onDelete: "set null" }
+    { onDelete: "set null" },
   ),
 });
 
@@ -237,7 +242,7 @@ export const usersSeasons = pgTable("users_seasons", {
     () => players.id,
     {
       onDelete: "set null",
-    }
+    },
   ),
 });
 
@@ -439,6 +444,10 @@ export const eventsRelations = relations(events, ({ one, many }) => ({
     fields: [events.id],
     references: [eventTrade.eventId],
   }),
+  matchStateChange: one(eventMatchStateChange, {
+    fields: [events.id],
+    references: [eventMatchStateChange.eventId],
+  }),
 }));
 
 export const eventDraftRelations = relations(eventDraft, ({ one }) => ({
@@ -463,7 +472,7 @@ export const eventSeasonStateChangeRelations = relations(
       fields: [eventSeasonStateChange.eventId],
       references: [events.id],
     }),
-  })
+  }),
 );
 
 export const eventTradeRelations = relations(eventTrade, ({ one }) => ({
@@ -485,6 +494,33 @@ export const matchState = pgEnum("match_state", [
 ]);
 
 export type MatchState = (typeof matchState.enumValues)[number];
+
+export const eventMatchStateChange = pgTable("event_match_state_change", {
+  eventId: integer("event_id")
+    .primaryKey()
+    .references(() => events.id, { onDelete: "cascade" }),
+  matchId: integer("match_id")
+    .notNull()
+    .references(() => matches.id, { onDelete: "cascade" }),
+  fromState: matchState("from_state"),
+  toState: matchState("to_state").notNull(),
+});
+
+export type EventMatchStateChange = typeof eventMatchStateChange.$inferSelect;
+
+export const eventMatchStateChangeRelations = relations(
+  eventMatchStateChange,
+  ({ one }) => ({
+    event: one(events, {
+      fields: [eventMatchStateChange.eventId],
+      references: [events.id],
+    }),
+    match: one(matches, {
+      fields: [eventMatchStateChange.matchId],
+      references: [matches.id],
+    }),
+  }),
+);
 
 export const matches = pgTable("matches", {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
@@ -526,7 +562,7 @@ export const matchBattingOrders = pgTable(
         columns: [table.matchId, table.teamId, table.playerId],
       },
     },
-  })
+  }),
 );
 
 export type MatchBattingOrder = typeof matchBattingOrders.$inferSelect;
@@ -568,7 +604,7 @@ export const matchPlayerStats = pgTable(
         columns: [table.matchId, table.playerId],
       },
     },
-  })
+  }),
 );
 
 export type MatchPlayerStats = typeof matchPlayerStats.$inferSelect;
@@ -604,7 +640,7 @@ export const matchBattingOrdersRelations = relations(
       fields: [matchBattingOrders.playerId],
       references: [players.id],
     }),
-  })
+  }),
 );
 
 export const matchPlayerStatsRelations = relations(
@@ -622,5 +658,5 @@ export const matchPlayerStatsRelations = relations(
       fields: [matchPlayerStats.teamId],
       references: [teams.id],
     }),
-  })
+  }),
 );

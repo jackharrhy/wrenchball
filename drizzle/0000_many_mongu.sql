@@ -1,7 +1,7 @@
 CREATE TYPE "public"."ability" AS ENUM('Enlarge', 'Super Jump', 'Clamber', 'Quick Throw', 'Super Dive', 'Tongue Catch', 'Spin Attack', 'Laser Beam', 'Teleport', 'Suction Catch', 'Burrow', 'Ball Dash', 'Hammer Throw', 'Magical Catch', 'Piranha Catch', 'Scatter Dive', 'Angry Attack', 'Ink Dive', 'Keeper Catch');--> statement-breakpoint
 CREATE TYPE "public"."chemistry_relationship" AS ENUM('positive', 'negative');--> statement-breakpoint
 CREATE TYPE "public"."direction" AS ENUM('Left', 'Right');--> statement-breakpoint
-CREATE TYPE "public"."event_type" AS ENUM('draft', 'season_state_change', 'trade');--> statement-breakpoint
+CREATE TYPE "public"."event_type" AS ENUM('draft', 'season_state_change', 'trade', 'match_state_change');--> statement-breakpoint
 CREATE TYPE "public"."fielding_positions" AS ENUM('C', '1B', '2B', '3B', 'SS', 'LF', 'CF', 'RF', 'P');--> statement-breakpoint
 CREATE TYPE "public"."hitting_trajectory" AS ENUM('Low', 'Medium', 'High');--> statement-breakpoint
 CREATE TYPE "public"."match_state" AS ENUM('upcoming', 'live', 'finished');--> statement-breakpoint
@@ -20,6 +20,13 @@ CREATE TABLE IF NOT EXISTS "event_draft" (
 	"player_id" integer NOT NULL,
 	"team_id" integer NOT NULL,
 	"pick_number" integer NOT NULL
+);
+--> statement-breakpoint
+CREATE TABLE IF NOT EXISTS "event_match_state_change" (
+	"event_id" integer PRIMARY KEY NOT NULL,
+	"match_id" integer NOT NULL,
+	"from_state" "match_state",
+	"to_state" "match_state" NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "event_season_state_change" (
@@ -201,6 +208,18 @@ END $$;
 --> statement-breakpoint
 DO $$ BEGIN
  ALTER TABLE "event_draft" ADD CONSTRAINT "event_draft_team_id_team_id_fk" FOREIGN KEY ("team_id") REFERENCES "public"."team"("id") ON DELETE cascade ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "event_match_state_change" ADD CONSTRAINT "event_match_state_change_event_id_events_id_fk" FOREIGN KEY ("event_id") REFERENCES "public"."events"("id") ON DELETE cascade ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "event_match_state_change" ADD CONSTRAINT "event_match_state_change_match_id_matches_id_fk" FOREIGN KEY ("match_id") REFERENCES "public"."matches"("id") ON DELETE cascade ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;

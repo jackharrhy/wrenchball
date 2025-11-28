@@ -5,13 +5,16 @@ import {
   eventDraft,
   eventSeasonStateChange,
   eventTrade,
+  eventMatchStateChange,
   type SeasonState,
   type TradeAction,
+  type MatchState,
   users,
   players,
   teams,
   trades,
   tradePlayers,
+  matches,
 } from "~/database/schema";
 import { postEvent } from "~/discord/client.server";
 import { BASE_URL } from "~/server-consts";
@@ -253,6 +256,86 @@ export const createTradeEvent = async (
       success: false,
       error:
         error instanceof Error ? error.message : "Failed to create trade event",
+    };
+  }
+};
+
+/**
+ * Creates a match state change event record
+ * Works within an existing transaction or creates its own if needed
+ */
+export const createMatchStateChangeEvent = async (
+  db: Database,
+  userId: number,
+  matchId: number,
+  fromState: MatchState | null,
+  toState: MatchState,
+  seasonId: number,
+): Promise<{ success: boolean; error?: string }> => {
+  try {
+    const [event] = await db
+      .insert(events)
+      .values({
+        eventType: "match_state_change",
+        userId,
+        seasonId,
+      })
+      .returning({ id: events.id });
+
+    await db.insert(eventMatchStateChange).values({
+      eventId: event.id,
+      matchId,
+      fromState,
+      toState,
+    });
+
+    // Fetch match with teams for Discord message
+    const match = await db.query.matches.findFirst({
+      where: eq(matches.id, matchId),
+      with: {
+        teamA: true,
+        teamB: true,
+      },
+    });
+
+    if (!match) {
+      throw new Error("Match not found");
+    }
+
+    const [user] = await db
+      .select()
+      .from(users)
+      .where(eq(users.id, userId))
+      .limit(1);
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    let actionText: string;
+    if (toState === "live") {
+      actionText = `_Match Started_: **[${match.teamA.name}](${BASE_URL}/team/${match.teamA.id})** vs **[${match.teamB.name}](${BASE_URL}/team/${match.teamB.id})** is now **LIVE**!`;
+    } else if (toState === "finished") {
+      const scoreText =
+        match.teamAScore !== null && match.teamBScore !== null
+          ? ` Final score: **${match.teamAScore} - ${match.teamBScore}**`
+          : "";
+      actionText = `_Match Finished_: **[${match.teamA.name}](${BASE_URL}/team/${match.teamA.id})** vs **[${match.teamB.name}](${BASE_URL}/team/${match.teamB.id})** has ended.${scoreText}`;
+    } else {
+      actionText = `_Match State Change_: **[${match.teamA.name}](${BASE_URL}/team/${match.teamA.id})** vs **[${match.teamB.name}](${BASE_URL}/team/${match.teamB.id})** is now **${toState}**`;
+    }
+
+    await postEvent("match_state_change", actionText);
+
+    return { success: true };
+  } catch (error) {
+    console.error("Error creating match state change event:", error);
+    return {
+      success: false,
+      error:
+        error instanceof Error
+          ? error.message
+          : "Failed to create match state change event",
     };
   }
 };

@@ -1,4 +1,4 @@
-import { eq, sql, asc } from "drizzle-orm";
+import { eq, sql, asc, and, isNull } from "drizzle-orm";
 import { TEAM_SIZE, LINEUP_SIZE } from "~/consts";
 import { type Database } from "~/database/db";
 import {
@@ -13,6 +13,23 @@ import {
 } from "~/database/schema";
 import { getSeasonState, startDraftTimer } from "./admin.server";
 import { createDraftEvent } from "./events.server";
+
+/**
+ * Checks if a player can be a captain based on their stats
+ */
+const canPlayerBeCaptain = async (
+  db: Database,
+  playerId: number,
+): Promise<boolean> => {
+  const playerWithStats = await db
+    .select({ captain: stats.captain })
+    .from(players)
+    .innerJoin(stats, eq(players.statsCharacter, stats.character))
+    .where(eq(players.id, playerId))
+    .limit(1);
+
+  return playerWithStats.length > 0 && playerWithStats[0].captain === true;
+};
 
 export const validateDraftPick = async (
   db: Database,
@@ -75,14 +92,62 @@ export const validateDraftPick = async (
     };
   }
 
-  /*
-  TODO we need to ensure if the player that has been picked is a captain, and this pick
-  might make it impossible for another team to have a captain, we deny the draft such that
-  the other team can draft a captain.
+  // 5. Captain validation checks
+  const playerCanBeCaptain = await canPlayerBeCaptain(db, playerId);
 
-  We must also ensure, if this is the _last_ pick for a team, and the pick isn't a captain,
-  we deny the draft such that the player _has_ to draft a captain to complete the team.
-  */
+  // Get the team's current captain status
+  const teamData = await db
+    .select({ captainId: teams.captainId })
+    .from(teams)
+    .where(eq(teams.id, userTeam[0].id))
+    .limit(1);
+
+  const teamHasCaptain =
+    teamData.length > 0 &&
+    teamData[0].captainId !== null &&
+    teamData[0].captainId !== undefined;
+
+  // Check 1: If this is the last pick and team has no captain, player MUST be a captain
+  if (
+    teamPlayers.length === TEAM_SIZE - 1 &&
+    !teamHasCaptain &&
+    !playerCanBeCaptain
+  ) {
+    return {
+      valid: false,
+      error:
+        "Your last pick must be a captain since your team doesn't have one",
+    };
+  }
+
+  // Check 2: If team already has a captain and player can be captain,
+  // ensure drafting them won't leave other teams without captain options
+  if (teamHasCaptain && playerCanBeCaptain) {
+    // Get all teams and count how many don't have a captain
+    const allTeams = await db
+      .select({ id: teams.id, captainId: teams.captainId })
+      .from(teams);
+
+    const teamsWithoutCaptain = allTeams.filter(
+      (t) => t.captainId === null || t.captainId === undefined,
+    ).length;
+
+    // Count available captains (free agents who can be captain)
+    const availableCaptains = await db
+      .select({ id: players.id })
+      .from(players)
+      .innerJoin(stats, eq(players.statsCharacter, stats.character))
+      .where(and(isNull(players.teamId), eq(stats.captain, true)));
+
+    // If drafting this captain would leave fewer captains than teams need
+    if (availableCaptains.length - 1 < teamsWithoutCaptain) {
+      return {
+        valid: false,
+        error:
+          "Drafting this captain would leave other teams without captain options",
+      };
+    }
+  }
 
   return { valid: true };
 };

@@ -171,13 +171,21 @@ export default function Match({ loaderData }: Route.ComponentProps) {
           {/* Team A Field */}
           <div className="flex flex-col items-center">
             <h3 className="text-lg font-bold mb-4">{match.teamA.name}</h3>
-            <Field players={teamAPlayersForField} />
+            <Field
+              players={teamAPlayersForField}
+              captainId={match.teamA.captainId}
+              captainStatsCharacter={match.teamA.captain?.statsCharacter}
+            />
           </div>
 
           {/* Team B Field */}
           <div className="flex flex-col items-center">
             <h3 className="text-lg font-bold mb-4">{match.teamB.name}</h3>
-            <Field players={teamBPlayersForField} />
+            <Field
+              players={teamBPlayersForField}
+              captainId={match.teamB.captainId}
+              captainStatsCharacter={match.teamB.captain?.statsCharacter}
+            />
           </div>
         </div>
       )}
@@ -220,6 +228,15 @@ export default function Match({ loaderData }: Route.ComponentProps) {
                           player={bo.player}
                           size="sm"
                           isStarred={bo.isStarred}
+                          isCaptain={
+                            bo.teamId === match.teamAId
+                              ? match.teamA.captainId !== null &&
+                                match.teamA.captainId !== undefined &&
+                                bo.playerId === match.teamA.captainId
+                              : match.teamB.captainId !== null &&
+                                match.teamB.captainId !== undefined &&
+                                bo.playerId === match.teamB.captainId
+                          }
                         />
                         <Link
                           to={`/player/${bo.playerId}`}
@@ -263,6 +280,15 @@ export default function Match({ loaderData }: Route.ComponentProps) {
                           player={bo.player}
                           size="sm"
                           isStarred={bo.isStarred}
+                          isCaptain={
+                            bo.teamId === match.teamAId
+                              ? match.teamA.captainId !== null &&
+                                match.teamA.captainId !== undefined &&
+                                bo.playerId === match.teamA.captainId
+                              : match.teamB.captainId !== null &&
+                                match.teamB.captainId !== undefined &&
+                                bo.playerId === match.teamB.captainId
+                          }
                         />
                         <Link
                           to={`/player/${bo.playerId}`}

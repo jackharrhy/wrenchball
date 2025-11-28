@@ -6,12 +6,21 @@ import { matches, matchBattingOrders } from "~/database/schema";
 import { cn } from "~/utils/cn";
 import { asc, desc } from "drizzle-orm";
 import { Field } from "~/components/Field";
+import { TeamLogo } from "~/components/TeamLogo";
 
 export async function loader({ request }: Route.LoaderArgs) {
   const allMatches = await db.query.matches.findMany({
     with: {
-      teamA: true,
-      teamB: true,
+      teamA: {
+        with: {
+          captain: true,
+        },
+      },
+      teamB: {
+        with: {
+          captain: true,
+        },
+      },
     },
     orderBy: [asc(matches.scheduledDate), desc(matches.createdAt)],
   });
@@ -117,6 +126,12 @@ function MatchCard({ match }: MatchCardProps) {
       )}
     >
       <div className="flex-1 flex items-center justify-center gap-4">
+        <TeamLogo
+          size="small"
+          captainStatsCharacter={
+            match.teamA.captain?.statsCharacter ?? undefined
+          }
+        />
         <span className="font-bold text-lg">{match.teamA.name}</span>
         {showScore && (
           <span className="text-xl font-bold text-yellow-300">
@@ -132,6 +147,12 @@ function MatchCard({ match }: MatchCardProps) {
           </span>
         )}
         <span className="font-bold text-lg">{match.teamB.name}</span>
+        <TeamLogo
+          size="small"
+          captainStatsCharacter={
+            match.teamB.captain?.statsCharacter ?? undefined
+          }
+        />
       </div>
       <div className="flex items-center gap-3">
         <span className="text-sm text-gray-400">

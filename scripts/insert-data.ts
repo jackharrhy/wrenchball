@@ -307,7 +307,7 @@ await db.transaction(async (tx) => {
     await tx.insert(schema.stats).values({
       character: character!.toString(),
       characterClass: characterClass!.toString(),
-      captain: Boolean(captain),
+      captain: captain === "Yes",
       throwingArm: throwingArm!.toString() as any,
       battingStance: battingStance!.toString() as any,
       ability: ability!.toString() as any,

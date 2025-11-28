@@ -68,6 +68,23 @@ export const validateTradeRequest = async (
   const fromTeamId = fromUserTeam[0].id;
   const toTeamId = toUserTeam[0].id;
 
+  // Get team captain information
+  const [fromTeamData, toTeamData] = await Promise.all([
+    db
+      .select({ captainId: teams.captainId })
+      .from(teams)
+      .where(eq(teams.id, fromTeamId))
+      .limit(1),
+    db
+      .select({ captainId: teams.captainId })
+      .from(teams)
+      .where(eq(teams.id, toTeamId))
+      .limit(1),
+  ]);
+
+  const fromTeamCaptainId = fromTeamData[0]?.captainId;
+  const toTeamCaptainId = toTeamData[0]?.captainId;
+
   const [fromTeamPlayers, toTeamPlayers] = await Promise.all([
     db
       .select({ id: players.id, teamId: players.teamId })
@@ -108,6 +125,25 @@ export const validateTradeRequest = async (
           error: "Some players do not belong to the other team",
         };
       }
+    }
+  }
+
+  // 4.5. Check if any players being traded are team captains
+  if (fromTeamCaptainId !== null && fromTeamCaptainId !== undefined) {
+    if (fromPlayerIds.includes(fromTeamCaptainId)) {
+      return {
+        valid: false,
+        error: "Cannot trade your team captain",
+      };
+    }
+  }
+
+  if (toTeamCaptainId !== null && toTeamCaptainId !== undefined) {
+    if (toPlayerIds.includes(toTeamCaptainId)) {
+      return {
+        valid: false,
+        error: "Cannot trade the other team's captain",
+      };
     }
   }
 

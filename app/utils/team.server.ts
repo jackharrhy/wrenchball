@@ -16,6 +16,7 @@ export async function getTeamWithPlayers(teamId: string | number) {
           lineup: true,
         },
       },
+      captain: true,
     },
   });
 

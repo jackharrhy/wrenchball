@@ -7,10 +7,12 @@ export const TeamPlayer = ({
   player,
   size = "md",
   link = true,
+  captainId,
 }: {
   player: (Player & { lineup?: TeamLineup }) | null;
   size?: "md" | "sm";
   link?: boolean;
+  captainId?: number | null;
 }) => {
   if (!player) {
     return (
@@ -29,6 +31,8 @@ export const TeamPlayer = ({
   }
 
   const isStarred = player.lineup?.isStarred ?? false;
+  const isCaptain =
+    captainId !== null && captainId !== undefined && player.id === captainId;
 
   if (link) {
     return (
@@ -36,7 +40,11 @@ export const TeamPlayer = ({
         to={`/player/${player.id}`}
         className="flex items-center gap-4 group"
       >
-        <PlayerIcon player={player} isStarred={isStarred} />
+        <PlayerIcon
+          player={player}
+          isStarred={isStarred}
+          isCaptain={isCaptain}
+        />
         <p
           className={cn(
             "text-xs w-full transition-all",
@@ -52,7 +60,7 @@ export const TeamPlayer = ({
 
   return (
     <div className="flex items-center gap-4">
-      <PlayerIcon player={player} isStarred={isStarred} />
+      <PlayerIcon player={player} isStarred={isStarred} isCaptain={isCaptain} />
       <p
         className={cn("text-xs w-full", size === "sm" ? "text-xs" : "text-sm")}
       >
@@ -75,10 +83,11 @@ export function TeamPlayerList({
     <div className={cn("flex flex-col", size === "md" ? "gap-2" : "gap-1.5")}>
       {team.players.map((player, index) => (
         <TeamPlayer
-          key={player?.id || index}
+          key={`${player?.id}-${index}`}
           player={player}
           size={size}
           link={link}
+          captainId={team.captainId}
         />
       ))}
     </div>

@@ -12,7 +12,7 @@ import { users, players, type Player, events } from "~/database/schema";
 import { desc, eq, sql } from "drizzle-orm";
 import { PlayerIcon } from "~/components/PlayerIcon";
 import { PlayerInfo } from "~/components/PlayerInfo";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Form, useNavigation, useRevalidator, useSubmit } from "react-router";
 import { requireUser } from "~/auth.server";
 import { broadcast } from "~/sse.server";
@@ -105,6 +105,13 @@ export async function loader({ request }: Route.LoaderArgs) {
     orderBy: [desc(events.createdAt)],
   });
 
+  // Check if user's team has a captain
+  const userTeam = await db.query.teams.findFirst({
+    where: (teams, { eq }) => eq(teams.userId, user.id),
+  });
+  const hasCaptain =
+    userTeam?.captainId !== null && userTeam?.captainId !== undefined;
+
   return {
     user,
     seasonState: seasonState?.state || null,
@@ -116,6 +123,7 @@ export async function loader({ request }: Route.LoaderArgs) {
     preDraftPlayer,
     allTeams: teamsWithFullPlayers,
     draftEvents,
+    hasCaptain,
   };
 }
 
@@ -276,6 +284,7 @@ export default function Drafting({
     preDraftPlayer,
     allTeams,
     draftEvents,
+    hasCaptain,
   },
   actionData,
 }: Route.ComponentProps) {
@@ -302,6 +311,55 @@ export default function Drafting({
   const isActiveDrafter = currentDraftingUserId === user.id;
 
   const prevDraftingUserIdRef = useRef(currentDraftingUserId);
+  const prevActionDataRef = useRef(actionData);
+  const [showActionData, setShowActionData] = useState(false);
+
+  // Show actionData for 3 seconds when it changes
+  useEffect(() => {
+    // Check if actionData has changed
+    if (actionData !== prevActionDataRef.current) {
+      prevActionDataRef.current = actionData;
+
+      // Only show if there's actual content (success message or error)
+      if (actionData && (actionData.message || actionData.error)) {
+        setShowActionData(true);
+
+        const timeoutId = window.setTimeout(() => {
+          setShowActionData(false);
+        }, 3000);
+
+        return () => {
+          clearTimeout(timeoutId);
+        };
+      } else {
+        setShowActionData(false);
+      }
+    }
+  }, [actionData]);
+
+  // While we have socket events for MOST things, some things will
+  // not trigger any of the useStream hooks, so lets revalidate
+  // every 5 seconds with a 2s jitter.
+  useEffect(() => {
+    let timeoutId: number | undefined;
+
+    const scheduleRevalidate = () => {
+      // 2s jitter (random between 0 and 2000ms)
+      const jitter = Math.random() * 2000;
+      timeoutId = window.setTimeout(() => {
+        revalidator.revalidate();
+        scheduleRevalidate();
+      }, 5000 + jitter);
+    };
+
+    scheduleRevalidate();
+
+    return () => {
+      if (timeoutId !== undefined) {
+        clearTimeout(timeoutId);
+      }
+    };
+  }, [revalidator]);
 
   useStream((data) => {
     console.log("draft-update", data);
@@ -532,14 +590,18 @@ export default function Drafting({
                   <p className="text-sm font-semibold w-16 mr-2">{team.name}</p>
                   {team.players.slice(0, TEAM_SIZE - 3).map((player, index) => {
                     const isStarred = player?.lineup?.isStarred ?? false;
+                    const isCaptain =
+                      team.captainId !== null &&
+                      team.captainId !== undefined &&
+                      player?.id === team.captainId;
                     return (
                       <div
                         key={player?.id || index}
-                        className={`relative ${player ? "" : "opacity-50"}`}
+                        className={`relative flex ${player ? "" : "opacity-50"}`}
                       >
                         {player ? (
                           canToggleStar ? (
-                            <Form method="post">
+                            <Form method="post" className="flex">
                               <input
                                 type="hidden"
                                 name="intent"
@@ -558,6 +620,7 @@ export default function Drafting({
                                   player={player}
                                   size="lg"
                                   isStarred={isStarred}
+                                  isCaptain={isCaptain}
                                 />
                               </button>
                             </Form>
@@ -567,6 +630,7 @@ export default function Drafting({
                                 player={player}
                                 size="lg"
                                 isStarred={isStarred}
+                                isCaptain={isCaptain}
                               />
                             </a>
                           )
@@ -629,16 +693,18 @@ export default function Drafting({
                     You can't pre draft randomly!
                   </div>
                 )}
-                {actionData?.error && (
+                {showActionData && actionData?.error && (
                   <div className="mt-2 text-red-400 text-sm">
                     {actionData.error}
                   </div>
                 )}
-                {actionData?.success && actionData.message && (
-                  <div className="mt-2 text-green-400 text-sm">
-                    {actionData.message}
-                  </div>
-                )}
+                {showActionData &&
+                  actionData?.success &&
+                  actionData.message && (
+                    <div className="mt-2 text-green-400 text-sm">
+                      {actionData.message}
+                    </div>
+                  )}
               </div>
               <div className="p-4 overflow-y-auto">
                 <div className="text-center text-gray-400">
@@ -658,6 +724,13 @@ export default function Drafting({
               </div>
               {selectedPlayer && (
                 <div className="mt-4 flex flex-col gap-2">
+                  {!hasCaptain &&
+                    isActiveDrafter &&
+                    selectedPlayer.stats?.captain === true && (
+                      <div className="text-center text-yellow-400 text-sm font-semibold mb-1">
+                        Drafting your team captain
+                      </div>
+                    )}
                   {currentDraftingUserId === user.id ? (
                     <Form method="post">
                       <input type="hidden" name="intent" value="draft-player" />
@@ -677,7 +750,10 @@ export default function Drafting({
                       >
                         {isDrafting
                           ? "Drafting..."
-                          : `Draft ${selectedPlayer.name}`}
+                          : !hasCaptain &&
+                              selectedPlayer.stats?.captain === true
+                            ? `Draft ${selectedPlayer.name} as Captain`
+                            : `Draft ${selectedPlayer.name}`}
                       </button>
                     </Form>
                   ) : (
@@ -707,16 +783,6 @@ export default function Drafting({
                       </button>
                     </Form>
                   )}
-                  {actionData?.error && (
-                    <div className="mt-2 text-red-400 text-sm">
-                      {actionData.error}
-                    </div>
-                  )}
-                  {actionData?.success && actionData.message && (
-                    <div className="mt-2 text-green-400 text-sm">
-                      {actionData.message}
-                    </div>
-                  )}
                 </div>
               )}
               <div className="p-4 overflow-y-auto">
@@ -740,8 +806,24 @@ export default function Drafting({
               Click on a player to view their stats
             </div>
           )}
+          {showActionData &&
+            (actionData?.error ||
+              (actionData?.success && actionData.message)) && (
+              <div className="flex flex-col items-center justify-center pb-2">
+                {actionData?.error && (
+                  <div className="mt-2 text-red-400 text-sm">
+                    {actionData.error}
+                  </div>
+                )}
+                {actionData?.success && actionData.message && (
+                  <div className="mt-2 text-green-400 text-sm">
+                    {actionData.message}
+                  </div>
+                )}
+              </div>
+            )}
         </div>
-        <div className="drafting overflow-y-auto border-b border-cell-gray/50">
+        <div className="drafting flex flex-col gap-2 overflow-y-auto border-b border-cell-gray/50">
           {preDraftPlayer && (
             <div className="px-4 pb-4 border-b border-cell-gray/50 mb-4">
               <h3 className="text-sm font-semibold mb-2 text-gray-300">

@@ -1,13 +1,16 @@
 import type { FieldingPosition, Player, TeamLineup } from "~/database/schema";
 import { PlayerIcon } from "./PlayerIcon";
 import { Link } from "react-router";
+import { TeamLogo } from "./TeamLogo";
 
 const Position = ({
   position,
   players,
+  captainId,
 }: {
   position: FieldingPosition;
   players: (Player & { lineup?: TeamLineup })[];
+  captainId?: number | null;
 }) => {
   const player = players.find(
     (player) => player.lineup?.fieldingPosition === position,
@@ -29,6 +32,9 @@ const Position = ({
       break;
   }
 
+  const isCaptain =
+    captainId !== null && captainId !== undefined && player?.id === captainId;
+
   return (
     <div
       className={`field-${position.toLowerCase()} flex relative flex-col gap-0.5 items-center justify-center ${offset}`}
@@ -44,6 +50,7 @@ const Position = ({
           <PlayerIcon
             player={player}
             isStarred={player.lineup?.isStarred ?? false}
+            isCaptain={isCaptain}
           />
         </Link>
       ) : (
@@ -63,31 +70,41 @@ const Position = ({
 
 export function Field({
   players,
+  captainId,
+  captainStatsCharacter,
 }: {
   players: (Player & { lineup?: TeamLineup })[];
+  captainId?: number | null;
+  captainStatsCharacter?: string | null;
 }) {
   return (
-    <div className="relative field w-80 h-80 text-center">
-      {["LF", "CF", "RF", "SS", "2B", "P", "3B", "1B", "C"].map((position) => (
-        <Position
-          key={position}
-          position={position as FieldingPosition}
-          players={players}
-        />
-      ))}
-      <svg viewBox="-10 -10 310 310" className="absolute -z-10 w-full h-full">
-        <path
-          d="M 0 130 
+    <div className="flex flex-col items-center gap-10">
+      <TeamLogo size="large" captainStatsCharacter={captainStatsCharacter} />
+      <div className="relative field w-80 h-80 text-center">
+        {["LF", "CF", "RF", "SS", "2B", "P", "3B", "1B", "C"].map(
+          (position) => (
+            <Position
+              key={position}
+              position={position as FieldingPosition}
+              players={players}
+              captainId={captainId}
+            />
+          ),
+        )}
+        <svg viewBox="-10 -10 310 310" className="absolute -z-10 w-full h-full">
+          <path
+            d="M 0 130 
             Q 150 -100 300 130 
             L 150 280 
             Z"
-          fill="var(--color-white)"
-          fillOpacity="0.25"
-          stroke="var(--color-blue-900)"
-          strokeOpacity="0.25"
-          stroke-width="4"
-        />
-      </svg>
+            fill="var(--color-white)"
+            fillOpacity="0.25"
+            stroke="var(--color-blue-900)"
+            strokeOpacity="0.25"
+            strokeWidth="4"
+          />
+        </svg>
+      </div>
     </div>
   );
 }

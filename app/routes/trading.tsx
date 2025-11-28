@@ -113,18 +113,31 @@ export async function action({ request }: Route.ActionArgs) {
 type Trade = Awaited<ReturnType<typeof getTrades>>["trades"][number];
 type Player = Trade["tradePlayers"][number]["player"];
 
-const PlayerList = ({ players }: { players: Player[] }) => {
+const PlayerList = ({
+  players,
+  captainId,
+}: {
+  players: Player[];
+  captainId?: number | null;
+}) => {
   return (
     <div className="flex items-center gap-3">
-      {players.map((player) => (
-        <a href={`/player/${player.id}`} key={player.id}>
-          <PlayerIcon
-            player={player}
-            size="md"
-            isStarred={player.lineup?.isStarred ?? false}
-          />
-        </a>
-      ))}
+      {players.map((player) => {
+        const isCaptain =
+          captainId !== null &&
+          captainId !== undefined &&
+          player.id === captainId;
+        return (
+          <a href={`/player/${player.id}`} key={player.id}>
+            <PlayerIcon
+              player={player}
+              size="md"
+              isStarred={player.lineup?.isStarred ?? false}
+              isCaptain={isCaptain}
+            />
+          </a>
+        );
+      })}
     </div>
   );
 };
@@ -159,6 +172,7 @@ const Trade = ({
           players={trade.tradePlayers
             .filter((tradePlayer) => tradePlayer.fromTeamId === trade.toTeam.id)
             .map((tradePlayer) => tradePlayer.player)}
+          captainId={trade.toTeam.captainId}
         />
         <a className="hover:underline" href={`/team/${trade.fromTeam.id}`}>
           {trade.fromTeam.name}
@@ -171,6 +185,7 @@ const Trade = ({
           players={trade.tradePlayers
             .filter((tradePlayer) => tradePlayer.toTeamId === trade.toTeam.id)
             .map((tradePlayer) => tradePlayer.player)}
+          captainId={trade.fromTeam.captainId}
         />
       </div>
       {showActions ? (

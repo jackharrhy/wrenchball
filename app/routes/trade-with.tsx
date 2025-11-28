@@ -70,6 +70,8 @@ export async function loader({
     error: null,
     myTeam,
     otherTeam,
+    myTeamCaptainId: myTeam.captainId,
+    otherTeamCaptainId: otherTeam.captainId,
   };
 }
 
@@ -165,6 +167,7 @@ type TeamPlayerSelectionProps = {
   title: string;
   selectedPlayerIds: number[];
   onTogglePlayer: (playerId: number) => void;
+  captainId?: number | null;
 };
 
 function TeamPlayerSelection({
@@ -172,6 +175,7 @@ function TeamPlayerSelection({
   title,
   selectedPlayerIds,
   onTogglePlayer,
+  captainId,
 }: TeamPlayerSelectionProps) {
   return (
     <div className="flex flex-col gap-4">
@@ -180,21 +184,29 @@ function TeamPlayerSelection({
         {team.players.map((player) => {
           if (!player) return null;
           const isSelected = selectedPlayerIds.includes(player.id);
+          const isCaptain =
+            captainId !== null &&
+            captainId !== undefined &&
+            player.id === captainId;
           return (
             <button
               key={player.id}
               type="button"
-              onClick={() => onTogglePlayer(player.id)}
-              className={`p-2 cursor-pointer transition-all border-1 border-cell-gray/50 bg-cell-gray/40 rounded-md ${
-                isSelected
-                  ? "ring-4 ring-blue-500 rounded-lg bg-cell-gray/60"
-                  : "hover:bg-cell-gray/60"
+              onClick={() => !isCaptain && onTogglePlayer(player.id)}
+              disabled={isCaptain}
+              className={`p-2 transition-all border-1 border-cell-gray/50 bg-cell-gray/40 rounded-md ${
+                isCaptain
+                  ? "opacity-50 cursor-not-allowed grayscale"
+                  : isSelected
+                    ? "ring-4 ring-blue-500 rounded-lg bg-cell-gray/60 cursor-pointer"
+                    : "hover:bg-cell-gray/60 cursor-pointer"
               }`}
             >
               <PlayerIcon
                 player={player}
                 size="lg"
                 isStarred={player.lineup?.isStarred ?? false}
+                isCaptain={isCaptain}
               />
             </button>
           );
@@ -205,7 +217,7 @@ function TeamPlayerSelection({
 }
 
 export default function TradeWith({
-  loaderData: { error, myTeam, otherTeam },
+  loaderData: { error, myTeam, otherTeam, myTeamCaptainId, otherTeamCaptainId },
 }: Route.ComponentProps) {
   const myTeamSelection = usePlayerSelection();
   const otherTeamSelection = usePlayerSelection();
@@ -248,6 +260,7 @@ export default function TradeWith({
           title="Your Team"
           selectedPlayerIds={myTeamSelection.selectedPlayerIds}
           onTogglePlayer={myTeamSelection.togglePlayer}
+          captainId={myTeamCaptainId}
         />
 
         <TeamPlayerSelection
@@ -255,6 +268,7 @@ export default function TradeWith({
           title={otherTeam.name}
           selectedPlayerIds={otherTeamSelection.selectedPlayerIds}
           onTogglePlayer={otherTeamSelection.togglePlayer}
+          captainId={otherTeamCaptainId}
         />
       </div>
 

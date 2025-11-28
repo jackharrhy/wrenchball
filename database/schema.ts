@@ -6,6 +6,7 @@ import {
   pgTable,
   text,
   timestamp,
+  type AnyPgColumn,
 } from "drizzle-orm/pg-core";
 
 export const userRoles = pgEnum("user_role", ["admin", "user"]);
@@ -28,13 +29,21 @@ export const teams = pgTable("team", {
     .unique()
     .references(() => users.id, { onDelete: "cascade" }),
   abbreviation: text("abbreviation").notNull(),
+  captainId: integer("captain_id").references((): AnyPgColumn => players.id, {
+    onDelete: "set null",
+  }),
 });
 
 export type Team = typeof teams.$inferSelect;
 
-export const teamRealtions = relations(teams, ({ many }) => ({
+export const teamRealtions = relations(teams, ({ many, one }) => ({
   players: many(players, {
     relationName: "players",
+  }),
+  captain: one(players, {
+    fields: [teams.captainId],
+    references: [players.id],
+    relationName: "captain",
   }),
 }));
 

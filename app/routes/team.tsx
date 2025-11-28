@@ -37,7 +37,11 @@ export default function Team({
         className="flex flex-row items-center gap-16 border-2 border-cell-gray/50 bg-cell-gray/40 rounded-lg p-4"
       >
         <TeamPlayerList team={team} />
-        <Field players={team.players.filter((player) => player !== null)} />
+        <Field
+          players={team.players.filter((player) => player !== null)}
+          captainId={team.captainId}
+          captainStatsCharacter={team.captain?.statsCharacter}
+        />
       </div>
       {canEdit && (
         <Link

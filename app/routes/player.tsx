@@ -36,6 +36,11 @@ export default function Player({
           player={player}
           size="xl"
           isStarred={player.lineup?.isStarred ?? false}
+          isCaptain={
+            player.team?.captainId !== null &&
+            player.team?.captainId !== undefined &&
+            player.id === player.team.captainId
+          }
         />
 
         <div className="text-center space-y-2">

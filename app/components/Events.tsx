@@ -24,7 +24,12 @@ type EventWithRelations = Event & {
       imageUrl: string | null;
       lineup?: { isStarred: boolean } | null;
     };
-    team: { id: number; name: string; abbreviation: string };
+    team: {
+      id: number;
+      name: string;
+      abbreviation: string;
+      captainId: number | null;
+    };
   } | null;
   seasonStateChange?: {
     fromState: string | null;
@@ -68,6 +73,11 @@ export function Events({ events }: { events: EventWithRelations[] }) {
                   player={event.draft.player}
                   size="sm"
                   isStarred={event.draft.player.lineup?.isStarred ?? false}
+                  isCaptain={
+                    event.draft.team.captainId !== null &&
+                    event.draft.team.captainId !== undefined &&
+                    event.draft.player.id === event.draft.team.captainId
+                  }
                 />
               </div>
               <div className="flex-1 min-w-0">

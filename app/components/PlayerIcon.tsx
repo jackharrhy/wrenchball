@@ -4,6 +4,7 @@ import { cn } from "~/utils/cn";
 export function PlayerIcon({
   player,
   size = "md",
+  isCaptain = false,
   isStarred = false,
   isQuestionMark = false,
 }: {
@@ -11,6 +12,7 @@ export function PlayerIcon({
   size?: "sm" | "md" | "lg" | "xl";
   isStarred?: boolean;
   isQuestionMark?: boolean;
+  isCaptain?: boolean;
 }) {
   let imageUrl = "/images/players/sideview/right/mario.png";
   if (isQuestionMark) {
@@ -34,6 +36,13 @@ export function PlayerIcon({
     xl: "text-sm px-[0.15rem]",
   };
 
+  const captainSizeClasses = {
+    sm: "text-[8px] w-3 h-3",
+    md: "text-[10px] w-3.5 h-3.5",
+    lg: "text-xs w-4 h-4",
+    xl: "text-sm w-5 h-5",
+  };
+
   return (
     <div
       className={cn("relative shrink-0", sizeClasses[size])}
@@ -55,6 +64,16 @@ export function PlayerIcon({
           delete document.body.dataset.player;
         }}
       />
+      {isCaptain && (
+        <div
+          className={cn(
+            "absolute -top-1 -left-1 bg-red-500/20 text-white flex items-center justify-center rounded-full font-bold pointer-events-none select-none",
+            captainSizeClasses[size],
+          )}
+        >
+          C
+        </div>
+      )}
       {isStarred && (
         <div
           className={cn(

@@ -280,8 +280,16 @@ export const getMatchWithStats = async (db: Database, matchId: number) => {
   return await db.query.matches.findFirst({
     where: eq(matches.id, matchId),
     with: {
-      teamA: true,
-      teamB: true,
+      teamA: {
+        with: {
+          captain: true,
+        },
+      },
+      teamB: {
+        with: {
+          captain: true,
+        },
+      },
       battingOrders: {
         with: {
           player: true,

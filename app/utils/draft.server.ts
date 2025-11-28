@@ -8,6 +8,7 @@ import {
   usersSeasons,
   users,
   teamLineups,
+  stats,
   type FieldingPosition,
 } from "~/database/schema";
 import { getSeasonState } from "./admin.server";
@@ -208,6 +209,41 @@ export const draftPlayer = async (
       .update(players)
       .set({ teamId: userTeam[0].id })
       .where(eq(players.id, playerId));
+
+    // Check if team has a captain, and if this player can be a captain
+    const [teamData, playerData] = await Promise.all([
+      tx
+        .select({ captainId: teams.captainId })
+        .from(teams)
+        .where(eq(teams.id, userTeam[0].id))
+        .limit(1),
+      tx
+        .select({ statsCharacter: players.statsCharacter })
+        .from(players)
+        .where(eq(players.id, playerId))
+        .limit(1),
+    ]);
+
+    // Only set as captain if: team has no captain AND player has stats AND stats.captain is true
+    if (
+      teamData.length > 0 &&
+      teamData[0].captainId === null &&
+      playerData.length > 0 &&
+      playerData[0].statsCharacter
+    ) {
+      const playerStats = await tx
+        .select({ captain: stats.captain })
+        .from(stats)
+        .where(eq(stats.character, playerData[0].statsCharacter))
+        .limit(1);
+
+      if (playerStats.length > 0 && playerStats[0].captain === true) {
+        await tx
+          .update(teams)
+          .set({ captainId: playerId })
+          .where(eq(teams.id, userTeam[0].id));
+      }
+    }
 
     // Add player to lineup if there's space
     await addPlayerToLineup(tx, userTeam[0].id, playerId, { shouldStar });

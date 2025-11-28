@@ -1,5 +1,5 @@
 {
-  "id": "e2954fe0-c7f1-45f2-846d-8efd496d7adc",
+  "id": "53d8cb54-a744-452c-82b5-1ea0a3a4baa5",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -1158,6 +1158,12 @@
           "type": "text",
           "primaryKey": false,
           "notNull": true
+        },
+        "captain_id": {
+          "name": "captain_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
         }
       },
       "indexes": {},
@@ -1173,6 +1179,19 @@
             "id"
           ],
           "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "team_captain_id_players_id_fk": {
+          "name": "team_captain_id_players_id_fk",
+          "tableFrom": "team",
+          "tableTo": "players",
+          "columnsFrom": [
+            "captain_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
           "onUpdate": "no action"
         }
       },

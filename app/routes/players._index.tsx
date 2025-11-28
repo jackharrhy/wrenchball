@@ -28,6 +28,11 @@ export default function PlayersIndex({ loaderData }: Route.ComponentProps) {
           <PlayerIcon
             player={player}
             isStarred={player.lineup?.isStarred ?? false}
+            isCaptain={
+              player.team?.captainId !== null &&
+              player.team?.captainId !== undefined &&
+              player.id === player.team.captainId
+            }
           />
           <span className="text-xs text-center">{player.name}</span>
           <span

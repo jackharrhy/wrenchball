@@ -476,3 +476,151 @@ export const eventTradeRelations = relations(eventTrade, ({ one }) => ({
     references: [trades.id],
   }),
 }));
+
+// Match-related schema
+export const matchState = pgEnum("match_state", [
+  "upcoming",
+  "live",
+  "finished",
+]);
+
+export type MatchState = (typeof matchState.enumValues)[number];
+
+export const matches = pgTable("matches", {
+  id: integer().primaryKey().generatedAlwaysAsIdentity(),
+  teamAId: integer("team_a_id")
+    .notNull()
+    .references(() => teams.id, { onDelete: "cascade" }),
+  teamBId: integer("team_b_id")
+    .notNull()
+    .references(() => teams.id, { onDelete: "cascade" }),
+  state: matchState("state").notNull().default("upcoming"),
+  scheduledDate: timestamp("scheduled_date"),
+  teamAScore: integer("team_a_score"),
+  teamBScore: integer("team_b_score"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+export type Match = typeof matches.$inferSelect;
+
+export const matchBattingOrders = pgTable(
+  "match_batting_orders",
+  {
+    matchId: integer("match_id")
+      .notNull()
+      .references(() => matches.id, { onDelete: "cascade" }),
+    teamId: integer("team_id")
+      .notNull()
+      .references(() => teams.id, { onDelete: "cascade" }),
+    playerId: integer("player_id")
+      .notNull()
+      .references(() => players.id, { onDelete: "cascade" }),
+    battingOrder: integer("batting_order").notNull(),
+    fieldingPosition: fieldingPositions("fielding_position"),
+    isStarred: boolean("is_starred").notNull().default(false),
+  },
+  (table) => ({
+    pk: {
+      primaryKey: {
+        columns: [table.matchId, table.teamId, table.playerId],
+      },
+    },
+  })
+);
+
+export type MatchBattingOrder = typeof matchBattingOrders.$inferSelect;
+
+export const matchPlayerStats = pgTable(
+  "match_player_stats",
+  {
+    matchId: integer("match_id")
+      .notNull()
+      .references(() => matches.id, { onDelete: "cascade" }),
+    playerId: integer("player_id")
+      .notNull()
+      .references(() => players.id, { onDelete: "cascade" }),
+    teamId: integer("team_id")
+      .notNull()
+      .references(() => teams.id, { onDelete: "cascade" }),
+    // Batting stats
+    plateAppearances: integer("plate_appearances"),
+    hits: integer("hits"),
+    homeRuns: integer("home_runs"),
+    outs: integer("outs"),
+    rbi: integer("rbi"),
+    // Pitching stats
+    inningsPitchedWhole: integer("innings_pitched_whole"),
+    inningsPitchedPartial: integer("innings_pitched_partial"), // 0-2 for thirds
+    strikeouts: integer("strikeouts"),
+    earnedRuns: integer("earned_runs"),
+    // Fielding stats
+    putouts: integer("putouts"),
+    assists: integer("assists"),
+    doublePlays: integer("double_plays"),
+    triplePlays: integer("triple_plays"),
+    // Silly stats
+    errors: integer("errors"),
+  },
+  (table) => ({
+    pk: {
+      primaryKey: {
+        columns: [table.matchId, table.playerId],
+      },
+    },
+  })
+);
+
+export type MatchPlayerStats = typeof matchPlayerStats.$inferSelect;
+
+// Match relations
+export const matchesRelations = relations(matches, ({ one, many }) => ({
+  teamA: one(teams, {
+    fields: [matches.teamAId],
+    references: [teams.id],
+    relationName: "teamA",
+  }),
+  teamB: one(teams, {
+    fields: [matches.teamBId],
+    references: [teams.id],
+    relationName: "teamB",
+  }),
+  battingOrders: many(matchBattingOrders),
+  playerStats: many(matchPlayerStats),
+}));
+
+export const matchBattingOrdersRelations = relations(
+  matchBattingOrders,
+  ({ one }) => ({
+    match: one(matches, {
+      fields: [matchBattingOrders.matchId],
+      references: [matches.id],
+    }),
+    team: one(teams, {
+      fields: [matchBattingOrders.teamId],
+      references: [teams.id],
+    }),
+    player: one(players, {
+      fields: [matchBattingOrders.playerId],
+      references: [players.id],
+    }),
+  })
+);
+
+export const matchPlayerStatsRelations = relations(
+  matchPlayerStats,
+  ({ one }) => ({
+    match: one(matches, {
+      fields: [matchPlayerStats.matchId],
+      references: [matches.id],
+    }),
+    player: one(players, {
+      fields: [matchPlayerStats.playerId],
+      references: [players.id],
+    }),
+    team: one(teams, {
+      fields: [matchPlayerStats.teamId],
+      references: [teams.id],
+    }),
+  })
+);

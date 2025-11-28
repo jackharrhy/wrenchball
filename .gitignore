@@ -11,3 +11,5 @@ public/images
 .env
 
 *.tsbuildinfo
+
+*.context.md

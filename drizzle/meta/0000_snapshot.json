@@ -1,5 +1,5 @@
 {
-  "id": "bd1db757-23f4-43e2-beaf-06a35ad9b68f",
+  "id": "7c80977c-ded4-47c0-8ddb-22e327b41e71",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -315,6 +315,361 @@
           "tableTo": "season",
           "columnsFrom": [
             "season_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.match_batting_orders": {
+      "name": "match_batting_orders",
+      "schema": "",
+      "columns": {
+        "match_id": {
+          "name": "match_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "team_id": {
+          "name": "team_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "player_id": {
+          "name": "player_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "batting_order": {
+          "name": "batting_order",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "fielding_position": {
+          "name": "fielding_position",
+          "type": "fielding_positions",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "is_starred": {
+          "name": "is_starred",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "match_batting_orders_match_id_matches_id_fk": {
+          "name": "match_batting_orders_match_id_matches_id_fk",
+          "tableFrom": "match_batting_orders",
+          "tableTo": "matches",
+          "columnsFrom": [
+            "match_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "match_batting_orders_team_id_team_id_fk": {
+          "name": "match_batting_orders_team_id_team_id_fk",
+          "tableFrom": "match_batting_orders",
+          "tableTo": "team",
+          "columnsFrom": [
+            "team_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "match_batting_orders_player_id_players_id_fk": {
+          "name": "match_batting_orders_player_id_players_id_fk",
+          "tableFrom": "match_batting_orders",
+          "tableTo": "players",
+          "columnsFrom": [
+            "player_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.match_player_stats": {
+      "name": "match_player_stats",
+      "schema": "",
+      "columns": {
+        "match_id": {
+          "name": "match_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "player_id": {
+          "name": "player_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "team_id": {
+          "name": "team_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "plate_appearances": {
+          "name": "plate_appearances",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "hits": {
+          "name": "hits",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "home_runs": {
+          "name": "home_runs",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "outs": {
+          "name": "outs",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "rbi": {
+          "name": "rbi",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "innings_pitched_whole": {
+          "name": "innings_pitched_whole",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "innings_pitched_partial": {
+          "name": "innings_pitched_partial",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "strikeouts": {
+          "name": "strikeouts",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "earned_runs": {
+          "name": "earned_runs",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "putouts": {
+          "name": "putouts",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "assists": {
+          "name": "assists",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "double_plays": {
+          "name": "double_plays",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "triple_plays": {
+          "name": "triple_plays",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "errors": {
+          "name": "errors",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "match_player_stats_match_id_matches_id_fk": {
+          "name": "match_player_stats_match_id_matches_id_fk",
+          "tableFrom": "match_player_stats",
+          "tableTo": "matches",
+          "columnsFrom": [
+            "match_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "match_player_stats_player_id_players_id_fk": {
+          "name": "match_player_stats_player_id_players_id_fk",
+          "tableFrom": "match_player_stats",
+          "tableTo": "players",
+          "columnsFrom": [
+            "player_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "match_player_stats_team_id_team_id_fk": {
+          "name": "match_player_stats_team_id_team_id_fk",
+          "tableFrom": "match_player_stats",
+          "tableTo": "team",
+          "columnsFrom": [
+            "team_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.matches": {
+      "name": "matches",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "identity": {
+            "type": "always",
+            "name": "matches_id_seq",
+            "schema": "public",
+            "increment": "1",
+            "startWith": "1",
+            "minValue": "1",
+            "maxValue": "2147483647",
+            "cache": "1",
+            "cycle": false
+          }
+        },
+        "team_a_id": {
+          "name": "team_a_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "team_b_id": {
+          "name": "team_b_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "state": {
+          "name": "state",
+          "type": "match_state",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'upcoming'"
+        },
+        "scheduled_date": {
+          "name": "scheduled_date",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "team_a_score": {
+          "name": "team_a_score",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "team_b_score": {
+          "name": "team_b_score",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "matches_team_a_id_team_id_fk": {
+          "name": "matches_team_a_id_team_id_fk",
+          "tableFrom": "matches",
+          "tableTo": "team",
+          "columnsFrom": [
+            "team_a_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "matches_team_b_id_team_id_fk": {
+          "name": "matches_team_b_id_team_id_fk",
+          "tableFrom": "matches",
+          "tableTo": "team",
+          "columnsFrom": [
+            "team_b_id"
           ],
           "columnsTo": [
             "id"
@@ -1165,6 +1520,15 @@
         "Low",
         "Medium",
         "High"
+      ]
+    },
+    "public.match_state": {
+      "name": "match_state",
+      "schema": "public",
+      "values": [
+        "upcoming",
+        "live",
+        "finished"
       ]
     },
     "public.season_state": {

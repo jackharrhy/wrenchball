@@ -2,7 +2,14 @@ import { redirect, Form, Link } from "react-router";
 import type { Route } from "./+types/admin";
 import { requireUser, impersonateUser } from "~/auth.server";
 import { db } from "~/database/db";
-import { seasonState, type SeasonState } from "~/database/schema";
+import {
+  seasonState,
+  matchState,
+  matches,
+  type SeasonState,
+  type MatchState,
+} from "~/database/schema";
+import { asc, desc } from "drizzle-orm";
 import {
   randomAssignTeams,
   wipeTeams,
@@ -17,6 +24,13 @@ import {
   createUser,
   setCurrentDraftingUser,
 } from "~/utils/admin.server";
+import {
+  createMatch,
+  updateMatchState,
+  updateMatchScore,
+  deleteMatch,
+  getTeamsForMatchCreation,
+} from "~/utils/matches.server";
 
 export async function loader({ request }: Route.LoaderArgs) {
   const user = await requireUser(request);
@@ -27,11 +41,21 @@ export async function loader({ request }: Route.LoaderArgs) {
 
   const currentState = await getSeasonState(db);
   const draftingOrder = await getDraftingOrder(db);
+  const allMatches = await db.query.matches.findMany({
+    with: {
+      teamA: true,
+      teamB: true,
+    },
+    orderBy: [asc(matches.scheduledDate), desc(matches.createdAt)],
+  });
+  const teams = await getTeamsForMatchCreation(db);
 
   return {
     user,
     seasonState: currentState,
     draftingOrder,
+    matches: allMatches,
+    teams,
   };
 }
 
@@ -138,6 +162,38 @@ export async function clientAction({
     );
     if (!confirmed) {
       return { success: false, message: "Impersonation cancelled" };
+    }
+  }
+
+  if (intent === "create-match") {
+    const teamAId = formData.get("teamAId");
+    const teamBId = formData.get("teamBId");
+
+    if (!teamAId || !teamBId) {
+      return { success: false, message: "Both teams are required" };
+    }
+
+    if (teamAId === teamBId) {
+      return { success: false, message: "Team A and Team B must be different" };
+    }
+  }
+
+  if (intent === "delete-match") {
+    const confirmed = confirm(
+      "Are you sure you want to delete this match? This cannot be undone.",
+    );
+    if (!confirmed) {
+      return { success: false, message: "Match deletion cancelled" };
+    }
+  }
+
+  if (intent === "update-match-state") {
+    const newState = formData.get("state") as string;
+    const confirmed = confirm(
+      `Are you sure you want to change the match state to "${newState}"?`,
+    );
+    if (!confirmed) {
+      return { success: false, message: "State change cancelled" };
     }
   }
 
@@ -403,6 +459,151 @@ export async function action({ request }: Route.ActionArgs) {
         success: false,
         message:
           error instanceof Error ? error.message : "Failed to impersonate user",
+      };
+    }
+  }
+
+  if (intent === "create-match") {
+    const teamAIdStr = formData.get("teamAId");
+    const teamBIdStr = formData.get("teamBId");
+    const scheduledDateStr = formData.get("scheduledDate") as string;
+
+    if (!teamAIdStr || !teamBIdStr) {
+      return { success: false, message: "Both teams are required" };
+    }
+
+    const teamAId = parseInt(teamAIdStr as string, 10);
+    const teamBId = parseInt(teamBIdStr as string, 10);
+
+    if (isNaN(teamAId) || isNaN(teamBId)) {
+      return { success: false, message: "Invalid team IDs" };
+    }
+
+    if (teamAId === teamBId) {
+      return { success: false, message: "Team A and Team B must be different" };
+    }
+
+    try {
+      const scheduledDate = scheduledDateStr
+        ? new Date(scheduledDateStr)
+        : null;
+      await createMatch(db, { teamAId, teamBId, scheduledDate });
+      return {
+        success: true,
+        message: "Match created successfully",
+      };
+    } catch (error) {
+      console.error("Error creating match:", error);
+      return {
+        success: false,
+        message:
+          error instanceof Error ? error.message : "Failed to create match",
+      };
+    }
+  }
+
+  if (intent === "delete-match") {
+    const matchIdStr = formData.get("matchId");
+
+    if (!matchIdStr) {
+      return { success: false, message: "Match ID is required" };
+    }
+
+    const matchId = parseInt(matchIdStr as string, 10);
+    if (isNaN(matchId)) {
+      return { success: false, message: "Invalid match ID" };
+    }
+
+    try {
+      await deleteMatch(db, matchId);
+      return {
+        success: true,
+        message: "Match deleted successfully",
+      };
+    } catch (error) {
+      console.error("Error deleting match:", error);
+      return {
+        success: false,
+        message:
+          error instanceof Error ? error.message : "Failed to delete match",
+      };
+    }
+  }
+
+  if (intent === "update-match-state") {
+    const matchIdStr = formData.get("matchId");
+    const state = formData.get("state") as MatchState;
+
+    if (!matchIdStr || !state) {
+      return { success: false, message: "Match ID and state are required" };
+    }
+
+    const matchId = parseInt(matchIdStr as string, 10);
+    if (isNaN(matchId)) {
+      return { success: false, message: "Invalid match ID" };
+    }
+
+    if (!(matchState.enumValues as readonly string[]).includes(state)) {
+      return { success: false, message: "Invalid match state" };
+    }
+
+    try {
+      await updateMatchState(db, matchId, state);
+      return {
+        success: true,
+        message: `Match state updated to: ${state}`,
+      };
+    } catch (error) {
+      console.error("Error updating match state:", error);
+      return {
+        success: false,
+        message:
+          error instanceof Error
+            ? error.message
+            : "Failed to update match state",
+      };
+    }
+  }
+
+  if (intent === "update-match-score") {
+    const matchIdStr = formData.get("matchId");
+    const teamAScoreStr = formData.get("teamAScore");
+    const teamBScoreStr = formData.get("teamBScore");
+
+    if (!matchIdStr) {
+      return { success: false, message: "Match ID is required" };
+    }
+
+    const matchId = parseInt(matchIdStr as string, 10);
+    if (isNaN(matchId)) {
+      return { success: false, message: "Invalid match ID" };
+    }
+
+    const teamAScore = teamAScoreStr
+      ? parseInt(teamAScoreStr as string, 10)
+      : 0;
+    const teamBScore = teamBScoreStr
+      ? parseInt(teamBScoreStr as string, 10)
+      : 0;
+
+    if (isNaN(teamAScore) || isNaN(teamBScore)) {
+      return { success: false, message: "Invalid scores" };
+    }
+
+    try {
+      await updateMatchScore(db, matchId, teamAScore, teamBScore);
+      return {
+        success: true,
+        message: "Match score updated successfully",
+      };
+    } catch (error) {
+      console.error("Error updating match score:", error);
+      return {
+        success: false,
+        message:
+          error instanceof Error
+            ? error.message
+            : "Failed to update match score",
       };
     }
   }
@@ -723,6 +924,185 @@ export default function Admin({
               Create User
             </button>
           </Form>
+        </div>
+
+        <div>
+          <h2 className="text-xl font-semibold mb-2">Match Management</h2>
+
+          <div className="bg-cell-gray/40 rounded-md border border-cell-gray/50 p-6 mb-4">
+            <h3 className="text-lg font-medium mb-3">Create New Match</h3>
+            <Form method="post" className="flex flex-wrap gap-4 items-end">
+              <input type="hidden" name="intent" value="create-match" />
+              <div className="flex flex-col gap-2">
+                <label htmlFor="teamAId" className="text-sm font-medium">
+                  Team A
+                </label>
+                <select
+                  id="teamAId"
+                  name="teamAId"
+                  required
+                  className="px-3 py-2 border rounded bg-white text-black border-gray-300 min-w-[200px]"
+                >
+                  <option value="">Select Team A</option>
+                  {loaderData.teams.map((team) => (
+                    <option key={team.id} value={team.id}>
+                      {team.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="flex flex-col gap-2">
+                <label htmlFor="teamBId" className="text-sm font-medium">
+                  Team B
+                </label>
+                <select
+                  id="teamBId"
+                  name="teamBId"
+                  required
+                  className="px-3 py-2 border rounded bg-white text-black border-gray-300 min-w-[200px]"
+                >
+                  <option value="">Select Team B</option>
+                  {loaderData.teams.map((team) => (
+                    <option key={team.id} value={team.id}>
+                      {team.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="flex flex-col gap-2">
+                <label htmlFor="scheduledDate" className="text-sm font-medium">
+                  Scheduled Date/Time (optional)
+                </label>
+                <input
+                  type="datetime-local"
+                  id="scheduledDate"
+                  name="scheduledDate"
+                  className="px-3 py-2 border rounded bg-white text-black border-gray-300"
+                />
+              </div>
+              <button
+                type="submit"
+                className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded"
+              >
+                Create Match
+              </button>
+            </Form>
+          </div>
+
+          {loaderData.matches.length === 0 ? (
+            <p className="text-gray-200">No matches created yet</p>
+          ) : (
+            <div className="space-y-2">
+              {loaderData.matches.map((match) => (
+                <div
+                  key={match.id}
+                  className="flex flex-wrap items-center gap-4 p-3 border rounded bg-cell-gray/40 border-cell-gray/50"
+                >
+                  <div className="flex-1 min-w-[200px]">
+                    <div className="font-medium">
+                      {match.teamA.name} vs {match.teamB.name}
+                    </div>
+                    <div className="text-sm text-gray-400">
+                      {match.scheduledDate
+                        ? new Date(match.scheduledDate).toLocaleString()
+                        : "No date set"}
+                    </div>
+                    {match.state === "finished" &&
+                      match.teamAScore !== null &&
+                      match.teamBScore !== null && (
+                        <div className="text-sm text-yellow-300">
+                          Score: {match.teamAScore} - {match.teamBScore}
+                        </div>
+                      )}
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <span
+                      className={`px-2 py-1 text-xs font-semibold rounded capitalize ${
+                        match.state === "upcoming"
+                          ? "bg-blue-500/20 text-blue-300"
+                          : match.state === "live"
+                            ? "bg-green-500/20 text-green-300"
+                            : "bg-gray-500/20 text-gray-300"
+                      }`}
+                    >
+                      {match.state}
+                    </span>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    {matchState.enumValues.map((state) => (
+                      <Form key={state} method="post" className="inline-block">
+                        <input
+                          type="hidden"
+                          name="intent"
+                          value="update-match-state"
+                        />
+                        <input type="hidden" name="matchId" value={match.id} />
+                        <input type="hidden" name="state" value={state} />
+                        <button
+                          type="submit"
+                          disabled={match.state === state}
+                          className={`px-2 py-1 rounded text-xs ${
+                            match.state === state
+                              ? "bg-gray-600 text-gray-400 cursor-not-allowed"
+                              : "bg-gray-500 hover:bg-gray-600 text-white"
+                          }`}
+                        >
+                          {state}
+                        </button>
+                      </Form>
+                    ))}
+                  </div>
+
+                  {match.state === "finished" && (
+                    <Form method="post" className="flex items-center gap-2">
+                      <input
+                        type="hidden"
+                        name="intent"
+                        value="update-match-score"
+                      />
+                      <input type="hidden" name="matchId" value={match.id} />
+                      <input
+                        type="number"
+                        name="teamAScore"
+                        defaultValue={match.teamAScore ?? 0}
+                        min="0"
+                        className="w-16 px-2 py-1 border rounded bg-white text-black border-gray-300 text-center"
+                        placeholder="A"
+                      />
+                      <span>-</span>
+                      <input
+                        type="number"
+                        name="teamBScore"
+                        defaultValue={match.teamBScore ?? 0}
+                        min="0"
+                        className="w-16 px-2 py-1 border rounded bg-white text-black border-gray-300 text-center"
+                        placeholder="B"
+                      />
+                      <button
+                        type="submit"
+                        className="bg-blue-600 hover:bg-blue-700 text-white px-2 py-1 rounded text-sm"
+                      >
+                        Save
+                      </button>
+                    </Form>
+                  )}
+
+                  <Form method="post" className="inline-block">
+                    <input type="hidden" name="intent" value="delete-match" />
+                    <input type="hidden" name="matchId" value={match.id} />
+                    <button
+                      type="submit"
+                      className="opacity-50 hover:opacity-100 bg-red-600 hover:bg-red-700 text-white px-2 py-1 rounded text-sm"
+                    >
+                      Delete
+                    </button>
+                  </Form>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </div>

@@ -8,7 +8,8 @@
     "dev": "dotenv -- node server.js",
     "start": "node server.js",
     "typecheck": "react-router typegen && tsc -b",
-    "insert-data": "dotenv -- tsx scripts/insert-data.ts"
+    "insert-data": "dotenv -- tsx --tsconfig tsconfig.scripts.json scripts/insert-data.ts",
+    "create-random-data": "dotenv -- tsx --tsconfig tsconfig.scripts.json scripts/create-random-data.ts"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",

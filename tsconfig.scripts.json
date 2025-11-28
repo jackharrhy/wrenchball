@@ -1,0 +1,15 @@
+{
+  "extends": "./tsconfig.json",
+  "include": ["scripts/**/*"],
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "~/database/*": ["./database/*"],
+      "~/*": ["./app/*"]
+    },
+    "moduleResolution": "bundler",
+    "module": "ES2022",
+    "target": "ES2022"
+  }
+}
+

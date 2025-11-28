@@ -11,7 +11,7 @@ declare global {
   var __discord_client__: Client | undefined;
 }
 
-const getClient = () => {
+export const getClient = () => {
   if (global.__discord_client__) {
     console.log("[Discord] Reusing cached Discord client");
     return global.__discord_client__;
@@ -42,7 +42,16 @@ if (!threadId) {
   throw new Error("DISCORD_EVENT_THREAD_ID is not set");
 }
 
+export let disable = false;
+
+export const setDisable = (value: boolean) => {
+  disable = value;
+};
+
 export const postEvent = (event: string, markdown: string) => {
+  if (disable) {
+    return;
+  }
   (async () => {
     try {
       const thread = await client.channels.fetch(threadId);

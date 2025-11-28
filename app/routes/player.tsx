@@ -32,7 +32,11 @@ export default function Player({
       <h1 className="text-2xl font-rodin font-bold">{player.name}</h1>
 
       <div className="flex flex-col items-center gap-6 border-2 border-cell-gray/50 bg-cell-gray/40 rounded-lg p-8">
-        <PlayerIcon player={player} size="xl" />
+        <PlayerIcon
+          player={player}
+          size="xl"
+          isStarred={player.lineup?.isStarred ?? false}
+        />
 
         <div className="text-center space-y-2">
           <p>

@@ -8,14 +8,18 @@ import { TEAM_SIZE } from "~/consts";
 export async function loader({ request }: Route.LoaderArgs) {
   const allTeams = await db.query.teams.findMany({
     with: {
-      players: true,
+      players: {
+        with: {
+          lineup: true,
+        },
+      },
     },
     orderBy: (teams, { asc }) => asc(teams.id),
   });
 
   const teamsWithFullPlayers = allTeams.map((team) => {
     const players = team.players ?? [];
-    const filledPlayers: (Player | null)[] = [...players];
+    const filledPlayers: ((typeof players)[0] | null)[] = [...players];
     while (filledPlayers.length < TEAM_SIZE) {
       filledPlayers.push(null);
     }

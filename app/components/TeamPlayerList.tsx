@@ -1,4 +1,4 @@
-import type { Player, Team } from "~/database/schema";
+import type { Player, Team, TeamLineup } from "~/database/schema";
 import { PlayerIcon } from "./PlayerIcon";
 import { cn } from "~/utils/cn";
 import { Link } from "react-router";
@@ -8,7 +8,7 @@ export const TeamPlayer = ({
   size = "md",
   link = true,
 }: {
-  player: Player | null;
+  player: (Player & { lineup?: TeamLineup }) | null;
   size?: "md" | "sm";
   link?: boolean;
 }) => {
@@ -28,13 +28,15 @@ export const TeamPlayer = ({
     );
   }
 
+  const isStarred = player.lineup?.isStarred ?? false;
+
   if (link) {
     return (
       <Link
         to={`/player/${player.id}`}
         className="flex items-center gap-4 group"
       >
-        <PlayerIcon player={player} />
+        <PlayerIcon player={player} isStarred={isStarred} />
         <p
           className={cn(
             "text-xs w-full transition-all",
@@ -50,7 +52,7 @@ export const TeamPlayer = ({
 
   return (
     <div className="flex items-center gap-4">
-      <PlayerIcon player={player} />
+      <PlayerIcon player={player} isStarred={isStarred} />
       <p
         className={cn("text-xs w-full", size === "sm" ? "text-xs" : "text-sm")}
       >
@@ -65,7 +67,7 @@ export function TeamPlayerList({
   size = "md",
   link = true,
 }: {
-  team: Team & { players: (Player | null)[] };
+  team: Team & { players: ((Player & { lineup?: TeamLineup }) | null)[] };
   size?: "md" | "sm";
   link?: boolean;
 }) {

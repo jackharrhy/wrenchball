@@ -495,7 +495,11 @@ export const getPendingTradesForUser = async (db: Database, userId: number) => {
       toTeam: true,
       tradePlayers: {
         with: {
-          player: true,
+          player: {
+            with: {
+              lineup: true,
+            },
+          },
         },
       },
     },
@@ -543,7 +547,11 @@ export const getTrades = async (
       toTeam: true,
       tradePlayers: {
         with: {
-          player: true,
+          player: {
+            with: {
+              lineup: true,
+            },
+          },
         },
       },
     },

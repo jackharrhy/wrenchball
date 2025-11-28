@@ -8,6 +8,7 @@ export async function loader({ request }: Route.LoaderArgs) {
   const allPlayers = await db.query.players.findMany({
     with: {
       team: true,
+      lineup: true,
     },
     orderBy: (players, { asc }) => asc(players.sortPosition),
   });
@@ -24,7 +25,10 @@ export default function PlayersIndex({ loaderData }: Route.ComponentProps) {
           to={`/player/${player.id}`}
           className="relative flex flex-col items-center gap-2 p-4 border-2 border-cell-gray/50 rounded-lg w-36 h-23 bg-cell-gray/40 hover:bg-cell-gray/60 transition-colors"
         >
-          <PlayerIcon player={player} />
+          <PlayerIcon
+            player={player}
+            isStarred={player.lineup?.isStarred ?? false}
+          />
           <span className="text-xs text-center">{player.name}</span>
           <span
             className={cn(

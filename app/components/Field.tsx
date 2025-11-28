@@ -41,7 +41,10 @@ const Position = ({
           >
             <circle cx={20} cy={20} r={20} fill="white" />
           </svg>
-          <PlayerIcon player={player} />
+          <PlayerIcon
+            player={player}
+            isStarred={player.lineup?.isStarred ?? false}
+          />
         </Link>
       ) : (
         <>

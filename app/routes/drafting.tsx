@@ -6,6 +6,7 @@ import {
   getPreDraft,
   setPreDraft,
   clearPreDraft,
+  setPlayerStarred,
 } from "~/utils/draft.server";
 import { users, players, type Player, events } from "~/database/schema";
 import { desc, eq, sql } from "drizzle-orm";
@@ -68,14 +69,18 @@ export async function loader({ request }: Route.LoaderArgs) {
 
   const allTeams = await db.query.teams.findMany({
     with: {
-      players: true,
+      players: {
+        with: {
+          lineup: true,
+        },
+      },
     },
     orderBy: (teams, { asc }) => asc(teams.id),
   });
 
   const teamsWithFullPlayers = allTeams.map((team) => {
     const players = team.players ?? [];
-    const filledPlayers: (Player | null)[] = [...players];
+    const filledPlayers: ((typeof players)[0] | null)[] = [...players];
     while (filledPlayers.length < TEAM_SIZE) {
       filledPlayers.push(null);
     }
@@ -87,7 +92,11 @@ export async function loader({ request }: Route.LoaderArgs) {
       user: true,
       draft: {
         with: {
-          player: true,
+          player: {
+            with: {
+              lineup: true,
+            },
+          },
           team: true,
         },
       },
@@ -229,6 +238,30 @@ export async function action({ request }: Route.ActionArgs) {
     }
   }
 
+  if (intent === "set-player-starred") {
+    const playerIdStr = formData.get("playerId");
+    if (!playerIdStr) {
+      return { success: false, error: "Player ID is required" };
+    }
+
+    const playerId = parseInt(playerIdStr as string, 10);
+    if (isNaN(playerId)) {
+      return { success: false, error: "Invalid player ID" };
+    }
+
+    const result = await setPlayerStarred(db, user.id, playerId);
+
+    if (result.success) {
+      broadcast(user, "player-star-update", { playerId, userId: user.id });
+      return { success: true, message: "Player starred successfully" };
+    } else {
+      return {
+        success: false,
+        error: result.error || "Failed to star player",
+      };
+    }
+  }
+
   return { success: false, error: `Invalid action: ${intent}` };
 }
 
@@ -318,6 +351,11 @@ export default function Drafting({
     }
   }, "drafting-player-selection");
 
+  useStream((data) => {
+    console.log("player-star-update", data);
+    revalidator.revalidate();
+  }, "player-star-update");
+
   if (seasonState !== "drafting") {
     return (
       <div>
@@ -397,7 +435,7 @@ export default function Drafting({
                     : "hover:border-cell-gray hover:ring-1 hover:ring-cell-gray/50"
                 }`}
               >
-                <PlayerIcon player={null} size="lg" />
+                <PlayerIcon player={null} size="lg" isQuestionMark={true} />
               </button>
             </div>
             {filteredFreeAgents.map((player) => {
@@ -484,26 +522,60 @@ export default function Drafting({
         <div className="teams">
           <div className="flex flex-col gap-2 p-4">
             {allTeams.map((team) => {
+              const isUserTeam = team.userId === user.id;
+              const canToggleStar = isUserTeam && seasonState === "drafting";
               return (
                 <div
                   key={team.id}
                   className="flex flex-wrap gap-2 items-center border border-cell-gray/50 bg-cell-gray/40 rounded-md px-4 py-1.5"
                 >
                   <p className="text-sm font-semibold w-16 mr-2">{team.name}</p>
-                  {team.players.slice(0, TEAM_SIZE - 3).map((player, index) => (
-                    <div
-                      key={player?.id || index}
-                      className={player ? "" : "opacity-50"}
-                    >
-                      {player ? (
-                        <a href={`/player/${player.id}`}>
-                          <PlayerIcon player={player} size="lg" />
-                        </a>
-                      ) : (
-                        <PlayerIcon player={null} size="lg" />
-                      )}
-                    </div>
-                  ))}
+                  {team.players.slice(0, TEAM_SIZE - 3).map((player, index) => {
+                    const isStarred = player?.lineup?.isStarred ?? false;
+                    return (
+                      <div
+                        key={player?.id || index}
+                        className={`relative ${player ? "" : "opacity-50"}`}
+                      >
+                        {player ? (
+                          canToggleStar ? (
+                            <Form method="post">
+                              <input
+                                type="hidden"
+                                name="intent"
+                                value="set-player-starred"
+                              />
+                              <input
+                                type="hidden"
+                                name="playerId"
+                                value={player.id}
+                              />
+                              <button
+                                type="submit"
+                                className="relative cursor-pointer hover:opacity-80 transition-opacity"
+                              >
+                                <PlayerIcon
+                                  player={player}
+                                  size="lg"
+                                  isStarred={isStarred}
+                                />
+                              </button>
+                            </Form>
+                          ) : (
+                            <a href={`/player/${player.id}`}>
+                              <PlayerIcon
+                                player={player}
+                                size="lg"
+                                isStarred={isStarred}
+                              />
+                            </a>
+                          )
+                        ) : (
+                          <PlayerIcon player={null} size="lg" />
+                        )}
+                      </div>
+                    );
+                  })}
                 </div>
               );
             })}
@@ -515,7 +587,7 @@ export default function Drafting({
             <>
               <div className="flex items-center justify-center">
                 <div className="border-b-2 border-cell-gray/50">
-                  <PlayerIcon player={null} size="xl" />
+                  <PlayerIcon player={null} size="xl" isQuestionMark={true} />
                 </div>
               </div>
               <div className="mt-4 flex flex-col gap-2">

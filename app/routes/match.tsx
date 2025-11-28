@@ -216,7 +216,11 @@ export default function Match({ loaderData }: Route.ComponentProps) {
                   >
                     <td className="sticky left-0 z-10 bg-cell-gray/60 p-2 border border-cell-gray/50">
                       <div className="flex items-center gap-2">
-                        <PlayerIcon player={bo.player} size="sm" />
+                        <PlayerIcon
+                          player={bo.player}
+                          size="sm"
+                          isStarred={bo.isStarred}
+                        />
                         <Link
                           to={`/player/${bo.playerId}`}
                           className="hover:underline"
@@ -255,7 +259,11 @@ export default function Match({ loaderData }: Route.ComponentProps) {
                   >
                     <td className="sticky left-0 z-10 bg-cell-gray/60 p-2 border border-cell-gray/50">
                       <div className="flex items-center gap-2">
-                        <PlayerIcon player={bo.player} size="sm" />
+                        <PlayerIcon
+                          player={bo.player}
+                          size="sm"
+                          isStarred={bo.isStarred}
+                        />
                         <Link
                           to={`/player/${bo.playerId}`}
                           className="hover:underline"

@@ -18,7 +18,12 @@ type EventWithRelations = Event & {
     playerId: number;
     teamId: number;
     pickNumber: number;
-    player: { id: number; name: string; imageUrl: string | null };
+    player: {
+      id: number;
+      name: string;
+      imageUrl: string | null;
+      lineup?: { isStarred: boolean } | null;
+    };
     team: { id: number; name: string; abbreviation: string };
   } | null;
   seasonStateChange?: {
@@ -59,7 +64,11 @@ export function Events({ events }: { events: EventWithRelations[] }) {
               className="flex items-center gap-3 p-3 bg-cell-gray/40 border border-cell-gray/50 rounded-lg"
             >
               <div className="flex-shrink-0">
-                <PlayerIcon player={event.draft.player} size="sm" />
+                <PlayerIcon
+                  player={event.draft.player}
+                  size="sm"
+                  isStarred={event.draft.player.lineup?.isStarred ?? false}
+                />
               </div>
               <div className="flex-1 min-w-0">
                 <div className="text-sm font-medium">

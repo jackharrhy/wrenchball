@@ -35,7 +35,11 @@ export async function loader({ request }: Route.LoaderArgs) {
   const myTeam = await db.query.teams.findFirst({
     where: (teams, { eq }) => eq(teams.userId, user.id),
     with: {
-      players: true,
+      players: {
+        with: {
+          lineup: true,
+        },
+      },
     },
   });
 
@@ -114,7 +118,11 @@ const PlayerList = ({ players }: { players: Player[] }) => {
     <div className="flex items-center gap-3">
       {players.map((player) => (
         <a href={`/player/${player.id}`} key={player.id}>
-          <PlayerIcon player={player} size="md" />
+          <PlayerIcon
+            player={player}
+            size="md"
+            isStarred={player.lineup?.isStarred ?? false}
+          />
         </a>
       ))}
     </div>

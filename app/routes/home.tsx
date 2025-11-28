@@ -10,7 +10,11 @@ export async function loader({}: Route.LoaderArgs) {
       user: true,
       draft: {
         with: {
-          player: true,
+          player: {
+            with: {
+              lineup: true,
+            },
+          },
           team: true,
         },
       },

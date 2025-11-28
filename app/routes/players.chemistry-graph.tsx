@@ -101,8 +101,10 @@ export default function PlayersChemistryGraph({
   > | null>(null);
   const [hoveredNode, setHoveredNode] = useState<string | null>(null);
   const [selectedNode, setSelectedNode] = useState<string | null>(null);
+  const [isInteractiveMode, setIsInteractiveMode] = useState(false);
 
   useEffect(() => {
+    if (!isInteractiveMode) return;
     if (!svgRef.current || !containerRef.current) return;
 
     const svg = d3.select(svgRef.current);
@@ -349,10 +351,15 @@ export default function PlayersChemistryGraph({
       simulation.stop();
       svg.on(".zoom", null);
     };
-  }, [loaderData.chemistry, loaderData.characterToPlayerMap]);
+  }, [
+    loaderData.chemistry,
+    loaderData.characterToPlayerMap,
+    isInteractiveMode,
+  ]);
 
   // Update visual styling when hover/select changes (without recreating simulation)
   useEffect(() => {
+    if (!isInteractiveMode) return;
     if (!nodeRef.current || !linkRef.current) return;
 
     const node = nodeRef.current;
@@ -398,16 +405,42 @@ export default function PlayersChemistryGraph({
       link.attr("stroke-opacity", 0.6);
       node.select("circle").attr("opacity", 1);
     }
-  }, [hoveredNode, selectedNode, loaderData.chemistry]);
+  }, [hoveredNode, selectedNode, loaderData.chemistry, isInteractiveMode]);
 
   return (
-    <div
-      ref={containerRef}
-      className="h-full overflow-hidden max-h-[calc(100vh-15rem)]"
-    >
-      <svg ref={svgRef} className="w-full h-full" style={{ cursor: "grab" }}>
-        <g className="container"></g>
-      </svg>
+    <div className="h-full overflow-hidden max-h-[calc(100vh-15rem)] flex flex-col">
+      <div className="flex justify-end mb-2">
+        <button
+          onClick={() => setIsInteractiveMode(!isInteractiveMode)}
+          className={cn(
+            "px-4 py-2 rounded-md text-sm font-medium transition-colors",
+            isInteractiveMode
+              ? "bg-blue-600 text-white hover:bg-blue-700"
+              : "bg-gray-200 text-gray-800 hover:bg-gray-300",
+          )}
+        >
+          {isInteractiveMode ? "Show Static Image" : "Show Interactive Graph"}
+        </button>
+      </div>
+      {isInteractiveMode ? (
+        <div ref={containerRef} className="h-full overflow-hidden flex-1">
+          <svg
+            ref={svgRef}
+            className="w-full h-full"
+            style={{ cursor: "grab" }}
+          >
+            <g className="container"></g>
+          </svg>
+        </div>
+      ) : (
+        <div className="flex-1 flex items-center justify-center overflow-auto">
+          <img
+            src="/images/s3-chem-chart.png"
+            alt="Chemistry Chart"
+            className="max-w-full max-h-full object-contain"
+          />
+        </div>
+      )}
     </div>
   );
 }

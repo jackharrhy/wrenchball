@@ -110,6 +110,15 @@ const addPlayerToLineup = async (
     return;
   }
 
+  // Check if this is the team's first player (count players on team)
+  const teamPlayers = await db
+    .select({ id: players.id })
+    .from(players)
+    .where(eq(players.teamId, teamId));
+
+  // If this is the first player (going from 0 to 1), auto-star them
+  const isFirstPlayer = teamPlayers.length === 0;
+
   // Get all possible fielding positions
   const allFieldingPositions: FieldingPosition[] = [
     "C",
@@ -167,7 +176,7 @@ const addPlayerToLineup = async (
     playerId,
     fieldingPosition: randomFieldingPosition,
     battingOrder: randomBattingOrder,
-    isStarred: false,
+    isStarred: isFirstPlayer, // Auto-star the first player
   });
 };
 
@@ -493,4 +502,119 @@ export const attemptAutoDraft = async (
       error: result.error,
     };
   }
+};
+
+/**
+ * Sets a player as starred for a user's team
+ * Only one player per team can be starred at a time
+ */
+export const setPlayerStarred = async (
+  db: Database,
+  userId: number,
+  playerId: number,
+): Promise<{ success: boolean; error?: string }> => {
+  const seasonState = await getSeasonState(db);
+  if (!seasonState) {
+    return { success: false, error: "No active season found" };
+  }
+
+  if (seasonState.state !== "drafting") {
+    return {
+      success: false,
+      error: `Season is in "${seasonState.state}" state, not drafting`,
+    };
+  }
+
+  // Get user's team
+  const userTeam = await db
+    .select({ id: teams.id })
+    .from(teams)
+    .where(eq(teams.userId, userId))
+    .limit(1);
+
+  if (userTeam.length === 0) {
+    return { success: false, error: "User does not have a team" };
+  }
+
+  const teamId = userTeam[0].id;
+
+  // Verify player exists and belongs to user's team
+  const player = await db
+    .select({ id: players.id, teamId: players.teamId })
+    .from(players)
+    .where(eq(players.id, playerId))
+    .limit(1);
+
+  if (player.length === 0) {
+    return { success: false, error: "Player not found" };
+  }
+
+  if (player[0].teamId !== teamId) {
+    return {
+      success: false,
+      error: "Player does not belong to your team",
+    };
+  }
+
+  await db.transaction(async (tx) => {
+    // Check if player is already starred
+    const existingLineup = await tx
+      .select({ isStarred: teamLineups.isStarred })
+      .from(teamLineups)
+      .where(eq(teamLineups.playerId, playerId))
+      .limit(1);
+
+    const isCurrentlyStarred =
+      existingLineup.length > 0 && existingLineup[0].isStarred === true;
+
+    if (isCurrentlyStarred) {
+      // Toggle: unstar the player
+      await tx
+        .update(teamLineups)
+        .set({ isStarred: false })
+        .where(eq(teamLineups.playerId, playerId));
+    } else {
+      // Star the selected player and unstar all others
+      // Get all players on the team
+      const teamPlayers = await tx
+        .select({ id: players.id })
+        .from(players)
+        .where(eq(players.teamId, teamId));
+
+      // Unstar all players on the team
+      for (const teamPlayer of teamPlayers) {
+        const teamPlayerLineup = await tx
+          .select()
+          .from(teamLineups)
+          .where(eq(teamLineups.playerId, teamPlayer.id))
+          .limit(1);
+
+        if (teamPlayerLineup.length > 0) {
+          await tx
+            .update(teamLineups)
+            .set({ isStarred: false })
+            .where(eq(teamLineups.playerId, teamPlayer.id));
+        }
+      }
+
+      // Star the selected player
+      if (existingLineup.length > 0) {
+        // Update existing entry
+        await tx
+          .update(teamLineups)
+          .set({ isStarred: true })
+          .where(eq(teamLineups.playerId, playerId));
+      } else {
+        // Insert new entry (player might not be in lineup yet)
+        await tx.insert(teamLineups).values({
+          playerId,
+          isStarred: true,
+          fieldingPosition: null,
+          battingOrder: null,
+        });
+      }
+    }
+  });
+
+  return { success: true };
 };

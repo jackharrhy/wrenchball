@@ -26,7 +26,11 @@ export async function loader({
   const myTeam = await db.query.teams.findFirst({
     where: (teams, { eq }) => eq(teams.userId, user.id),
     with: {
-      players: true,
+      players: {
+        with: {
+          lineup: true,
+        },
+      },
     },
   });
 
@@ -46,7 +50,11 @@ export async function loader({
   const otherTeam = await db.query.teams.findFirst({
     where: (teams, { eq }) => eq(teams.id, otherTeamId),
     with: {
-      players: true,
+      players: {
+        with: {
+          lineup: true,
+        },
+      },
     },
   });
 
@@ -146,7 +154,14 @@ function usePlayerSelection() {
 }
 
 type TeamPlayerSelectionProps = {
-  team: { players: (import("~/database/schema").Player | null)[] };
+  team: {
+    players: (
+      | (import("~/database/schema").Player & {
+          lineup?: import("~/database/schema").TeamLineup | null;
+        })
+      | null
+    )[];
+  };
   title: string;
   selectedPlayerIds: number[];
   onTogglePlayer: (playerId: number) => void;
@@ -176,7 +191,11 @@ function TeamPlayerSelection({
                   : "hover:bg-cell-gray/60"
               }`}
             >
-              <PlayerIcon player={player} size="lg" />
+              <PlayerIcon
+                player={player}
+                size="lg"
+                isStarred={player.lineup?.isStarred ?? false}
+              />
             </button>
           );
         })}

@@ -116,7 +116,7 @@ function BattingOrder({
   );
 }
 
-function Field({
+export function Field({
   players,
   captainId,
 }: {

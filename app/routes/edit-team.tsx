@@ -1,15 +1,16 @@
 import type { Route } from "./+types/edit-team";
 import { db } from "~/database/db";
-import { TeamPlayerList } from "~/components/TeamPlayerList";
 import { getUser } from "~/auth.server";
-import { useSubmit } from "react-router";
+import { useSubmit, redirect } from "react-router";
 import { useRef, useState } from "react";
-import { Lineup } from "~/components/Lineup";
+import { LineupEditor } from "~/components/LineupEditor";
 import {
   getTeamWithPlayers,
   fillPlayersToTeamSize,
   checkCanEdit,
   updateTeamName,
+  updateTeamLineup,
+  type LineupEntry,
 } from "~/utils/team.server";
 
 async function getTeamWithPermissionCheck(teamId: string, request: Request) {
@@ -44,7 +45,7 @@ export async function action({
   params: { teamId },
   request,
 }: Route.ActionArgs) {
-  const { db } = await getTeamWithPermissionCheck(teamId, request);
+  const { db, team } = await getTeamWithPermissionCheck(teamId, request);
 
   const formData = await request.formData();
   const intent = formData.get("intent");
@@ -58,6 +59,68 @@ export async function action({
     );
   }
 
+  if (intent === "update-lineup") {
+    // Parse lineup entries from form data
+    // Form data format: entries[0][playerId], entries[0][fieldingPosition], entries[0][battingOrder], etc.
+    const lineupEntries: LineupEntry[] = [];
+    const entryKeys = new Set<string>();
+
+    // Collect all entry indices
+    for (const [key] of formData.entries()) {
+      const match = key.match(/^entries\[(\d+)\]\[(\w+)\]$/);
+      if (match) {
+        entryKeys.add(match[1]);
+      }
+    }
+
+    // Build lineup entries
+    for (const index of entryKeys) {
+      const playerIdStr = formData.get(`entries[${index}][playerId]`);
+      const fieldingPosition = formData.get(
+        `entries[${index}][fieldingPosition]`,
+      );
+      const battingOrderStr = formData.get(`entries[${index}][battingOrder]`);
+
+      if (!playerIdStr) {
+        return {
+          success: false,
+          message: `Missing playerId for entry ${index}`,
+        };
+      }
+
+      const playerId = parseInt(playerIdStr as string, 10);
+      if (isNaN(playerId)) {
+        return {
+          success: false,
+          message: `Invalid playerId for entry ${index}`,
+        };
+      }
+
+      lineupEntries.push({
+        playerId,
+        fieldingPosition:
+          fieldingPosition && fieldingPosition !== "bench"
+            ? (fieldingPosition as LineupEntry["fieldingPosition"])
+            : null,
+        battingOrder:
+          battingOrderStr && battingOrderStr !== "none"
+            ? parseInt(battingOrderStr as string, 10)
+            : null,
+      });
+    }
+
+    const result = await updateTeamLineup(
+      db,
+      teamId,
+      lineupEntries,
+      team.captainId,
+    );
+    if (result.success) {
+      throw redirect(`/team/${teamId}`);
+    }
+    return result;
+  }
+
   return { success: false, message: "Invalid action" };
 }
 
@@ -69,6 +132,15 @@ export default function EditTeam({
   const [isEditing, setIsEditing] = useState(false);
   const [optimisticName, setOptimisticName] = useState(team.name);
   const titleRef = useRef<HTMLHeadingElement>(null);
+
+  // Create a key based on lineup data - when lineup changes after save, component remounts
+  const lineupKey = team.players
+    .filter((p) => p !== null)
+    .map(
+      (p) =>
+        `${p.id}-${p.lineup?.fieldingPosition ?? "bench"}-${p.lineup?.battingOrder ?? "none"}`,
+    )
+    .join("|");
 
   const handleTitleBlur = () => {
     setIsEditing(false);
@@ -125,16 +197,8 @@ export default function EditTeam({
         {optimisticName}
       </h1>
 
-      <div
-        key={team.id}
-        className="flex flex-row items-center gap-16 border-2 border-cell-gray/50 bg-cell-gray/40 rounded-lg p-4"
-      >
-        <TeamPlayerList team={team} />
-        <Lineup
-          players={team.players.filter((player) => player !== null)}
-          captainId={team.captainId}
-          captainStatsCharacter={team.captain?.statsCharacter}
-        />
+      <div className="flex flex-col gap-4 w-full">
+        <LineupEditor key={lineupKey} team={team} />
       </div>
     </div>
   );

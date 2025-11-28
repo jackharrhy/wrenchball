@@ -58,14 +58,16 @@ export function Nav({
               Players
             </Link>
           </li>
-          <li>
-            <Link
-              to="/matches"
-              className={linkClassName(["/matches", "/match"])}
-            >
-              Matches
-            </Link>
-          </li>
+          {seasonState !== "pre-season" && (
+            <li>
+              <Link
+                to="/matches"
+                className={linkClassName(["/matches", "/match"])}
+              >
+                Matches
+              </Link>
+            </li>
+          )}
           {seasonState === "drafting" && (
             <li>
               <Link to="/drafting" className={linkClassName("/drafting")}>

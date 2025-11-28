@@ -1,5 +1,5 @@
 {
-  "id": "7c80977c-ded4-47c0-8ddb-22e327b41e71",
+  "id": "20ec6f81-da78-4c1e-97da-8df871b0160f",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -126,6 +126,72 @@
           "tableTo": "team",
           "columnsFrom": [
             "team_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.event_match_state_change": {
+      "name": "event_match_state_change",
+      "schema": "",
+      "columns": {
+        "event_id": {
+          "name": "event_id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "match_id": {
+          "name": "match_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "from_state": {
+          "name": "from_state",
+          "type": "match_state",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "to_state": {
+          "name": "to_state",
+          "type": "match_state",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "event_match_state_change_event_id_events_id_fk": {
+          "name": "event_match_state_change_event_id_events_id_fk",
+          "tableFrom": "event_match_state_change",
+          "tableTo": "events",
+          "columnsFrom": [
+            "event_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "event_match_state_change_match_id_matches_id_fk": {
+          "name": "event_match_state_change_match_id_matches_id_fk",
+          "tableFrom": "event_match_state_change",
+          "tableTo": "matches",
+          "columnsFrom": [
+            "match_id"
           ],
           "columnsTo": [
             "id"
@@ -1495,7 +1561,8 @@
       "values": [
         "draft",
         "season_state_change",
-        "trade"
+        "trade",
+        "match_state_change"
       ]
     },
     "public.fielding_positions": {

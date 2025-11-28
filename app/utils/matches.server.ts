@@ -1,4 +1,4 @@
-import { eq, asc } from "drizzle-orm";
+import { eq, asc, and, count } from "drizzle-orm";
 import { type Database } from "~/database/db";
 import {
   matches,
@@ -8,7 +8,10 @@ import {
   players,
   teams,
   type MatchState,
+  type MatchPlayerStats,
 } from "~/database/schema";
+import { LINEUP_SIZE } from "~/consts";
+import { createMatchStateChangeEvent } from "~/utils/events.server";
 
 export interface CreateMatchParams {
   teamAId: number;
@@ -22,6 +25,38 @@ export const createMatch = async (
 ) => {
   if (teamAId === teamBId) {
     throw new Error("Team A and Team B must be different teams");
+  }
+
+  const [teamACount] = await db
+    .select({ count: count() })
+    .from(players)
+    .where(eq(players.teamId, teamAId));
+
+  const [teamBCount] = await db
+    .select({ count: count() })
+    .from(players)
+    .where(eq(players.teamId, teamBId));
+
+  if (teamACount.count < LINEUP_SIZE) {
+    const [teamA] = await db
+      .select({ name: teams.name })
+      .from(teams)
+      .where(eq(teams.id, teamAId));
+
+    throw new Error(
+      `${teamA?.name || "Team A"} needs at least ${LINEUP_SIZE} players (has ${teamACount.count})`,
+    );
+  }
+
+  if (teamBCount.count < LINEUP_SIZE) {
+    const [teamB] = await db
+      .select({ name: teams.name })
+      .from(teams)
+      .where(eq(teams.id, teamBId));
+
+    throw new Error(
+      `${teamB?.name || "Team B"} needs at least ${LINEUP_SIZE} players (has ${teamBCount.count})`,
+    );
   }
 
   const [match] = await db
@@ -120,10 +155,16 @@ export const getMatchById = async (db: Database, matchId: number) => {
   });
 };
 
+export interface UpdateMatchStateParams {
+  userId?: number;
+  seasonId?: number;
+}
+
 export const updateMatchState = async (
   db: Database,
   matchId: number,
   newState: MatchState,
+  params?: UpdateMatchStateParams,
 ) => {
   // Get current match to check state transition
   const currentMatch = await db.query.matches.findFirst({
@@ -134,9 +175,11 @@ export const updateMatchState = async (
     throw new Error("Match not found");
   }
 
+  const fromState = currentMatch.state;
+
   // If transitioning from upcoming to live, freeze the lineups
   if (currentMatch.state === "upcoming" && newState === "live") {
-    return await db.transaction(async (tx) => {
+    const updated = await db.transaction(async (tx) => {
       // Freeze lineups for both teams
       await freezeMatchLineups(
         tx,
@@ -146,7 +189,7 @@ export const updateMatchState = async (
       );
 
       // Update the state
-      const [updated] = await tx
+      const [result] = await tx
         .update(matches)
         .set({
           state: newState,
@@ -155,8 +198,22 @@ export const updateMatchState = async (
         .where(eq(matches.id, matchId))
         .returning();
 
-      return updated;
+      return result;
     });
+
+    // Create event if params provided (after transaction completes successfully)
+    if (params?.userId && params?.seasonId) {
+      await createMatchStateChangeEvent(
+        db,
+        params.userId,
+        matchId,
+        fromState,
+        newState,
+        params.seasonId,
+      );
+    }
+
+    return updated;
   }
 
   // For other state transitions, just update the state
@@ -168,6 +225,18 @@ export const updateMatchState = async (
     })
     .where(eq(matches.id, matchId))
     .returning();
+
+  // Create event for live -> finished or other transitions
+  if (params?.userId && params?.seasonId) {
+    await createMatchStateChangeEvent(
+      db,
+      params.userId,
+      matchId,
+      fromState,
+      newState,
+      params.seasonId,
+    );
+  }
 
   return updated;
 };
@@ -205,4 +274,99 @@ export const getTeamsForMatchCreation = async (db: Database) => {
     })
     .from(teams)
     .orderBy(asc(teams.name));
+};
+
+export const getMatchWithStats = async (db: Database, matchId: number) => {
+  return await db.query.matches.findFirst({
+    where: eq(matches.id, matchId),
+    with: {
+      teamA: true,
+      teamB: true,
+      battingOrders: {
+        with: {
+          player: true,
+          team: true,
+        },
+        orderBy: [
+          asc(matchBattingOrders.teamId),
+          asc(matchBattingOrders.battingOrder),
+        ],
+      },
+      playerStats: {
+        with: {
+          player: true,
+          team: true,
+        },
+      },
+    },
+  });
+};
+
+export type PlayerStatInput = Omit<MatchPlayerStats, "matchId">;
+
+export const upsertMatchPlayerStats = async (
+  db: Database,
+  matchId: number,
+  stats: PlayerStatInput[],
+) => {
+  await db.transaction(async (tx) => {
+    for (const stat of stats) {
+      // Check if stat exists
+      const existing = await tx.query.matchPlayerStats.findFirst({
+        where: and(
+          eq(matchPlayerStats.matchId, matchId),
+          eq(matchPlayerStats.playerId, stat.playerId),
+        ),
+      });
+
+      if (existing) {
+        // Update existing
+        await tx
+          .update(matchPlayerStats)
+          .set({
+            plateAppearances: stat.plateAppearances,
+            hits: stat.hits,
+            homeRuns: stat.homeRuns,
+            outs: stat.outs,
+            rbi: stat.rbi,
+            inningsPitchedWhole: stat.inningsPitchedWhole,
+            inningsPitchedPartial: stat.inningsPitchedPartial,
+            strikeouts: stat.strikeouts,
+            earnedRuns: stat.earnedRuns,
+            putouts: stat.putouts,
+            assists: stat.assists,
+            doublePlays: stat.doublePlays,
+            triplePlays: stat.triplePlays,
+            errors: stat.errors,
+          })
+          .where(
+            and(
+              eq(matchPlayerStats.matchId, matchId),
+              eq(matchPlayerStats.playerId, stat.playerId),
+            ),
+          );
+      } else {
+        // Insert new
+        await tx.insert(matchPlayerStats).values({
+          matchId,
+          playerId: stat.playerId,
+          teamId: stat.teamId,
+          plateAppearances: stat.plateAppearances,
+          hits: stat.hits,
+          homeRuns: stat.homeRuns,
+          outs: stat.outs,
+          rbi: stat.rbi,
+          inningsPitchedWhole: stat.inningsPitchedWhole,
+          inningsPitchedPartial: stat.inningsPitchedPartial,
+          strikeouts: stat.strikeouts,
+          earnedRuns: stat.earnedRuns,
+          putouts: stat.putouts,
+          assists: stat.assists,
+          doublePlays: stat.doublePlays,
+          triplePlays: stat.triplePlays,
+          errors: stat.errors,
+        });
+      }
+    }
+  });
 };

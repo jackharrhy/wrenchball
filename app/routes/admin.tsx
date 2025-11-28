@@ -548,7 +548,11 @@ export async function action({ request }: Route.ActionArgs) {
     }
 
     try {
-      await updateMatchState(db, matchId, state);
+      const currentSeason = await getSeasonState(db);
+      await updateMatchState(db, matchId, state, {
+        userId: user.id,
+        seasonId: currentSeason?.id ?? 1,
+      });
       return {
         success: true,
         message: `Match state updated to: ${state}`,
@@ -1056,37 +1060,45 @@ export default function Admin({
                   </div>
 
                   {match.state === "finished" && (
-                    <Form method="post" className="flex items-center gap-2">
-                      <input
-                        type="hidden"
-                        name="intent"
-                        value="update-match-score"
-                      />
-                      <input type="hidden" name="matchId" value={match.id} />
-                      <input
-                        type="number"
-                        name="teamAScore"
-                        defaultValue={match.teamAScore ?? 0}
-                        min="0"
-                        className="w-16 px-2 py-1 border rounded bg-white text-black border-gray-300 text-center"
-                        placeholder="A"
-                      />
-                      <span>-</span>
-                      <input
-                        type="number"
-                        name="teamBScore"
-                        defaultValue={match.teamBScore ?? 0}
-                        min="0"
-                        className="w-16 px-2 py-1 border rounded bg-white text-black border-gray-300 text-center"
-                        placeholder="B"
-                      />
-                      <button
-                        type="submit"
-                        className="bg-blue-600 hover:bg-blue-700 text-white px-2 py-1 rounded text-sm"
+                    <>
+                      <Form method="post" className="flex items-center gap-2">
+                        <input
+                          type="hidden"
+                          name="intent"
+                          value="update-match-score"
+                        />
+                        <input type="hidden" name="matchId" value={match.id} />
+                        <input
+                          type="number"
+                          name="teamAScore"
+                          defaultValue={match.teamAScore ?? 0}
+                          min="0"
+                          className="w-16 px-2 py-1 border rounded bg-white text-black border-gray-300 text-center"
+                          placeholder="A"
+                        />
+                        <span>-</span>
+                        <input
+                          type="number"
+                          name="teamBScore"
+                          defaultValue={match.teamBScore ?? 0}
+                          min="0"
+                          className="w-16 px-2 py-1 border rounded bg-white text-black border-gray-300 text-center"
+                          placeholder="B"
+                        />
+                        <button
+                          type="submit"
+                          className="bg-blue-600 hover:bg-blue-700 text-white px-2 py-1 rounded text-sm"
+                        >
+                          Save
+                        </button>
+                      </Form>
+                      <Link
+                        to={`/admin/match/${match.id}/stats`}
+                        className="bg-purple-600 hover:bg-purple-700 text-white px-2 py-1 rounded text-sm"
                       >
-                        Save
-                      </button>
-                    </Form>
+                        Edit Stats
+                      </Link>
+                    </>
                   )}
 
                   <Form method="post" className="inline-block">

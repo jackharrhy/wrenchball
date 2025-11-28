@@ -17,6 +17,7 @@ export default [
   ]),
   route("player/:playerId", "routes/player.tsx"),
   route("matches", "routes/matches.tsx"),
+  route("match/:matchId", "routes/match.tsx"),
   route("drafting", "routes/drafting.tsx"),
   route("stream", "routes/stream.tsx"),
   route("trading", "routes/trading.tsx"),
@@ -24,5 +25,6 @@ export default [
   route("chemistry", "routes/chemistry.tsx"),
   route("admin", "routes/admin.tsx"),
   route("admin/match-track", "routes/admin-match-track.tsx"),
+  route("admin/match/:matchId/stats", "routes/admin-match-stats.tsx"),
   route("kitchen-sink", "routes/kitchen-sink.tsx"),
 ] satisfies RouteConfig;

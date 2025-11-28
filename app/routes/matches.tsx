@@ -5,7 +5,6 @@ import { db } from "~/database/db";
 import { matches, matchBattingOrders } from "~/database/schema";
 import { cn } from "~/utils/cn";
 import { asc, desc } from "drizzle-orm";
-import { Field } from "~/components/Field";
 import { TeamLogo } from "~/components/TeamLogo";
 
 export async function loader({ request }: Route.LoaderArgs) {

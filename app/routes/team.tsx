@@ -2,7 +2,7 @@ import type { Route } from "./+types/team";
 import { TeamPlayerList } from "~/components/TeamPlayerList";
 import { getUser } from "~/auth.server";
 import { Link } from "react-router";
-import { Field } from "~/components/Field";
+import { Lineup } from "~/components/Lineup";
 import {
   getTeamWithPlayers,
   fillPlayersToTeamSize,
@@ -28,6 +28,34 @@ export async function loader({
 export default function Team({
   loaderData: { team, canEdit },
 }: Route.ComponentProps) {
+  // Filter out null players and split into lineup and bench
+  const allPlayers = team.players.filter(
+    (player): player is NonNullable<typeof player> => player !== null,
+  );
+
+  // Players with a lineup (batting order)
+  const lineupPlayers = allPlayers
+    .filter((player) => player.lineup?.battingOrder != null)
+    .sort(
+      (a, b) => (a.lineup?.battingOrder ?? 0) - (b.lineup?.battingOrder ?? 0),
+    );
+
+  // Players without a lineup (bench)
+  const benchPlayers = allPlayers.filter(
+    (player) => player.lineup?.battingOrder == null,
+  );
+
+  // Create team objects for each list
+  const lineupTeam = {
+    ...team,
+    players: lineupPlayers,
+  };
+
+  const benchTeam = {
+    ...team,
+    players: benchPlayers,
+  };
+
   return (
     <div className="flex flex-col gap-4 items-center">
       <h1 className="text-2xl font-rodin font-bold">{team.name}</h1>
@@ -36,9 +64,21 @@ export default function Team({
         key={team.id}
         className="flex flex-row items-center gap-16 border-2 border-cell-gray/50 bg-cell-gray/40 rounded-lg p-4"
       >
-        <TeamPlayerList team={team} />
-        <Field
-          players={team.players.filter((player) => player !== null)}
+        <div className="flex flex-col gap-6">
+          {lineupPlayers.length > 0 && (
+            <div className="flex flex-col gap-2">
+              <TeamPlayerList team={lineupTeam} />
+            </div>
+          )}
+          {benchPlayers.length > 0 && (
+            <div className="flex flex-col gap-2">
+              <p className="text-sm opacity-60">Bench:</p>
+              <TeamPlayerList team={benchTeam} size="sm" />
+            </div>
+          )}
+        </div>
+        <Lineup
+          players={allPlayers}
           captainId={team.captainId}
           captainStatsCharacter={team.captain?.statsCharacter}
         />

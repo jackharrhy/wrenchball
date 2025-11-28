@@ -3,7 +3,7 @@ import type { Route } from "./+types/match";
 import { db } from "~/database/db";
 import { getMatchWithStats } from "~/utils/matches.server";
 import { PlayerIcon } from "~/components/PlayerIcon";
-import { Field } from "~/components/Field";
+import { Lineup } from "~/components/Lineup";
 import { cn } from "~/utils/cn";
 
 export async function loader({ params: { matchId } }: Route.LoaderArgs) {
@@ -171,7 +171,7 @@ export default function Match({ loaderData }: Route.ComponentProps) {
           {/* Team A Field */}
           <div className="flex flex-col items-center">
             <h3 className="text-lg font-bold mb-4">{match.teamA.name}</h3>
-            <Field
+            <Lineup
               players={teamAPlayersForField}
               captainId={match.teamA.captainId}
               captainStatsCharacter={match.teamA.captain?.statsCharacter}
@@ -181,7 +181,7 @@ export default function Match({ loaderData }: Route.ComponentProps) {
           {/* Team B Field */}
           <div className="flex flex-col items-center">
             <h3 className="text-lg font-bold mb-4">{match.teamB.name}</h3>
-            <Field
+            <Lineup
               players={teamBPlayersForField}
               captainId={match.teamB.captainId}
               captainStatsCharacter={match.teamB.captain?.statsCharacter}

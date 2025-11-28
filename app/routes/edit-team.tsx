@@ -4,7 +4,7 @@ import { TeamPlayerList } from "~/components/TeamPlayerList";
 import { getUser } from "~/auth.server";
 import { useSubmit } from "react-router";
 import { useRef, useState } from "react";
-import { Field } from "~/components/Field";
+import { Lineup } from "~/components/Lineup";
 import {
   getTeamWithPlayers,
   fillPlayersToTeamSize,
@@ -130,7 +130,7 @@ export default function EditTeam({
         className="flex flex-row items-center gap-16 border-2 border-cell-gray/50 bg-cell-gray/40 rounded-lg p-4"
       >
         <TeamPlayerList team={team} />
-        <Field
+        <Lineup
           players={team.players.filter((player) => player !== null)}
           captainId={team.captainId}
           captainStatsCharacter={team.captain?.statsCharacter}

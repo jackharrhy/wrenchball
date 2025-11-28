@@ -94,6 +94,7 @@ const addPlayerToLineup = async (
   db: Database,
   teamId: number,
   playerId: number,
+  { shouldStar = false }: { shouldStar?: boolean } = {},
 ): Promise<void> => {
   // Get current lineup entries for this team
   const currentLineup = await db
@@ -109,15 +110,6 @@ const addPlayerToLineup = async (
   if (currentLineup.length >= LINEUP_SIZE) {
     return;
   }
-
-  // Check if this is the team's first player (count players on team)
-  const teamPlayers = await db
-    .select({ id: players.id })
-    .from(players)
-    .where(eq(players.teamId, teamId));
-
-  // If this is the first player (going from 0 to 1), auto-star them
-  const isFirstPlayer = teamPlayers.length === 0;
 
   // Get all possible fielding positions
   const allFieldingPositions: FieldingPosition[] = [
@@ -176,7 +168,7 @@ const addPlayerToLineup = async (
     playerId,
     fieldingPosition: randomFieldingPosition,
     battingOrder: randomBattingOrder,
-    isStarred: isFirstPlayer, // Auto-star the first player
+    isStarred: shouldStar,
   });
 };
 
@@ -205,13 +197,20 @@ export const draftPlayer = async (
       throw new Error("User team not found");
     }
 
+    const teamPlayers = await tx
+      .select({ id: players.id })
+      .from(players)
+      .where(eq(players.teamId, userTeam[0].id));
+
+    const shouldStar = teamPlayers.length === 0;
+
     await tx
       .update(players)
       .set({ teamId: userTeam[0].id })
       .where(eq(players.id, playerId));
 
     // Add player to lineup if there's space
-    await addPlayerToLineup(tx, userTeam[0].id, playerId);
+    await addPlayerToLineup(tx, userTeam[0].id, playerId, { shouldStar });
 
     const seasonState = await getSeasonState(tx);
     if (!seasonState) {

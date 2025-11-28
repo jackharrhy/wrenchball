@@ -4,7 +4,13 @@ import { addClient, removeClient } from "~/sse.server";
 
 export async function loader({ request }: Route.LoaderArgs) {
   const user = await requireUser(request);
-  const id = user.id.toString();
+
+  // Generate unique connection ID for this specific connection
+  const connectionId = `${user.id}-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+
+  // Parse room from query param
+  const url = new URL(request.url);
+  const room = url.searchParams.get("room") || "global";
 
   let interval: NodeJS.Timeout | null = null;
 
@@ -18,7 +24,13 @@ export async function loader({ request }: Route.LoaderArgs) {
         }
       };
 
-      addClient({ id, send });
+      addClient({
+        connectionId,
+        userId: user.id,
+        rooms: new Set([room]),
+        send,
+      });
+
       send(`data: "connected"\n\n`);
 
       interval = setInterval(() => send(`: keepalive\n\n`), 15000);
@@ -28,7 +40,7 @@ export async function loader({ request }: Route.LoaderArgs) {
           clearInterval(interval);
           interval = null;
         }
-        removeClient(id);
+        removeClient(connectionId);
       };
 
       if (request.signal) {
@@ -41,7 +53,7 @@ export async function loader({ request }: Route.LoaderArgs) {
         clearInterval(interval);
         interval = null;
       }
-      removeClient(id);
+      removeClient(connectionId);
     },
   });
 

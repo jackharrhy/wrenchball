@@ -104,7 +104,10 @@ CREATE TABLE IF NOT EXISTS "players" (
 CREATE TABLE IF NOT EXISTS "season" (
 	"id" integer PRIMARY KEY DEFAULT 1 NOT NULL,
 	"state" "season_state" DEFAULT 'pre-season' NOT NULL,
-	"current_drafting_user_id" integer
+	"current_drafting_user_id" integer,
+	"draft_timer_started_at" timestamp,
+	"draft_timer_paused_at" timestamp,
+	"draft_timer_duration" integer DEFAULT 120 NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "stat" (

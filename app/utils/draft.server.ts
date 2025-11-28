@@ -11,7 +11,7 @@ import {
   stats,
   type FieldingPosition,
 } from "~/database/schema";
-import { getSeasonState } from "./admin.server";
+import { getSeasonState, startDraftTimer } from "./admin.server";
 import { createDraftEvent } from "./events.server";
 
 export const validateDraftPick = async (
@@ -346,6 +346,9 @@ const advanceToNextDrafter = async (
     .update(season)
     .set({ currentDraftingUserId: nextUserId })
     .where(eq(season.id, 1));
+
+  // Reset timer for the next drafter
+  await startDraftTimer(db);
 
   // Check if the next user has a pre-draft and auto-draft it (unless we're already in auto-draft)
   if (!skipAutoDraft) {

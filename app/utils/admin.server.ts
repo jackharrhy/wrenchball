@@ -166,15 +166,25 @@ export const setSeasonState = async (
       const currentDraftingUserId =
         draftingOrder.length > 0 ? draftingOrder[0].userId : null;
 
+      const now = new Date();
       if (currentState) {
         await tx
           .update(season)
-          .set({ state: newState, currentDraftingUserId })
+          .set({
+            state: newState,
+            currentDraftingUserId,
+            draftTimerStartedAt: now,
+            draftTimerPausedAt: now, // Start paused
+          })
           .where(eq(season.id, 1));
       } else {
-        await tx
-          .insert(season)
-          .values({ id: 1, state: newState, currentDraftingUserId });
+        await tx.insert(season).values({
+          id: 1,
+          state: newState,
+          currentDraftingUserId,
+          draftTimerStartedAt: now,
+          draftTimerPausedAt: now, // Start paused
+        });
       }
     } else if (currentState?.state === "drafting" && newState === "playing") {
       await tx
@@ -479,4 +489,146 @@ export const setCurrentDraftingUser = async (db: Database, userId: number) => {
     .update(season)
     .set({ currentDraftingUserId: userId })
     .where(eq(season.id, 1));
+};
+
+/**
+ * Starts or resets the draft timer to the full duration
+ */
+export const startDraftTimer = async (db: Database): Promise<void> => {
+  const currentSeason = await getSeasonState(db);
+  if (!currentSeason || currentSeason.state !== "drafting") {
+    return;
+  }
+
+  await db
+    .update(season)
+    .set({
+      draftTimerStartedAt: new Date(),
+      draftTimerPausedAt: null,
+    })
+    .where(eq(season.id, 1));
+};
+
+/**
+ * Pauses the draft timer
+ */
+export const pauseDraftTimer = async (db: Database): Promise<void> => {
+  const currentSeason = await getSeasonState(db);
+  if (!currentSeason || currentSeason.state !== "drafting") {
+    throw new Error("Season is not in drafting state");
+  }
+
+  // Only pause if not already paused
+  if (
+    currentSeason.draftTimerPausedAt === null &&
+    currentSeason.draftTimerStartedAt
+  ) {
+    await db
+      .update(season)
+      .set({ draftTimerPausedAt: new Date() })
+      .where(eq(season.id, 1));
+  }
+};
+
+/**
+ * Resumes the draft timer from paused state
+ */
+export const resumeDraftTimer = async (db: Database): Promise<void> => {
+  const currentSeason = await getSeasonState(db);
+  if (!currentSeason || currentSeason.state !== "drafting") {
+    throw new Error("Season is not in drafting state");
+  }
+
+  // Only resume if paused
+  if (currentSeason.draftTimerPausedAt && currentSeason.draftTimerStartedAt) {
+    // Calculate how much time was elapsed before pause
+    const pausedAt = currentSeason.draftTimerPausedAt;
+    const startedAt = currentSeason.draftTimerStartedAt;
+    const elapsedBeforePause = pausedAt.getTime() - startedAt.getTime();
+
+    // Adjust startedAt to account for paused duration
+    const now = new Date();
+    const newStartedAt = new Date(now.getTime() - elapsedBeforePause);
+
+    await db
+      .update(season)
+      .set({
+        draftTimerStartedAt: newStartedAt,
+        draftTimerPausedAt: null,
+      })
+      .where(eq(season.id, 1));
+  }
+};
+
+/**
+ * Resets the draft timer to full duration
+ */
+export const resetDraftTimer = async (db: Database): Promise<void> => {
+  const currentSeason = await getSeasonState(db);
+  if (!currentSeason || currentSeason.state !== "drafting") {
+    throw new Error("Season is not in drafting state");
+  }
+
+  const now = new Date();
+  await db
+    .update(season)
+    .set({
+      draftTimerStartedAt: now,
+      draftTimerPausedAt: now, // Reset to paused state
+    })
+    .where(eq(season.id, 1));
+};
+
+/**
+ * Gets the current draft timer state
+ * Returns remaining seconds and paused status
+ */
+export const getDraftTimerState = async (
+  db: Database,
+): Promise<{
+  remainingSeconds: number;
+  isPaused: boolean;
+  startedAt: Date | null;
+}> => {
+  const currentSeason = await getSeasonState(db);
+  if (
+    !currentSeason ||
+    currentSeason.state !== "drafting" ||
+    !currentSeason.draftTimerStartedAt
+  ) {
+    return {
+      remainingSeconds: 0,
+      isPaused: false,
+      startedAt: null,
+    };
+  }
+
+  const duration = currentSeason.draftTimerDuration || 120;
+  const startedAt = currentSeason.draftTimerStartedAt;
+  const pausedAt = currentSeason.draftTimerPausedAt;
+
+  if (pausedAt) {
+    // Timer is paused - calculate remaining time based on when it was paused
+    const elapsedBeforePause = pausedAt.getTime() - startedAt.getTime();
+    const remainingMs = duration * 1000 - elapsedBeforePause;
+    const remainingSeconds = Math.max(0, Math.floor(remainingMs / 1000));
+
+    return {
+      remainingSeconds,
+      isPaused: true,
+      startedAt,
+    };
+  } else {
+    // Timer is running - calculate remaining time
+    const now = new Date();
+    const elapsedMs = now.getTime() - startedAt.getTime();
+    const remainingMs = duration * 1000 - elapsedMs;
+    const remainingSeconds = Math.max(0, Math.floor(remainingMs / 1000));
+
+    return {
+      remainingSeconds,
+      isPaused: false,
+      startedAt,
+    };
+  }
 };

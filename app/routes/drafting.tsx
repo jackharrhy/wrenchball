@@ -1,6 +1,13 @@
 import type { Route } from "./+types/drafting";
 import { db } from "~/database/db";
-import { getSeasonState, getDraftingOrder } from "~/utils/admin.server";
+import {
+  getSeasonState,
+  getDraftingOrder,
+  getDraftTimerState,
+  pauseDraftTimer,
+  resumeDraftTimer,
+  resetDraftTimer,
+} from "~/utils/admin.server";
 import {
   draftPlayer,
   getPreDraft,
@@ -112,6 +119,9 @@ export async function loader({ request }: Route.LoaderArgs) {
   const hasCaptain =
     userTeam?.captainId !== null && userTeam?.captainId !== undefined;
 
+  // Get timer state
+  const timerState = await getDraftTimerState(db);
+
   return {
     user,
     seasonState: seasonState?.state || null,
@@ -124,6 +134,7 @@ export async function loader({ request }: Route.LoaderArgs) {
     allTeams: teamsWithFullPlayers,
     draftEvents,
     hasCaptain,
+    timerState,
   };
 }
 
@@ -146,7 +157,13 @@ export async function action({ request }: Route.ActionArgs) {
     const result = await draftPlayer(db, user.id, playerId);
 
     if (result.success) {
-      broadcast(user, "draft-update", { playerId, userId: user.id });
+      broadcast(user, "drafting", "draft-update", {
+        playerId,
+        userId: user.id,
+      });
+      // Broadcast timer update after draft (timer resets in draftPlayer)
+      const timerState = await getDraftTimerState(db);
+      broadcast(user, "drafting", "draft-timer-update", timerState);
       return { success: true, message: "Player drafted successfully" };
     } else {
       return {
@@ -173,7 +190,7 @@ export async function action({ request }: Route.ActionArgs) {
       seasonState?.state === "drafting" &&
       seasonState.currentDraftingUserId === user.id
     ) {
-      broadcast(user, "drafting-player-hover", {
+      broadcast(user, "drafting", "drafting-player-hover", {
         playerId,
         userId: user.id,
       });
@@ -199,7 +216,7 @@ export async function action({ request }: Route.ActionArgs) {
       seasonState?.state === "drafting" &&
       seasonState.currentDraftingUserId === user.id
     ) {
-      broadcast(user, "drafting-player-selection", {
+      broadcast(user, "drafting", "drafting-player-selection", {
         playerId,
         userId: user.id,
       });
@@ -222,7 +239,10 @@ export async function action({ request }: Route.ActionArgs) {
     const result = await setPreDraft(db, user.id, playerId);
 
     if (result.success) {
-      broadcast(user, "pre-draft-update", { playerId, userId: user.id });
+      broadcast(user, "drafting", "pre-draft-update", {
+        playerId,
+        userId: user.id,
+      });
       return { success: true, message: "Pre-draft set successfully" };
     } else {
       return {
@@ -236,7 +256,10 @@ export async function action({ request }: Route.ActionArgs) {
     const result = await clearPreDraft(db, user.id);
 
     if (result.success) {
-      broadcast(user, "pre-draft-update", { playerId: null, userId: user.id });
+      broadcast(user, "drafting", "pre-draft-update", {
+        playerId: null,
+        userId: user.id,
+      });
       return { success: true, message: "Pre-draft cleared successfully" };
     } else {
       return {
@@ -260,12 +283,70 @@ export async function action({ request }: Route.ActionArgs) {
     const result = await setPlayerStarred(db, user.id, playerId);
 
     if (result.success) {
-      broadcast(user, "player-star-update", { playerId, userId: user.id });
+      broadcast(user, "drafting", "player-star-update", {
+        playerId,
+        userId: user.id,
+      });
       return { success: true, message: "Player starred successfully" };
     } else {
       return {
         success: false,
         error: result.error || "Failed to star player",
+      };
+    }
+  }
+
+  if (intent === "pause-timer") {
+    if (user.role !== "admin") {
+      return { success: false, error: "Only admins can pause the timer" };
+    }
+
+    try {
+      await pauseDraftTimer(db);
+      const timerState = await getDraftTimerState(db);
+      broadcast(user, "drafting", "draft-timer-update", timerState);
+      return { success: true, message: "Timer paused" };
+    } catch (error) {
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : "Failed to pause timer",
+      };
+    }
+  }
+
+  if (intent === "resume-timer") {
+    if (user.role !== "admin") {
+      return { success: false, error: "Only admins can resume the timer" };
+    }
+
+    try {
+      await resumeDraftTimer(db);
+      const timerState = await getDraftTimerState(db);
+      broadcast(user, "drafting", "draft-timer-update", timerState);
+      return { success: true, message: "Timer resumed" };
+    } catch (error) {
+      return {
+        success: false,
+        error:
+          error instanceof Error ? error.message : "Failed to resume timer",
+      };
+    }
+  }
+
+  if (intent === "reset-timer") {
+    if (user.role !== "admin") {
+      return { success: false, error: "Only admins can reset the timer" };
+    }
+
+    try {
+      await resetDraftTimer(db);
+      const timerState = await getDraftTimerState(db);
+      broadcast(user, "drafting", "draft-timer-update", timerState);
+      return { success: true, message: "Timer reset" };
+    } catch (error) {
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : "Failed to reset timer",
       };
     }
   }
@@ -285,6 +366,7 @@ export default function Drafting({
     allTeams,
     draftEvents,
     hasCaptain,
+    timerState,
   },
   actionData,
 }: Route.ComponentProps) {
@@ -304,11 +386,13 @@ export default function Drafting({
     playerId: number;
     userName: string;
   } | null>(null);
+  const [localTimerState, setLocalTimerState] = useState(timerState);
   const navigation = useNavigation();
   const submit = useSubmit();
   const isDrafting = navigation.formData?.get("intent") === "draft-player";
   const revalidator = useRevalidator();
   const isActiveDrafter = currentDraftingUserId === user.id;
+  const isAdmin = user.role === "admin";
 
   const prevDraftingUserIdRef = useRef(currentDraftingUserId);
   const prevActionDataRef = useRef(actionData);
@@ -361,58 +445,120 @@ export default function Drafting({
     };
   }, [revalidator]);
 
-  useStream((data) => {
-    console.log("draft-update", data);
+  useStream(
+    (data) => {
+      console.log("draft-update", data);
 
-    // Track turn changes and clear UI state when turn changes
-    if (prevDraftingUserIdRef.current !== currentDraftingUserId) {
-      if (currentDraftingUserId !== user.id) {
+      // Track turn changes and clear UI state when turn changes
+      if (prevDraftingUserIdRef.current !== currentDraftingUserId) {
+        if (currentDraftingUserId !== user.id) {
+          setOtherPlayerHover(null);
+          setOtherPlayerSelection(null);
+        }
+        prevDraftingUserIdRef.current = currentDraftingUserId;
+      }
+
+      // Clear lucky selection when draft completes
+      setIsLuckySelected(false);
+      setSelectedPlayer(null);
+
+      revalidator.revalidate();
+    },
+    "draft-update",
+    "drafting",
+  );
+
+  useStream(
+    (data) => {
+      console.log("pre-draft-update", data);
+      revalidator.revalidate();
+    },
+    "pre-draft-update",
+    "drafting",
+  );
+
+  useStream(
+    (data) => {
+      console.log("drafting-player-hover", data);
+      if (data.user.id !== user.id && currentDraftingUserId === data.user.id) {
+        setOtherPlayerHover({
+          playerId: data.payload.playerId,
+          userName: data.user.name,
+        });
+      } else {
         setOtherPlayerHover(null);
+      }
+    },
+    "drafting-player-hover",
+    "drafting",
+  );
+
+  useStream(
+    (data) => {
+      console.log("drafting-player-selection", data);
+      if (data.user.id !== user.id && currentDraftingUserId === data.user.id) {
+        setOtherPlayerSelection({
+          playerId: data.payload.playerId,
+          userName: data.user.name,
+        });
+      } else {
         setOtherPlayerSelection(null);
       }
-      prevDraftingUserIdRef.current = currentDraftingUserId;
+    },
+    "drafting-player-selection",
+    "drafting",
+  );
+
+  useStream(
+    (data) => {
+      console.log("player-star-update", data);
+      revalidator.revalidate();
+    },
+    "player-star-update",
+    "drafting",
+  );
+
+  useStream(
+    (data) => {
+      console.log("draft-timer-update", data);
+      setLocalTimerState(data.payload);
+    },
+    "draft-timer-update",
+    "drafting",
+  );
+
+  // Update local timer state when loader data changes
+  useEffect(() => {
+    setLocalTimerState(timerState);
+  }, [timerState]);
+
+  // Client-side countdown timer
+  useEffect(() => {
+    if (!localTimerState.startedAt || localTimerState.isPaused) {
+      return;
     }
 
-    // Clear lucky selection when draft completes
-    setIsLuckySelected(false);
-    setSelectedPlayer(null);
-
-    revalidator.revalidate();
-  }, "draft-update");
-
-  useStream((data) => {
-    console.log("pre-draft-update", data);
-    revalidator.revalidate();
-  }, "pre-draft-update");
-
-  useStream((data) => {
-    console.log("drafting-player-hover", data);
-    if (data.user.id !== user.id && currentDraftingUserId === data.user.id) {
-      setOtherPlayerHover({
-        playerId: data.payload.playerId,
-        userName: data.user.name,
+    const intervalId = window.setInterval(() => {
+      setLocalTimerState((prev) => {
+        if (!prev.startedAt || prev.isPaused) {
+          return prev;
+        }
+        const remaining = Math.max(0, prev.remainingSeconds - 1);
+        return { ...prev, remainingSeconds: remaining };
       });
-    } else {
-      setOtherPlayerHover(null);
-    }
-  }, "drafting-player-hover");
+    }, 1000);
 
-  useStream((data) => {
-    console.log("drafting-player-selection", data);
-    if (data.user.id !== user.id && currentDraftingUserId === data.user.id) {
-      setOtherPlayerSelection({
-        playerId: data.payload.playerId,
-        userName: data.user.name,
-      });
-    } else {
-      setOtherPlayerSelection(null);
-    }
-  }, "drafting-player-selection");
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, [localTimerState.startedAt, localTimerState.isPaused]);
 
-  useStream((data) => {
-    console.log("player-star-update", data);
-    revalidator.revalidate();
-  }, "player-star-update");
+  // Format timer display
+  const formatTimer = (seconds: number): string => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toString().padStart(2, "0")}`;
+  };
 
   if (seasonState !== "drafting") {
     return (
@@ -647,6 +793,61 @@ export default function Drafting({
         </div>
 
         <div className="stats flex flex-col gap-1 border-b border-cell-gray/50">
+          {seasonState === "drafting" && localTimerState.startedAt && (
+            <div className="timer-section flex flex-col gap-2 items-center justify-center p-4 border-b border-cell-gray/50">
+              <div
+                className={`text-3xl font-bold ${
+                  localTimerState.isPaused
+                    ? "text-yellow-400"
+                    : localTimerState.remainingSeconds < 30
+                      ? "text-red-400"
+                      : localTimerState.remainingSeconds < 60
+                        ? "text-orange-400"
+                        : "text-green-400"
+                }`}
+              >
+                {formatTimer(localTimerState.remainingSeconds)}
+              </div>
+              {localTimerState.isPaused && (
+                <div className="text-sm text-yellow-400 italic">Paused</div>
+              )}
+              {isAdmin && (
+                <div className="flex gap-2 mt-2">
+                  {localTimerState.isPaused ? (
+                    <Form method="post">
+                      <input type="hidden" name="intent" value="resume-timer" />
+                      <button
+                        type="submit"
+                        className="px-3 py-1 bg-green-600 hover:bg-green-700 text-white rounded text-sm transition-colors cursor-pointer"
+                      >
+                        Resume
+                      </button>
+                    </Form>
+                  ) : (
+                    <Form method="post">
+                      <input type="hidden" name="intent" value="pause-timer" />
+                      <button
+                        type="submit"
+                        className="px-3 py-1 bg-yellow-600 hover:bg-yellow-700 text-white rounded text-sm transition-colors cursor-pointer"
+                      >
+                        Pause
+                      </button>
+                    </Form>
+                  )}
+                  <Form method="post">
+                    <input type="hidden" name="intent" value="reset-timer" />
+                    <button
+                      type="submit"
+                      className="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded text-sm transition-colors cursor-pointer"
+                    >
+                      Reset
+                    </button>
+                  </Form>
+                </div>
+              )}
+            </div>
+          )}
+
           {isLuckySelected ? (
             <>
               <div className="flex items-center justify-center">
@@ -853,6 +1054,7 @@ export default function Drafting({
               </div>
             </div>
           )}
+
           {draftingOrder.length === 0 ? (
             <div className="px-4 pb-4 text-gray-400 italic">
               No users in drafting order

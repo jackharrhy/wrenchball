@@ -1,22 +1,39 @@
 import type { User } from "~/database/schema";
 
 type Client = {
-  id: string;
+  connectionId: string;
+  userId: number;
+  rooms: Set<string>;
   send: (data: string) => void;
 };
 
-let clients: Client[] = [];
+const clients: Map<string, Client> = new Map();
 
 export function addClient(client: Client) {
-  clients.push(client);
+  clients.set(client.connectionId, client);
 }
 
-export function removeClient(id: string) {
-  clients = clients.filter((c) => c.id !== id);
+export function removeClient(connectionId: string) {
+  clients.delete(connectionId);
+}
+
+export function joinRoom(connectionId: string, room: string) {
+  const client = clients.get(connectionId);
+  if (client) {
+    client.rooms.add(room);
+  }
+}
+
+export function leaveRoom(connectionId: string, room: string) {
+  const client = clients.get(connectionId);
+  if (client) {
+    client.rooms.delete(room);
+  }
 }
 
 export function broadcast(
   user: Pick<User, "id" | "name">,
+  room: string,
   event: string,
   payload: any,
 ) {
@@ -27,5 +44,10 @@ export function broadcast(
     },
     payload,
   })}\n\n`;
-  clients.forEach((c) => c.send(msg));
+
+  clients.forEach((client) => {
+    if (client.rooms.has(room)) {
+      client.send(msg);
+    }
+  });
 }

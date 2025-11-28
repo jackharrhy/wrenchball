@@ -17,6 +17,7 @@
     "@react-router/node": "^7.7.1",
     "clsx": "^2.1.1",
     "compression": "^1.8.0",
+    "d3": "^7.9.0",
     "discord.js": "^14.25.1",
     "drizzle-orm": "~0.36.3",
     "exceljs": "^4.4.0",
@@ -29,12 +30,13 @@
     "react-dom": "^19.1.0",
     "react-router": "^7.7.1",
     "tailwind-merge": "^3.3.1",
-    "d3": "^7.9.0"
+    "zustand": "^5.0.8"
   },
   "devDependencies": {
     "@react-router/dev": "^7.7.1",
     "@tailwindcss/vite": "^4.1.4",
     "@types/compression": "^1.7.5",
+    "@types/d3": "^7.4.3",
     "@types/express": "^5.0.1",
     "@types/express-serve-static-core": "^5.0.6",
     "@types/morgan": "^1.9.9",
@@ -43,7 +45,6 @@
     "@types/pg": "^8.11.14",
     "@types/react": "^19.1.2",
     "@types/react-dom": "^19.1.2",
-    "@types/d3": "^7.4.3",
     "dotenv-cli": "^8.0.0",
     "drizzle-kit": "~0.28.1",
     "tailwindcss": "^4.1.4",

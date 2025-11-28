@@ -96,14 +96,14 @@ export async function action({ request }: Route.ActionArgs) {
   if (intent === "accept") {
     const result = await acceptTrade(db, tradeId, user.id);
     if (result.success) {
-      broadcast(user, "trade-accepted", { tradeId });
+      broadcast(user, "trading", "trade-accepted", { tradeId });
       return { success: true };
     }
     return { success: false, error: result.error || "Failed to accept trade" };
   } else {
     const result = await denyTrade(db, tradeId, user.id);
     if (result.success) {
-      broadcast(user, "trade-denied", { tradeId });
+      broadcast(user, "trading", "trade-denied", { tradeId });
       return { success: true };
     }
     return { success: false, error: result.error || "Failed to deny trade" };
@@ -276,20 +276,32 @@ export default function Trading({
 
   const revalidator = useRevalidator();
 
-  useStream((data) => {
-    console.log("trade-created", data);
-    revalidator.revalidate();
-  }, "trade-created");
+  useStream(
+    (data) => {
+      console.log("trade-created", data);
+      revalidator.revalidate();
+    },
+    "trade-created",
+    "trading",
+  );
 
-  useStream((data) => {
-    console.log("trade-accepted", data);
-    revalidator.revalidate();
-  }, "trade-accepted");
+  useStream(
+    (data) => {
+      console.log("trade-accepted", data);
+      revalidator.revalidate();
+    },
+    "trade-accepted",
+    "trading",
+  );
 
-  useStream((data) => {
-    console.log("trade-denied", data);
-    revalidator.revalidate();
-  }, "trade-denied");
+  useStream(
+    (data) => {
+      console.log("trade-denied", data);
+      revalidator.revalidate();
+    },
+    "trade-denied",
+    "trading",
+  );
 
   return (
     <div className="flex flex-col gap-6 items-center">

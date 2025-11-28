@@ -228,6 +228,9 @@ export const season = pgTable("season", {
     () => users.id,
     { onDelete: "set null" },
   ),
+  draftTimerStartedAt: timestamp("draft_timer_started_at"),
+  draftTimerPausedAt: timestamp("draft_timer_paused_at"),
+  draftTimerDuration: integer("draft_timer_duration").notNull().default(120),
 });
 
 export type Season = typeof season.$inferSelect;

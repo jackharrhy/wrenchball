@@ -4,6 +4,7 @@ CREATE TYPE "public"."direction" AS ENUM('Left', 'Right');--> statement-breakpoi
 CREATE TYPE "public"."event_type" AS ENUM('draft', 'season_state_change', 'trade');--> statement-breakpoint
 CREATE TYPE "public"."fielding_positions" AS ENUM('C', '1B', '2B', '3B', 'SS', 'LF', 'CF', 'RF', 'P');--> statement-breakpoint
 CREATE TYPE "public"."hitting_trajectory" AS ENUM('Low', 'Medium', 'High');--> statement-breakpoint
+CREATE TYPE "public"."match_state" AS ENUM('upcoming', 'live', 'finished');--> statement-breakpoint
 CREATE TYPE "public"."season_state" AS ENUM('pre-season', 'drafting', 'playing', 'finished');--> statement-breakpoint
 CREATE TYPE "public"."trade_action" AS ENUM('proposed', 'accepted', 'rejected', 'cancelled');--> statement-breakpoint
 CREATE TYPE "public"."trade_status" AS ENUM('pending', 'accepted', 'denied');--> statement-breakpoint
@@ -39,6 +40,47 @@ CREATE TABLE IF NOT EXISTS "events" (
 	"user_id" integer,
 	"season_id" integer NOT NULL,
 	"created_at" timestamp DEFAULT now() NOT NULL
+);
+--> statement-breakpoint
+CREATE TABLE IF NOT EXISTS "match_batting_orders" (
+	"match_id" integer NOT NULL,
+	"team_id" integer NOT NULL,
+	"player_id" integer NOT NULL,
+	"batting_order" integer NOT NULL,
+	"fielding_position" "fielding_positions",
+	"is_starred" boolean DEFAULT false NOT NULL
+);
+--> statement-breakpoint
+CREATE TABLE IF NOT EXISTS "match_player_stats" (
+	"match_id" integer NOT NULL,
+	"player_id" integer NOT NULL,
+	"team_id" integer NOT NULL,
+	"plate_appearances" integer,
+	"hits" integer,
+	"home_runs" integer,
+	"outs" integer,
+	"rbi" integer,
+	"innings_pitched_whole" integer,
+	"innings_pitched_partial" integer,
+	"strikeouts" integer,
+	"earned_runs" integer,
+	"putouts" integer,
+	"assists" integer,
+	"double_plays" integer,
+	"triple_plays" integer,
+	"errors" integer
+);
+--> statement-breakpoint
+CREATE TABLE IF NOT EXISTS "matches" (
+	"id" integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY (sequence name "matches_id_seq" INCREMENT BY 1 MINVALUE 1 MAXVALUE 2147483647 START WITH 1 CACHE 1),
+	"team_a_id" integer NOT NULL,
+	"team_b_id" integer NOT NULL,
+	"state" "match_state" DEFAULT 'upcoming' NOT NULL,
+	"scheduled_date" timestamp,
+	"team_a_score" integer,
+	"team_b_score" integer,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "players" (
@@ -189,6 +231,54 @@ END $$;
 --> statement-breakpoint
 DO $$ BEGIN
  ALTER TABLE "events" ADD CONSTRAINT "events_season_id_season_id_fk" FOREIGN KEY ("season_id") REFERENCES "public"."season"("id") ON DELETE cascade ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "match_batting_orders" ADD CONSTRAINT "match_batting_orders_match_id_matches_id_fk" FOREIGN KEY ("match_id") REFERENCES "public"."matches"("id") ON DELETE cascade ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "match_batting_orders" ADD CONSTRAINT "match_batting_orders_team_id_team_id_fk" FOREIGN KEY ("team_id") REFERENCES "public"."team"("id") ON DELETE cascade ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "match_batting_orders" ADD CONSTRAINT "match_batting_orders_player_id_players_id_fk" FOREIGN KEY ("player_id") REFERENCES "public"."players"("id") ON DELETE cascade ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "match_player_stats" ADD CONSTRAINT "match_player_stats_match_id_matches_id_fk" FOREIGN KEY ("match_id") REFERENCES "public"."matches"("id") ON DELETE cascade ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "match_player_stats" ADD CONSTRAINT "match_player_stats_player_id_players_id_fk" FOREIGN KEY ("player_id") REFERENCES "public"."players"("id") ON DELETE cascade ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "match_player_stats" ADD CONSTRAINT "match_player_stats_team_id_team_id_fk" FOREIGN KEY ("team_id") REFERENCES "public"."team"("id") ON DELETE cascade ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "matches" ADD CONSTRAINT "matches_team_a_id_team_id_fk" FOREIGN KEY ("team_a_id") REFERENCES "public"."team"("id") ON DELETE cascade ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "matches" ADD CONSTRAINT "matches_team_b_id_team_id_fk" FOREIGN KEY ("team_b_id") REFERENCES "public"."team"("id") ON DELETE cascade ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;

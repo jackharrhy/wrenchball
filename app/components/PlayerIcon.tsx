@@ -67,7 +67,7 @@ export function PlayerIcon({
       {isCaptain && (
         <div
           className={cn(
-            "absolute -top-1 -left-1 bg-red-500/20 text-white flex items-center justify-center rounded-full font-bold pointer-events-none select-none",
+            "absolute -top-1 -left-1 bg-red-500/40 text-white/60 flex items-center justify-center rounded-full font-bold pointer-events-none select-none",
             captainSizeClasses[size],
           )}
         >

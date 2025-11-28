@@ -4,8 +4,8 @@ import { db } from "~/database/db";
 import { users } from "~/database/schema";
 
 type SessionData = {
-  userId: string;
-  originalUserId?: string;
+  discordSnowflake: string;
+  originalDiscordSnowflake?: string;
 };
 
 type SessionFlashData = {
@@ -93,7 +93,7 @@ export async function handleDiscordAuthCallback(request: Request) {
       });
     }
 
-    return createUserSession(user.id, "/");
+    return createUserSession(user.discordSnowflake, "/");
   } catch (error) {
     console.error("Auth callback error:", error);
     return new Response("Authentication failed", { status: 500 });
@@ -117,9 +117,12 @@ const { getSession, commitSession, destroySession } =
     },
   });
 
-export const createUserSession = async (userId: number, redirectTo: string) => {
+export const createUserSession = async (
+  discordSnowflake: string,
+  redirectTo: string,
+) => {
   const session = await getSession();
-  session.set("userId", userId.toString());
+  session.set("discordSnowflake", discordSnowflake);
   return redirect(redirectTo, {
     headers: {
       "Set-Cookie": await commitSession(session),
@@ -138,32 +141,32 @@ export const logout = async (request: Request) => {
 
 export const isLoggedIn = async (request: Request) => {
   const session = await getSession(request.headers.get("Cookie"));
-  return session.has("userId");
+  return session.has("discordSnowflake");
 };
 
-export const requireUserId = async (request: Request) => {
+export const requireDiscordSnowflake = async (request: Request) => {
   const session = await getSession(request.headers.get("Cookie"));
 
-  const userId = session.get("userId");
+  const discordSnowflake = session.get("discordSnowflake");
 
-  if (userId == null) {
+  if (discordSnowflake == null) {
     throw redirect("/login");
   }
 
-  return userId;
+  return discordSnowflake;
 };
 
 export const requireUser = async (request: Request) => {
-  const userId = await requireUserId(request);
+  const discordSnowflake = await requireDiscordSnowflake(request);
 
-  if (userId == undefined) {
+  if (discordSnowflake == undefined) {
     throw redirect("/login");
   }
 
   const user = await db
     .select()
     .from(users)
-    .where(eq(users.id, Number(userId)));
+    .where(eq(users.discordSnowflake, discordSnowflake));
 
   if (user.length === 0) {
     throw redirect("/login");
@@ -174,16 +177,16 @@ export const requireUser = async (request: Request) => {
 
 export const getUser = async (request: Request) => {
   const session = await getSession(request.headers.get("Cookie"));
-  const userId = session.get("userId");
+  const discordSnowflake = session.get("discordSnowflake");
 
-  if (userId == null) {
+  if (discordSnowflake == null) {
     return null;
   }
 
   const user = await db
     .select()
     .from(users)
-    .where(eq(users.id, Number(userId)));
+    .where(eq(users.discordSnowflake, discordSnowflake));
 
   if (user.length === 0) {
     return null;
@@ -213,13 +216,13 @@ export const impersonateUser = async (
   }
 
   const session = await getSession(request.headers.get("Cookie"));
-  const originalUserId = session.get("userId");
+  const originalDiscordSnowflake = session.get("discordSnowflake");
 
-  if (!session.get("originalUserId") && originalUserId) {
-    session.set("originalUserId", originalUserId);
+  if (!session.get("originalDiscordSnowflake") && originalDiscordSnowflake) {
+    session.set("originalDiscordSnowflake", originalDiscordSnowflake);
   }
 
-  session.set("userId", targetUserId.toString());
+  session.set("discordSnowflake", targetUser.discordSnowflake);
   throw redirect("/", {
     headers: {
       "Set-Cookie": await commitSession(session),
@@ -229,16 +232,16 @@ export const impersonateUser = async (
 
 export const getImpersonationInfo = async (request: Request) => {
   const session = await getSession(request.headers.get("Cookie"));
-  const originalUserId = session.get("originalUserId");
+  const originalDiscordSnowflake = session.get("originalDiscordSnowflake");
 
-  if (!originalUserId) {
+  if (!originalDiscordSnowflake) {
     return null;
   }
 
   const originalUser = await db
     .select()
     .from(users)
-    .where(eq(users.id, Number(originalUserId)))
+    .where(eq(users.discordSnowflake, originalDiscordSnowflake))
     .then((users) => users[0]);
 
   if (!originalUser) {
@@ -246,31 +249,31 @@ export const getImpersonationInfo = async (request: Request) => {
   }
 
   return {
-    originalUserId: Number(originalUserId),
+    originalUserId: originalUser.id,
     originalUserName: originalUser.name,
   };
 };
 
 export const returnToOriginalUser = async (request: Request) => {
   const session = await getSession(request.headers.get("Cookie"));
-  const originalUserId = session.get("originalUserId");
+  const originalDiscordSnowflake = session.get("originalDiscordSnowflake");
 
-  if (!originalUserId) {
+  if (!originalDiscordSnowflake) {
     throw new Error("No original user found");
   }
 
   const originalUser = await db
     .select()
     .from(users)
-    .where(eq(users.id, Number(originalUserId)))
+    .where(eq(users.discordSnowflake, originalDiscordSnowflake))
     .then((users) => users[0]);
 
   if (!originalUser) {
     throw new Error("Original user not found");
   }
 
-  session.set("userId", originalUserId);
-  session.unset("originalUserId");
+  session.set("discordSnowflake", originalDiscordSnowflake);
+  session.unset("originalDiscordSnowflake");
 
   throw redirect("/", {
     headers: {

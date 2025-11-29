@@ -4,6 +4,7 @@ import { getUser } from "~/auth.server";
 import { useSubmit, redirect, Form } from "react-router";
 import { useRef, useState } from "react";
 import { LineupEditor } from "~/components/LineupEditor";
+import { TradeBlockEditor } from "~/components/TradeBlockEditor";
 import {
   getTeamWithPlayers,
   fillPlayersToTeamSize,
@@ -13,6 +14,7 @@ import {
   updateTeamTradePreferences,
   type LineupEntry,
 } from "~/utils/team.server";
+import { teams as teamsTable, players as playersTable } from "~/database/schema";
 
 async function getTeamWithPermissionCheck(teamId: string, request: Request) {
   const user = await getUser(request);
@@ -39,7 +41,15 @@ export async function loader({
   const filledPlayers = fillPlayersToTeamSize(team.players);
   const teamWithFullPlayers = { ...team, players: filledPlayers };
 
-  return { team: teamWithFullPlayers };
+  // Fetch all teams and players for mention suggestions
+  const allTeams = await db
+    .select({ id: teamsTable.id, name: teamsTable.name })
+    .from(teamsTable);
+  const allPlayers = await db
+    .select({ id: playersTable.id, name: playersTable.name })
+    .from(playersTable);
+
+  return { team: teamWithFullPlayers, allTeams, allPlayers };
 }
 
 export async function action({
@@ -137,7 +147,7 @@ export async function action({
 }
 
 export default function EditTeam({
-  loaderData: { team },
+  loaderData: { team, allTeams, allPlayers },
   actionData,
 }: Route.ComponentProps) {
   const submit = useSubmit();
@@ -190,6 +200,17 @@ export default function EditTeam({
     }
   };
 
+  const handleSaveTradePreferences = () => {
+    submit(
+      {
+        intent: "update-trade-preferences",
+        lookingFor,
+        willingToTrade,
+      },
+      { method: "post" },
+    );
+  };
+
   return (
     <div className="flex flex-col gap-4 items-center">
       {actionData?.message && (
@@ -220,49 +241,33 @@ export default function EditTeam({
       {/* Trade Preferences Section */}
       <div className="flex flex-col gap-3 border border-cell-gray/50 bg-cell-gray/30 rounded-lg p-4 w-full max-w-2xl">
         <h2 className="text-lg font-bold text-center">Trade Block</h2>
-        <Form method="post" className="flex flex-col gap-4">
-          <input type="hidden" name="intent" value="update-trade-preferences" />
-          <div className="flex flex-col gap-2">
-            <label
-              htmlFor="lookingFor"
-              className="text-sm font-semibold text-green-400"
-            >
-              Looking For:
-            </label>
-            <textarea
-              id="lookingFor"
-              name="lookingFor"
-              value={lookingFor}
-              onChange={(e) => setLookingFor(e.target.value)}
-              placeholder="Describe what players/positions you're looking for..."
-              className="w-full p-2 text-sm border border-cell-gray/50 bg-cell-gray/20 rounded-md text-white placeholder-gray-500 resize-y min-h-[60px]"
-              rows={2}
-            />
-          </div>
-          <div className="flex flex-col gap-2">
-            <label
-              htmlFor="willingToTrade"
-              className="text-sm font-semibold text-orange-400"
-            >
-              Willing to Trade:
-            </label>
-            <textarea
-              id="willingToTrade"
-              name="willingToTrade"
-              value={willingToTrade}
-              onChange={(e) => setWillingToTrade(e.target.value)}
-              placeholder="List players you're willing to trade..."
-              className="w-full p-2 text-sm border border-cell-gray/50 bg-cell-gray/20 rounded-md text-white placeholder-gray-500 resize-y min-h-[60px]"
-              rows={2}
-            />
-          </div>
+        <div className="flex flex-col gap-4">
+          <TradeBlockEditor
+            content={lookingFor}
+            onChange={setLookingFor}
+            placeholder="Describe what players/positions you're looking for... Type @ to mention teams or players"
+            teams={allTeams}
+            players={allPlayers}
+            label="Looking For"
+            labelColor="text-green-400"
+          />
+          <TradeBlockEditor
+            content={willingToTrade}
+            onChange={setWillingToTrade}
+            placeholder="List players you're willing to trade... Type @ to mention teams or players"
+            teams={allTeams}
+            players={allPlayers}
+            label="Willing to Trade"
+            labelColor="text-orange-400"
+          />
           <button
-            type="submit"
+            type="button"
+            onClick={handleSaveTradePreferences}
             className="bg-blue-800 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm self-start"
           >
             Save Trade Preferences
           </button>
-        </Form>
+        </div>
       </div>
     </div>
   );

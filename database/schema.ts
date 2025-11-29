@@ -34,6 +34,7 @@ export const teams = pgTable("team", {
   }),
   lookingFor: text("looking_for"),
   willingToTrade: text("willing_to_trade"),
+  tradeBlockUpdatedAt: timestamp("trade_block_updated_at"),
 });
 
 export type Team = typeof teams.$inferSelect;

@@ -258,8 +258,9 @@ export function TradeBlockEditor({
         if (parsed.type === "doc") {
           editor.commands.setContent(parsed);
         }
-      } catch {
-        // If not valid JSON, treat as plain text
+      } catch (e) {
+        // If not valid JSON, treat as plain text - this is expected for legacy content
+        console.debug("Trade block content is plain text, not JSON:", e);
         editor.commands.setContent(content);
       }
     }
@@ -309,7 +310,9 @@ export function TradeBlockDisplay({
     } else {
       displayContent = content;
     }
-  } catch {
+  } catch (e) {
+    // If not valid JSON, display as plain text - this is expected for legacy content
+    console.debug("Trade block content is plain text, not JSON:", e);
     displayContent = content;
   }
 

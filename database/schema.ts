@@ -32,6 +32,8 @@ export const teams = pgTable("team", {
   captainId: integer("captain_id").references((): AnyPgColumn => players.id, {
     onDelete: "set null",
   }),
+  lookingFor: text("looking_for"),
+  willingToTrade: text("willing_to_trade"),
 });
 
 export type Team = typeof teams.$inferSelect;

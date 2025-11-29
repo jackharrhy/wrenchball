@@ -430,6 +430,17 @@ export const acceptTrade = async (
       .set({ status: "accepted", updatedAt: new Date() })
       .where(eq(trades.id, tradeId));
 
+    // Clear trade preferences for both teams when a trade is accepted
+    // This signals that the trade block may be outdated
+    await tx
+      .update(teams)
+      .set({ lookingFor: null, willingToTrade: null })
+      .where(eq(teams.id, fromTeamId));
+    await tx
+      .update(teams)
+      .set({ lookingFor: null, willingToTrade: null })
+      .where(eq(teams.id, toTeamId));
+
     // Create trade acceptance event
     const seasonState = await getSeasonState(tx);
     if (!seasonState) {

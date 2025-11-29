@@ -93,6 +93,7 @@ export async function updateTeamTradePreferences(
     .set({
       lookingFor: trimmedLookingFor,
       willingToTrade: trimmedWillingToTrade,
+      tradeBlockUpdatedAt: new Date(),
     })
     .where(eq(teams.id, Number(teamId)));
 

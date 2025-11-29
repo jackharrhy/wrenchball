@@ -341,16 +341,7 @@ export const createMatchStateChangeEvent = async (
   }
 };
 
-// Type for Tiptap content
-interface TiptapNode {
-  type: string;
-  content?: TiptapNode[];
-  text?: string;
-  attrs?: {
-    id?: string;
-    label?: string;
-  };
-}
+import type { TiptapNode } from "~/types/tiptap";
 
 /**
  * Converts Tiptap JSON content to markdown-style text with links for Discord
@@ -412,8 +403,8 @@ export const createTradeBlockUpdateEvent = async (
     await db.insert(eventTradeBlockUpdate).values({
       eventId: event.id,
       teamId,
-      lookingFor: lookingFor ?? null,
-      willingToTrade: willingToTrade ?? null,
+      lookingFor,
+      willingToTrade,
     });
 
     // Fetch user and team for Discord message

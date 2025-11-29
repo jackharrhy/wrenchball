@@ -78,6 +78,19 @@ export async function updateTeamName(
 }
 
 /**
+ * Parses JSON content from the editor, falling back to the original value if not valid JSON
+ */
+function parseEditorContent(content: string | null): unknown {
+  if (!content?.trim()) return null;
+  try {
+    return JSON.parse(content);
+  } catch {
+    // If not valid JSON, store as-is (for backward compatibility)
+    return content;
+  }
+}
+
+/**
  * Updates a team's trade preferences (looking for, willing to trade)
  * Returns an object with success status and optional error message
  */
@@ -88,29 +101,8 @@ export async function updateTeamTradePreferences(
   lookingFor: string | null,
   willingToTrade: string | null,
 ): Promise<{ success: boolean; message?: string }> {
-  // Parse JSON content - content comes as stringified JSON from the editor
-  let parsedLookingFor: unknown = null;
-  let parsedWillingToTrade: unknown = null;
-
-  if (lookingFor?.trim()) {
-    try {
-      parsedLookingFor = JSON.parse(lookingFor);
-    } catch (e) {
-      console.debug("Trade block lookingFor is not JSON:", e);
-      // If not valid JSON, store as-is (for backward compatibility)
-      parsedLookingFor = lookingFor;
-    }
-  }
-
-  if (willingToTrade?.trim()) {
-    try {
-      parsedWillingToTrade = JSON.parse(willingToTrade);
-    } catch (e) {
-      console.debug("Trade block willingToTrade is not JSON:", e);
-      // If not valid JSON, store as-is (for backward compatibility)
-      parsedWillingToTrade = willingToTrade;
-    }
-  }
+  const parsedLookingFor = parseEditorContent(lookingFor);
+  const parsedWillingToTrade = parseEditorContent(willingToTrade);
 
   await db
     .update(teams)

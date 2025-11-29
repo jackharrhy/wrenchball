@@ -12,6 +12,59 @@ function formatTimeAgo(date: Date): string {
   return date.toLocaleDateString();
 }
 
+// Types for Tiptap content rendering
+interface TiptapNode {
+  type: string;
+  content?: TiptapNode[];
+  text?: string;
+  attrs?: {
+    id?: string;
+    label?: string;
+  };
+}
+
+// Render Tiptap JSON content as React nodes
+function renderTiptapContent(content: unknown): React.ReactNode {
+  if (!content || typeof content !== "object") return null;
+
+  const doc = content as TiptapNode;
+  if (doc.type !== "doc" || !doc.content) return null;
+
+  return doc.content.map((node, index) => {
+    if (node.type === "paragraph") {
+      return (
+        <span key={index}>
+          {node.content?.map((child, childIndex) => {
+            if (child.type === "text") {
+              return <span key={childIndex}>{child.text}</span>;
+            }
+            if (child.type === "mention") {
+              const isTeam = child.attrs?.id?.startsWith("team-");
+              const entityId = child.attrs?.id?.replace(/^(team-|player-)/, "");
+              return (
+                <a
+                  key={childIndex}
+                  href={isTeam ? `/team/${entityId}` : `/player/${entityId}`}
+                  className={`inline-block px-1 rounded ${
+                    isTeam
+                      ? "bg-green-600/30 text-green-300 hover:bg-green-600/50"
+                      : "bg-orange-600/30 text-orange-300 hover:bg-orange-600/50"
+                  }`}
+                >
+                  @{child.attrs?.label}
+                </a>
+              );
+            }
+            return null;
+          }) ?? null}
+          {index < (doc.content?.length ?? 0) - 1 ? " " : ""}
+        </span>
+      );
+    }
+    return null;
+  });
+}
+
 type EventWithRelations = Event & {
   user?: { id: number; name: string } | null;
   draft?: {
@@ -48,6 +101,16 @@ type EventWithRelations = Event & {
         toTeamId: number;
         player: { id: number; name: string; imageUrl: string | null };
       }>;
+    };
+  } | null;
+  tradeBlockUpdate?: {
+    teamId: number;
+    lookingFor: unknown;
+    willingToTrade: unknown;
+    team: {
+      id: number;
+      name: string;
+      abbreviation: string;
     };
   } | null;
 };
@@ -251,6 +314,51 @@ export function Events({ events }: { events: EventWithRelations[] }) {
                           {idx < toPlayers.length - 1 ? ", " : ""}
                         </span>
                       ))}
+                    </>
+                  )}
+                </div>
+                <div
+                  className="text-xs text-gray-400 mt-1"
+                  title={event.createdAt.toLocaleString()}
+                >
+                  {formatTimeAgo(new Date(event.createdAt))}
+                </div>
+              </div>
+            </div>
+          );
+        }
+
+        if (
+          event.eventType === "trade_block_update" &&
+          event.tradeBlockUpdate
+        ) {
+          const { team, lookingFor, willingToTrade } = event.tradeBlockUpdate;
+          return (
+            <div
+              key={event.id}
+              className="flex items-center gap-3 p-3 bg-cell-gray/40 border border-cell-gray/50 rounded-lg"
+            >
+              <div className="flex-1 min-w-0">
+                <div className="text-sm font-medium">
+                  <span className="text-teal-300 font-bold">
+                    Trade Block Updated
+                  </span>
+                  {" - "}
+                  <a href={`/team/${team.id}`} className="hover:underline">
+                    <span className="text-green-300 font-bold">{team.name}</span>
+                  </a>
+                  {lookingFor != null && (
+                    <>
+                      {" | "}
+                      <span className="text-gray-300">Looking For: </span>
+                      {renderTiptapContent(lookingFor)}
+                    </>
+                  )}
+                  {willingToTrade != null && (
+                    <>
+                      {" | "}
+                      <span className="text-gray-300">Willing to Trade: </span>
+                      {renderTiptapContent(willingToTrade)}
                     </>
                   )}
                 </div>

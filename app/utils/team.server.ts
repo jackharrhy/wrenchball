@@ -3,6 +3,8 @@ import { db, type Database } from "~/database/db";
 import { TEAM_SIZE, LINEUP_SIZE } from "~/consts";
 import { eq, inArray } from "drizzle-orm";
 import { teams, teamLineups, players } from "~/database/schema";
+import { createTradeBlockUpdateEvent } from "./events.server";
+import { getSeasonState } from "./admin.server";
 
 /**
  * Fetches a team with its players and lineup data
@@ -71,6 +73,65 @@ export async function updateTeamName(
     .update(teams)
     .set({ name: trimmedName })
     .where(eq(teams.id, Number(teamId)));
+
+  return { success: true };
+}
+
+/**
+ * Parses JSON content from the editor, falling back to the original value if not valid JSON
+ */
+function parseEditorContent(content: string | null): unknown {
+  if (!content?.trim()) return null;
+  try {
+    return JSON.parse(content);
+  } catch {
+    // If not valid JSON, store as-is (for backward compatibility)
+    return content;
+  }
+}
+
+/**
+ * Updates a team's trade preferences (looking for, willing to trade)
+ * Returns an object with success status and optional error message
+ */
+export async function updateTeamTradePreferences(
+  db: Database,
+  teamId: string | number,
+  userId: number,
+  lookingFor: string | null,
+  willingToTrade: string | null,
+): Promise<{ success: boolean; message?: string }> {
+  const parsedLookingFor = parseEditorContent(lookingFor);
+  const parsedWillingToTrade = parseEditorContent(willingToTrade);
+
+  await db
+    .update(teams)
+    .set({
+      lookingFor: parsedLookingFor,
+      willingToTrade: parsedWillingToTrade,
+      tradeBlockUpdatedAt: new Date(),
+    })
+    .where(eq(teams.id, Number(teamId)));
+
+  // Create event for the trade block update
+  const seasonState = await getSeasonState(db);
+  if (seasonState) {
+    const eventResult = await createTradeBlockUpdateEvent(
+      db,
+      userId,
+      Number(teamId),
+      seasonState.id,
+      parsedLookingFor,
+      parsedWillingToTrade,
+    );
+    if (!eventResult.success) {
+      console.error(
+        "Failed to create trade block update event:",
+        eventResult.error,
+      );
+      // Don't fail the update if event creation fails
+    }
+  }
 
   return { success: true };
 }

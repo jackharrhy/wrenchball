@@ -269,3 +269,51 @@ body {
 .trading-container .trade-history {
   grid-area: trade-history;
 }
+
+
+/* Tiptap Editor Styles */
+.ProseMirror {
+  min-height: 60px;
+  outline: none;
+}
+
+.ProseMirror p {
+  margin: 0;
+}
+
+.ProseMirror p.is-empty::before {
+  color: #6b7280;
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+}
+
+/* Mention styles */
+.mention {
+  padding: 0 4px;
+  border-radius: 4px;
+  box-decoration-break: clone;
+}
+
+.mention-team {
+  background-color: rgba(34, 197, 94, 0.3);
+  color: rgb(134, 239, 172);
+}
+
+.mention-player {
+  background-color: rgba(249, 115, 22, 0.3);
+  color: rgb(253, 186, 116);
+}
+
+/* Tippy tooltip styles */
+.tippy-box {
+  background-color: transparent;
+  padding: 0;
+  border: none;
+}
+
+.tippy-content {
+  padding: 0;
+}
+

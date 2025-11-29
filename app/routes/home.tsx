@@ -34,6 +34,11 @@ export async function loader({}: Route.LoaderArgs) {
           },
         },
       },
+      tradeBlockUpdate: {
+        with: {
+          team: true,
+        },
+      },
     },
     orderBy: [desc(events.createdAt)],
     limit: 50,

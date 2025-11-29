@@ -31,6 +31,7 @@ import {
   deleteMatch,
   getTeamsForMatchCreation,
 } from "~/utils/matches.server";
+import { formatTeamName } from "~/utils/formatTeamName";
 
 export async function loader({ request }: Route.LoaderArgs) {
   const user = await requireUser(request);
@@ -950,7 +951,7 @@ export default function Admin({
                   <option value="">Select Team A</option>
                   {loaderData.teams.map((team) => (
                     <option key={team.id} value={team.id}>
-                      {team.name}
+                      {formatTeamName(team)}
                     </option>
                   ))}
                 </select>
@@ -968,7 +969,7 @@ export default function Admin({
                   <option value="">Select Team B</option>
                   {loaderData.teams.map((team) => (
                     <option key={team.id} value={team.id}>
-                      {team.name}
+                      {formatTeamName(team)}
                     </option>
                   ))}
                 </select>
@@ -1004,7 +1005,7 @@ export default function Admin({
                 >
                   <div className="flex-1 min-w-[200px]">
                     <div className="font-medium">
-                      {match.teamA.name} vs {match.teamB.name}
+                      {formatTeamName(match.teamA)} vs {formatTeamName(match.teamB)}
                     </div>
                     <div className="text-sm text-gray-400">
                       {match.scheduledDate

@@ -8,6 +8,7 @@ import {
   fillPlayersToTeamSize,
   checkCanEdit,
 } from "~/utils/team.server";
+import { formatTeamName } from "~/utils/formatTeamName";
 
 export async function loader({
   params: { teamId },
@@ -58,7 +59,7 @@ export default function Team({
 
   return (
     <div className="flex flex-col gap-4 items-center">
-      <h1 className="text-2xl font-rodin font-bold">{team.name}</h1>
+      <h1 className="text-2xl font-rodin font-bold">{formatTeamName(team)}</h1>
 
       <div
         key={team.id}

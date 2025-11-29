@@ -15,6 +15,7 @@ import { useState } from "react";
 import { cn } from "~/utils/cn";
 import { broadcast } from "~/sse.server";
 import type { users } from "~/database/schema";
+import { formatTeamName } from "~/utils/formatTeamName";
 
 export async function loader({ request }: Route.LoaderArgs) {
   const user = await requireUser(request);
@@ -175,11 +176,11 @@ const Trade = ({
           captainId={trade.toTeam.captainId}
         />
         <a className="hover:underline" href={`/team/${trade.toTeam.id}`}>
-          {trade.toTeam.name}
+          {formatTeamName(trade.toTeam)}
         </a>
         <div className="text-2xl font-extrabold">↔</div>
         <a className="hover:underline" href={`/team/${trade.fromTeam.id}`}>
-          {trade.fromTeam.name}
+          {formatTeamName(trade.fromTeam)}
         </a>
         <PlayerList
           players={trade.tradePlayers
@@ -324,7 +325,7 @@ export default function Trading({
             .filter((team) => myTeam?.id !== team.id)
             .map((team) => (
               <option key={team.id} value={team.id}>
-                {team.name}
+                {formatTeamName(team)}
               </option>
             ))}
         </select>

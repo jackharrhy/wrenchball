@@ -26,6 +26,7 @@ import { broadcast } from "~/sse.server";
 import { useStream } from "~/utils/useStream";
 import { TEAM_SIZE } from "~/consts";
 import { Events } from "~/components/Events";
+import { formatTeamName } from "~/utils/formatTeamName";
 
 export async function loader({ request }: Route.LoaderArgs) {
   const user = await requireUser(request);
@@ -733,7 +734,7 @@ export default function Drafting({
                   key={team.id}
                   className="flex flex-wrap gap-2 items-center border border-cell-gray/50 bg-cell-gray/40 rounded-md px-4 py-1.5"
                 >
-                  <p className="text-sm font-semibold w-16 mr-2">{team.name}</p>
+                  <p className="text-sm font-semibold w-16 mr-2">{formatTeamName(team)}</p>
                   {team.players.slice(0, TEAM_SIZE - 3).map((player, index) => {
                     const isStarred = player?.lineup?.isStarred ?? false;
                     const isCaptain =

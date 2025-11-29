@@ -1,5 +1,6 @@
 import type { Event } from "~/database/schema";
 import { PlayerIcon } from "~/components/PlayerIcon";
+import { formatTeamName } from "~/utils/formatTeamName";
 
 function formatTimeAgo(date: Date): string {
   const seconds = Math.floor((new Date().getTime() - date.getTime()) / 1000);
@@ -104,7 +105,7 @@ export function Events({ events }: { events: EventWithRelations[] }) {
                     </span>
                     {" to "}
                     <span className="text-green-300 font-bold">
-                      {event.draft.team.name}
+                      {formatTeamName(event.draft.team)}
                     </span>
                   </a>
                 </div>
@@ -201,7 +202,7 @@ export function Events({ events }: { events: EventWithRelations[] }) {
                     className="hover:underline"
                   >
                     <span className="text-green-300 font-bold">
-                      {trade.fromTeam.name}
+                      {formatTeamName(trade.fromTeam)}
                     </span>
                   </a>
                   {" and "}
@@ -210,14 +211,14 @@ export function Events({ events }: { events: EventWithRelations[] }) {
                     className="hover:underline"
                   >
                     <span className="text-green-300 font-bold">
-                      {trade.toTeam.name}
+                      {formatTeamName(trade.toTeam)}
                     </span>
                   </a>
                   {": "}
                   {fromPlayers.length > 0 && (
                     <>
                       <span className="text-yellow-300">
-                        {trade.fromTeam.name}
+                        {formatTeamName(trade.fromTeam)}
                       </span>
                       {" sends "}
                       {fromPlayers.map((tp, idx) => (
@@ -237,7 +238,7 @@ export function Events({ events }: { events: EventWithRelations[] }) {
                   {toPlayers.length > 0 && (
                     <>
                       <span className="text-yellow-300">
-                        {trade.toTeam.name}
+                        {formatTeamName(trade.toTeam)}
                       </span>
                       {" sends "}
                       {toPlayers.map((tp, idx) => (

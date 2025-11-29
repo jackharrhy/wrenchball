@@ -4,6 +4,7 @@ import { PlayerIcon } from "~/components/PlayerIcon";
 import { PlayerInfo } from "~/components/PlayerInfo";
 import { cn } from "~/utils/cn";
 import { Link } from "react-router";
+import { formatTeamName } from "~/utils/formatTeamName";
 
 export async function loader({ params: { playerId } }: Route.LoaderArgs) {
   const player = await db.query.players.findFirst({
@@ -48,7 +49,7 @@ export default function Player({
             Team:{" "}
             {player.team ? (
               <Link to={`/team/${player.team.id}`} className="hover:underline">
-                {player.team.name}
+                {formatTeamName(player.team)}
               </Link>
             ) : (
               <span className={cn("text-green-400 font-semibold")}>

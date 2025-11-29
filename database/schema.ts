@@ -294,6 +294,7 @@ export const tradeStatus = pgEnum("trade_status", [
   "pending",
   "accepted",
   "denied",
+  "cancelled",
 ]);
 
 export type TradeStatus = (typeof tradeStatus.enumValues)[number];

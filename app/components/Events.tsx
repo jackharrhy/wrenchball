@@ -1,4 +1,5 @@
 import type { Event } from "~/database/schema";
+import type { TiptapNode } from "~/types/tiptap";
 import { PlayerIcon } from "~/components/PlayerIcon";
 
 function formatTimeAgo(date: Date): string {
@@ -10,17 +11,6 @@ function formatTimeAgo(date: Date): string {
   if (seconds < 604800) return `${Math.floor(seconds / 86400)} days ago`;
 
   return date.toLocaleDateString();
-}
-
-// Types for Tiptap content rendering
-interface TiptapNode {
-  type: string;
-  content?: TiptapNode[];
-  text?: string;
-  attrs?: {
-    id?: string;
-    label?: string;
-  };
 }
 
 // Render Tiptap JSON content as React nodes

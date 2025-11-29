@@ -110,7 +110,7 @@ const MentionList = forwardRef<MentionListRef, MentionListProps>(
 MentionList.displayName = "MentionList";
 
 interface TradeBlockEditorProps {
-  content: string;
+  content: unknown;
   onChange: (content: string) => void;
   placeholder?: string;
   teams: Array<{ id: number; name: string }>;
@@ -238,7 +238,7 @@ export function TradeBlockEditor({
         },
       }),
     ],
-    content: content || "",
+    content: "",
     onUpdate: ({ editor }) => {
       onChange(JSON.stringify(editor.getJSON()));
     },
@@ -250,18 +250,28 @@ export function TradeBlockEditor({
     },
   });
 
-  // Initialize editor content from JSON if it's valid JSON, otherwise treat as plain text
+  // Initialize editor content from JSON object or string
   useEffect(() => {
     if (editor && content) {
-      try {
-        const parsed = JSON.parse(content);
-        if (parsed.type === "doc") {
-          editor.commands.setContent(parsed);
+      // Content is now a JSON object directly from the database (jsonb)
+      if (typeof content === "object" && content !== null) {
+        const contentObj = content as { type?: string };
+        if (contentObj.type === "doc") {
+          editor.commands.setContent(content);
         }
-      } catch (e) {
-        // If not valid JSON, treat as plain text - this is expected for legacy content
-        console.debug("Trade block content is plain text, not JSON:", e);
-        editor.commands.setContent(content);
+      } else if (typeof content === "string") {
+        // Legacy string content - try to parse as JSON first
+        try {
+          const parsed = JSON.parse(content);
+          if (parsed.type === "doc") {
+            editor.commands.setContent(parsed);
+          } else {
+            editor.commands.setContent(content);
+          }
+        } catch {
+          // Plain text fallback
+          editor.commands.setContent(content);
+        }
       }
     }
   }, []);
@@ -289,7 +299,7 @@ export function TradeBlockEditor({
 }
 
 interface TradeBlockDisplayProps {
-  content: string | null;
+  content: unknown;
   label: string;
   labelColor: string;
 }
@@ -301,19 +311,31 @@ export function TradeBlockDisplay({
 }: TradeBlockDisplayProps) {
   if (!content) return null;
 
-  // Try to parse as JSON (Tiptap content), fallback to plain text
+  // Content is now a JSON object directly from the database (jsonb)
   let displayContent: React.ReactNode;
-  try {
-    const parsed = JSON.parse(content);
-    if (parsed.type === "doc") {
-      displayContent = renderTiptapContent(parsed);
+
+  if (typeof content === "object" && content !== null) {
+    const contentObj = content as TiptapNode;
+    if (contentObj.type === "doc") {
+      displayContent = renderTiptapContent(contentObj);
     } else {
+      displayContent = JSON.stringify(content);
+    }
+  } else if (typeof content === "string") {
+    // Legacy string content - try to parse as JSON first
+    try {
+      const parsed = JSON.parse(content) as TiptapNode;
+      if (parsed.type === "doc") {
+        displayContent = renderTiptapContent(parsed);
+      } else {
+        displayContent = content;
+      }
+    } catch {
+      // Plain text fallback
       displayContent = content;
     }
-  } catch (e) {
-    // If not valid JSON, display as plain text - this is expected for legacy content
-    console.debug("Trade block content is plain text, not JSON:", e);
-    displayContent = content;
+  } else {
+    return null;
   }
 
   return (

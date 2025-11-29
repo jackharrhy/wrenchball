@@ -486,10 +486,11 @@ export const denyTrade = async (
   // Determine if it's a cancellation (by initiator) or rejection (by recipient)
   const isCancellation = tradeData.fromUserId === userId;
   const action = isCancellation ? "cancelled" : "rejected";
+  const status = isCancellation ? "cancelled" : "denied";
 
   await db
     .update(trades)
-    .set({ status: "denied", updatedAt: new Date() })
+    .set({ status, updatedAt: new Date() })
     .where(eq(trades.id, tradeId));
 
   // Create trade rejection/cancellation event

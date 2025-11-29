@@ -174,12 +174,12 @@ const Trade = ({
             .map((tradePlayer) => tradePlayer.player)}
           captainId={trade.toTeam.captainId}
         />
-        <a className="hover:underline" href={`/team/${trade.fromTeam.id}`}>
-          {trade.fromTeam.name}
-        </a>
-        <div className="text-2xl font-extrabold">↔</div>
         <a className="hover:underline" href={`/team/${trade.toTeam.id}`}>
           {trade.toTeam.name}
+        </a>
+        <div className="text-2xl font-extrabold">↔</div>
+        <a className="hover:underline" href={`/team/${trade.fromTeam.id}`}>
+          {trade.fromTeam.name}
         </a>
         <PlayerList
           players={trade.tradePlayers

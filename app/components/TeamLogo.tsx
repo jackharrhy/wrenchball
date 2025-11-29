@@ -1,7 +1,7 @@
 import { cn } from "~/utils/cn";
 
 const statsCharacterToTeamSlug = {
-  Mario: "fireball",
+  Mario: "fireballs",
   Luigi: "knights",
   Peach: "monarchs",
   Daisy: "flowers",

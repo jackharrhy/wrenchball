@@ -15,6 +15,13 @@
       "when": 1732845878632,
       "tag": "0001_add_team_trade_preferences",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1764378230956,
+      "tag": "0002_add_cancelled_trade_status",
+      "breakpoints": true
     }
   ]
 }

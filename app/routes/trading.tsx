@@ -163,6 +163,7 @@ const Trade = ({
           trade.status === "pending" && "bg-yellow-400/35 border-yellow-400/40",
           trade.status === "accepted" && "bg-green-400/35 border-green-400/40",
           trade.status === "denied" && "bg-red-400/35 border-red-400/40",
+          trade.status === "cancelled" && "bg-orange-400/35 border-orange-400/40",
         )}
       >
         <p className="absolute top-1 right-1.5 rotate-3 text-sm text-gray-300">

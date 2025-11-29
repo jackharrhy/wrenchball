@@ -83,7 +83,6 @@ export default function PlayersChemistry({ loaderData }: Route.ComponentProps) {
     char1: string,
     char2: string,
   ): "positive" | "negative" | null => {
-    if (char1 === char2) return null;
     return loaderData.chemistryMap.get(char1)?.get(char2) ?? null;
   };
 

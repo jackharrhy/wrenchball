@@ -11,6 +11,7 @@ import {
   useState,
   useCallback,
 } from "react";
+import type { TiptapNode } from "~/types/tiptap";
 
 interface MentionItem {
   id: string;
@@ -346,16 +347,6 @@ export function TradeBlockDisplay({
       </div>
     </div>
   );
-}
-
-interface TiptapNode {
-  type: string;
-  content?: TiptapNode[];
-  text?: string;
-  attrs?: {
-    id?: string;
-    label?: string;
-  };
 }
 
 function renderTiptapContent(doc: TiptapNode): React.ReactNode {

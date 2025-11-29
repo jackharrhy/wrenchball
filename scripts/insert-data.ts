@@ -127,8 +127,6 @@ for (let rowNum = 3; rowNum <= chemistryWorksheet.rowCount; rowNum++) {
     const columnCharacterName = columnCharacterNames[colNumber];
     if (!columnCharacterName) return;
 
-    if (rowCharacterName === columnCharacterName) return;
-
     const fill = cell.fill;
     if (!fill || fill.type !== "pattern" || fill.pattern !== "solid") {
       return;

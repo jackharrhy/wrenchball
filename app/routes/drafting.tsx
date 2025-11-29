@@ -734,7 +734,7 @@ export default function Drafting({
                   key={team.id}
                   className="flex flex-wrap gap-2 items-center border border-cell-gray/50 bg-cell-gray/40 rounded-md px-4 py-1.5"
                 >
-                  <p className="text-sm font-semibold w-16 mr-2">{formatTeamName(team)}</p>
+                  <p className="text-sm font-semibold w-32 mr-2 truncate" title={formatTeamName(team)}>{formatTeamName(team)}</p>
                   {team.players.slice(0, TEAM_SIZE - 3).map((player, index) => {
                     const isStarred = player?.lineup?.isStarred ?? false;
                     const isCaptain =

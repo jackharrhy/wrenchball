@@ -75,6 +75,30 @@ export async function updateTeamName(
   return { success: true };
 }
 
+/**
+ * Updates a team's trade preferences (looking for, willing to trade)
+ * Returns an object with success status and optional error message
+ */
+export async function updateTeamTradePreferences(
+  db: Database,
+  teamId: string | number,
+  lookingFor: string | null,
+  willingToTrade: string | null,
+): Promise<{ success: boolean; message?: string }> {
+  const trimmedLookingFor = lookingFor?.trim() || null;
+  const trimmedWillingToTrade = willingToTrade?.trim() || null;
+
+  await db
+    .update(teams)
+    .set({
+      lookingFor: trimmedLookingFor,
+      willingToTrade: trimmedWillingToTrade,
+    })
+    .where(eq(teams.id, Number(teamId)));
+
+  return { success: true };
+}
+
 export interface LineupEntry {
   playerId: number;
   fieldingPosition: FieldingPosition | null;

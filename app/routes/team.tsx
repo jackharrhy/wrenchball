@@ -83,6 +83,34 @@ export default function Team({
           captainStatsCharacter={team.captain?.statsCharacter}
         />
       </div>
+      {/* Trade Preferences Section */}
+      {(team.lookingFor || team.willingToTrade) && (
+        <div className="flex flex-col gap-3 border border-cell-gray/50 bg-cell-gray/30 rounded-lg p-4 w-full max-w-2xl">
+          <h2 className="text-lg font-bold text-center">Trade Block</h2>
+          <div className="flex flex-col md:flex-row gap-4">
+            {team.lookingFor && (
+              <div className="flex-1">
+                <p className="text-sm font-semibold text-green-400 mb-1">
+                  Looking For:
+                </p>
+                <p className="text-sm text-gray-200 whitespace-pre-wrap">
+                  {team.lookingFor}
+                </p>
+              </div>
+            )}
+            {team.willingToTrade && (
+              <div className="flex-1">
+                <p className="text-sm font-semibold text-orange-400 mb-1">
+                  Willing to Trade:
+                </p>
+                <p className="text-sm text-gray-200 whitespace-pre-wrap">
+                  {team.willingToTrade}
+                </p>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
       {canEdit && (
         <Link
           to={`/team/${team.id}/edit`}

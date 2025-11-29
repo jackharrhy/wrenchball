@@ -6,6 +6,7 @@ import { matches, matchBattingOrders } from "~/database/schema";
 import { cn } from "~/utils/cn";
 import { asc, desc } from "drizzle-orm";
 import { TeamLogo } from "~/components/TeamLogo";
+import { formatTeamName } from "~/utils/formatTeamName";
 
 export async function loader({ request }: Route.LoaderArgs) {
   const allMatches = await db.query.matches.findMany({
@@ -131,7 +132,7 @@ function MatchCard({ match }: MatchCardProps) {
             match.teamA.captain?.statsCharacter ?? undefined
           }
         />
-        <span className="font-bold text-lg">{match.teamA.name}</span>
+        <span className="font-bold text-lg">{formatTeamName(match.teamA)}</span>
         {showScore && (
           <span className="text-xl font-bold text-yellow-300">
             {match.teamAScore}
@@ -145,7 +146,7 @@ function MatchCard({ match }: MatchCardProps) {
             {match.teamBScore}
           </span>
         )}
-        <span className="font-bold text-lg">{match.teamB.name}</span>
+        <span className="font-bold text-lg">{formatTeamName(match.teamB)}</span>
         <TeamLogo
           size="small"
           captainStatsCharacter={

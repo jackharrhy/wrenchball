@@ -5,6 +5,7 @@ import { Link } from "react-router";
 import { TeamPlayerList } from "~/components/TeamPlayerList";
 import { TEAM_SIZE } from "~/consts";
 import { TeamLogo } from "~/components/TeamLogo";
+import { formatTeamName } from "~/utils/formatTeamName";
 
 export async function loader({ request }: Route.LoaderArgs) {
   const allTeams = await db.query.teams.findMany({
@@ -42,7 +43,7 @@ export default function Teams({ loaderData }: Route.ComponentProps) {
             key={team.id}
           >
             <p className="w-full text-lg font-rodin font-bold text-center">
-              {team.name}
+              {formatTeamName(team)}
             </p>
             <div className="flex flex-col gap-4 border-2 border-cell-gray/50 bg-cell-gray/40 rounded-lg p-4 w-60 max-w-full transition-colors group-hover:bg-cell-gray/60">
               <TeamLogo

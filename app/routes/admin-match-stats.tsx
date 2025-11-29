@@ -7,6 +7,7 @@ import {
   upsertMatchPlayerStats,
 } from "~/utils/matches.server";
 import { PlayerIcon } from "~/components/PlayerIcon";
+import { formatTeamName } from "~/utils/formatTeamName";
 
 export async function loader({
   params: { matchId },
@@ -196,7 +197,7 @@ export default function AdminMatchStats({
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold">
-          Edit Stats: {match.teamA.name} vs {match.teamB.name}
+          Edit Stats: {formatTeamName(match.teamA)} vs {formatTeamName(match.teamB)}
         </h1>
         <Link to="/admin" className="text-cyan-300 hover:underline">
           ← Back to Admin
@@ -278,7 +279,7 @@ export default function AdminMatchStats({
                   colSpan={STAT_COLUMNS.length + 2}
                   className="p-2 font-bold border border-cell-gray/50"
                 >
-                  {match.teamA.name}
+                  {formatTeamName(match.teamA)}
                 </td>
               </tr>
               {/* Team A players */}
@@ -323,7 +324,7 @@ export default function AdminMatchStats({
                   colSpan={STAT_COLUMNS.length + 2}
                   className="p-2 font-bold border border-cell-gray/50"
                 >
-                  {match.teamB.name}
+                  {formatTeamName(match.teamB)}
                 </td>
               </tr>
               {/* Team B players */}

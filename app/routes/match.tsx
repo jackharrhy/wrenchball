@@ -5,6 +5,7 @@ import { getMatchWithStats } from "~/utils/matches.server";
 import { PlayerIcon } from "~/components/PlayerIcon";
 import { Lineup } from "~/components/Lineup";
 import { cn } from "~/utils/cn";
+import { formatTeamName } from "~/utils/formatTeamName";
 
 export async function loader({ params: { matchId } }: Route.LoaderArgs) {
   const match = await getMatchWithStats(db, parseInt(matchId, 10));
@@ -139,7 +140,7 @@ export default function Match({ loaderData }: Route.ComponentProps) {
             to={`/team/${match.teamA.id}`}
             className="text-2xl font-bold hover:underline"
           >
-            {match.teamA.name}
+            {formatTeamName(match.teamA)}
           </Link>
           {showScore ? (
             <div className="flex items-center gap-4">
@@ -158,7 +159,7 @@ export default function Match({ loaderData }: Route.ComponentProps) {
             to={`/team/${match.teamB.id}`}
             className="text-2xl font-bold hover:underline"
           >
-            {match.teamB.name}
+            {formatTeamName(match.teamB)}
           </Link>
         </div>
 
@@ -170,7 +171,7 @@ export default function Match({ loaderData }: Route.ComponentProps) {
         <div className="flex flex-wrap justify-center gap-48">
           {/* Team A Field */}
           <div className="flex flex-col items-center">
-            <h3 className="text-lg font-bold mb-4">{match.teamA.name}</h3>
+            <h3 className="text-lg font-bold mb-4">{formatTeamName(match.teamA)}</h3>
             <Lineup
               players={teamAPlayersForField}
               captainId={match.teamA.captainId}
@@ -180,7 +181,7 @@ export default function Match({ loaderData }: Route.ComponentProps) {
 
           {/* Team B Field */}
           <div className="flex flex-col items-center">
-            <h3 className="text-lg font-bold mb-4">{match.teamB.name}</h3>
+            <h3 className="text-lg font-bold mb-4">{formatTeamName(match.teamB)}</h3>
             <Lineup
               players={teamBPlayersForField}
               captainId={match.teamB.captainId}
@@ -247,7 +248,7 @@ export default function Match({ loaderData }: Route.ComponentProps) {
                       </div>
                     </td>
                     <td className="p-2 border border-cell-gray/50 text-sm text-gray-400">
-                      {match.teamA.name}
+                      {formatTeamName(match.teamA)}
                     </td>
                     {STAT_COLUMNS.map((col) => (
                       <td
@@ -299,7 +300,7 @@ export default function Match({ loaderData }: Route.ComponentProps) {
                       </div>
                     </td>
                     <td className="p-2 border border-cell-gray/50 text-sm text-gray-400">
-                      {match.teamB.name}
+                      {formatTeamName(match.teamB)}
                     </td>
                     {STAT_COLUMNS.map((col) => (
                       <td

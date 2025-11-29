@@ -3,6 +3,8 @@ import { db, type Database } from "~/database/db";
 import { TEAM_SIZE, LINEUP_SIZE } from "~/consts";
 import { eq, inArray } from "drizzle-orm";
 import { teams, teamLineups, players } from "~/database/schema";
+import { createTradeBlockUpdateEvent } from "./events.server";
+import { getSeasonState } from "./admin.server";
 
 /**
  * Fetches a team with its players and lineup data
@@ -82,20 +84,62 @@ export async function updateTeamName(
 export async function updateTeamTradePreferences(
   db: Database,
   teamId: string | number,
+  userId: number,
   lookingFor: string | null,
   willingToTrade: string | null,
 ): Promise<{ success: boolean; message?: string }> {
-  const trimmedLookingFor = lookingFor?.trim() || null;
-  const trimmedWillingToTrade = willingToTrade?.trim() || null;
+  // Parse JSON content - content comes as stringified JSON from the editor
+  let parsedLookingFor: unknown = null;
+  let parsedWillingToTrade: unknown = null;
+
+  if (lookingFor?.trim()) {
+    try {
+      parsedLookingFor = JSON.parse(lookingFor);
+    } catch (e) {
+      console.debug("Trade block lookingFor is not JSON:", e);
+      // If not valid JSON, store as-is (for backward compatibility)
+      parsedLookingFor = lookingFor;
+    }
+  }
+
+  if (willingToTrade?.trim()) {
+    try {
+      parsedWillingToTrade = JSON.parse(willingToTrade);
+    } catch (e) {
+      console.debug("Trade block willingToTrade is not JSON:", e);
+      // If not valid JSON, store as-is (for backward compatibility)
+      parsedWillingToTrade = willingToTrade;
+    }
+  }
 
   await db
     .update(teams)
     .set({
-      lookingFor: trimmedLookingFor,
-      willingToTrade: trimmedWillingToTrade,
+      lookingFor: parsedLookingFor,
+      willingToTrade: parsedWillingToTrade,
       tradeBlockUpdatedAt: new Date(),
     })
     .where(eq(teams.id, Number(teamId)));
+
+  // Create event for the trade block update
+  const seasonState = await getSeasonState(db);
+  if (seasonState) {
+    const eventResult = await createTradeBlockUpdateEvent(
+      db,
+      userId,
+      Number(teamId),
+      seasonState.id,
+      parsedLookingFor,
+      parsedWillingToTrade,
+    );
+    if (!eventResult.success) {
+      console.error(
+        "Failed to create trade block update event:",
+        eventResult.error,
+      );
+      // Don't fail the update if event creation fails
+    }
+  }
 
   return { success: true };
 }

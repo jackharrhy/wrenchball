@@ -56,7 +56,7 @@ export async function action({
   params: { teamId },
   request,
 }: Route.ActionArgs) {
-  const { db, team } = await getTeamWithPermissionCheck(teamId, request);
+  const { db, team, user } = await getTeamWithPermissionCheck(teamId, request);
 
   const formData = await request.formData();
   const intent = formData.get("intent");
@@ -138,6 +138,7 @@ export async function action({
     return await updateTeamTradePreferences(
       db,
       teamId,
+      user!.id,
       typeof lookingFor === "string" ? lookingFor : null,
       typeof willingToTrade === "string" ? willingToTrade : null,
     );
@@ -154,10 +155,19 @@ export default function EditTeam({
   const [isEditing, setIsEditing] = useState(false);
   const [optimisticName, setOptimisticName] = useState(team.name);
   const titleRef = useRef<HTMLHeadingElement>(null);
-  const [lookingFor, setLookingFor] = useState(team.lookingFor ?? "");
-  const [willingToTrade, setWillingToTrade] = useState(
-    team.willingToTrade ?? "",
-  );
+  // Store the stringified JSON from the editor
+  const [lookingFor, setLookingFor] = useState(() => {
+    if (team.lookingFor && typeof team.lookingFor === "object") {
+      return JSON.stringify(team.lookingFor);
+    }
+    return team.lookingFor ?? "";
+  });
+  const [willingToTrade, setWillingToTrade] = useState(() => {
+    if (team.willingToTrade && typeof team.willingToTrade === "object") {
+      return JSON.stringify(team.willingToTrade);
+    }
+    return team.willingToTrade ?? "";
+  });
 
   // Create a key based on lineup data - when lineup changes after save, component remounts
   const lineupKey = team.players

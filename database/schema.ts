@@ -2,6 +2,7 @@ import { relations } from "drizzle-orm";
 import {
   boolean,
   integer,
+  jsonb,
   pgEnum,
   pgTable,
   text,
@@ -32,8 +33,8 @@ export const teams = pgTable("team", {
   captainId: integer("captain_id").references((): AnyPgColumn => players.id, {
     onDelete: "set null",
   }),
-  lookingFor: text("looking_for"),
-  willingToTrade: text("willing_to_trade"),
+  lookingFor: jsonb("looking_for"),
+  willingToTrade: jsonb("willing_to_trade"),
   tradeBlockUpdatedAt: timestamp("trade_block_updated_at"),
 });
 
@@ -220,6 +221,7 @@ export const eventType = pgEnum("event_type", [
   "season_state_change",
   "trade",
   "match_state_change",
+  "trade_block_update",
 ]);
 
 export type EventType = (typeof eventType.enumValues)[number];
@@ -463,6 +465,10 @@ export const eventsRelations = relations(events, ({ one, many }) => ({
     fields: [events.id],
     references: [eventMatchStateChange.eventId],
   }),
+  tradeBlockUpdate: one(eventTradeBlockUpdate, {
+    fields: [events.id],
+    references: [eventTradeBlockUpdate.eventId],
+  }),
 }));
 
 export const eventDraftRelations = relations(eventDraft, ({ one }) => ({
@@ -500,6 +506,33 @@ export const eventTradeRelations = relations(eventTrade, ({ one }) => ({
     references: [trades.id],
   }),
 }));
+
+export const eventTradeBlockUpdate = pgTable("event_trade_block_update", {
+  eventId: integer("event_id")
+    .primaryKey()
+    .references(() => events.id, { onDelete: "cascade" }),
+  teamId: integer("team_id")
+    .notNull()
+    .references(() => teams.id, { onDelete: "cascade" }),
+  lookingFor: jsonb("looking_for"),
+  willingToTrade: jsonb("willing_to_trade"),
+});
+
+export type EventTradeBlockUpdate = typeof eventTradeBlockUpdate.$inferSelect;
+
+export const eventTradeBlockUpdateRelations = relations(
+  eventTradeBlockUpdate,
+  ({ one }) => ({
+    event: one(events, {
+      fields: [eventTradeBlockUpdate.eventId],
+      references: [events.id],
+    }),
+    team: one(teams, {
+      fields: [eventTradeBlockUpdate.teamId],
+      references: [teams.id],
+    }),
+  }),
+);
 
 // Match-related schema
 export const matchState = pgEnum("match_state", [

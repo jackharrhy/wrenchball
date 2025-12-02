@@ -21,7 +21,7 @@
     "discord.js": "^14.25.1",
     "drizzle-orm": "~0.36.3",
     "exceljs": "^4.4.0",
-    "express": "^5.1.0",
+    "express": "^5.2.1",
     "isbot": "^5.1.27",
     "morgan": "^1.10.0",
     "papaparse": "^5.5.3",

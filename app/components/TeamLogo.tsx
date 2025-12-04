@@ -17,16 +17,17 @@ const statsCharacterToTeamSlug = {
 
 export function TeamLogo({
   captainStatsCharacter,
-  size = "large",
+  size = "lg",
   className = "",
 }: {
   captainStatsCharacter?: string | null;
-  size?: "large" | "small";
+  size?: "lg" | "sm" | "xs";
   className?: string;
 }) {
   const sizeClasses = {
-    large: "h-12 w-36 mx-auto",
-    small: "h-10",
+    lg: "h-12 w-36 mx-auto",
+    sm: "h-10",
+    xs: "h-4",
   };
 
   if (!captainStatsCharacter) {
@@ -39,7 +40,7 @@ export function TeamLogo({
     );
   }
 
-  const logoSrc = `/images/teams/logos/${size}/${statsCharacterToTeamSlug[captainStatsCharacter as keyof typeof statsCharacterToTeamSlug]}.png`;
+  const logoSrc = `/images/teams/logos/${size === "lg" ? "large" : "small"}/${statsCharacterToTeamSlug[captainStatsCharacter as keyof typeof statsCharacterToTeamSlug]}.png`;
 
   return (
     <img

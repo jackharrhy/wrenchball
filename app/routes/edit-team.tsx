@@ -4,14 +4,20 @@ import { getUser } from "~/auth.server";
 import { useSubmit, redirect } from "react-router";
 import { useRef, useState } from "react";
 import { LineupEditor } from "~/components/LineupEditor";
+import { TradePreferencesEditor } from "~/components/TradePreferencesEditor";
 import {
   getTeamWithPlayers,
   fillPlayersToTeamSize,
   checkCanEdit,
   updateTeamName,
   updateTeamLineup,
+  updateTeamTradePreferences,
   type LineupEntry,
 } from "~/utils/team.server";
+import {
+  teams as teamsTable,
+  players as playersTable,
+} from "~/database/schema";
 
 async function getTeamWithPermissionCheck(teamId: string, request: Request) {
   const user = await getUser(request);
@@ -38,14 +44,28 @@ export async function loader({
   const filledPlayers = fillPlayersToTeamSize(team.players);
   const teamWithFullPlayers = { ...team, players: filledPlayers };
 
-  return { team: teamWithFullPlayers };
+  // Fetch all teams and players for mention suggestions
+  const allTeams = await db
+    .select({ id: teamsTable.id, name: teamsTable.name })
+    .from(teamsTable);
+  const allPlayers = await db
+    .select({ id: playersTable.id, name: playersTable.name })
+    .from(playersTable);
+
+  return {
+    team: {
+      ...teamWithFullPlayers,
+    },
+    allTeams,
+    allPlayers,
+  };
 }
 
 export async function action({
   params: { teamId },
   request,
 }: Route.ActionArgs) {
-  const { db, team } = await getTeamWithPermissionCheck(teamId, request);
+  const { db, team, user } = await getTeamWithPermissionCheck(teamId, request);
 
   const formData = await request.formData();
   const intent = formData.get("intent");
@@ -121,19 +141,38 @@ export async function action({
     return result;
   }
 
+  if (intent === "update-trade-preferences") {
+    const lookingFor = formData.get("lookingFor");
+    const willingToTrade = formData.get("willingToTrade");
+    const result = await updateTeamTradePreferences(
+      db,
+      teamId,
+      user!.id,
+      typeof lookingFor === "string" ? lookingFor : null,
+      typeof willingToTrade === "string" ? willingToTrade : null,
+    );
+    if (result.success) {
+      throw redirect(`/team/${teamId}`);
+    }
+    return result;
+  }
+
   return { success: false, message: "Invalid action" };
 }
 
 export default function EditTeam({
-  loaderData: { team },
+  loaderData: { team, allTeams, allPlayers },
   actionData,
 }: Route.ComponentProps) {
   const submit = useSubmit();
   const [isEditing, setIsEditing] = useState(false);
   const [optimisticName, setOptimisticName] = useState(team.name);
   const titleRef = useRef<HTMLHeadingElement>(null);
+  const [lookingFor, setLookingFor] = useState(team.lookingFor ?? "");
+  const [willingToTrade, setWillingToTrade] = useState(
+    team.willingToTrade ?? "",
+  );
 
-  // Create a key based on lineup data - when lineup changes after save, component remounts
   const lineupKey = team.players
     .filter((p) => p !== null)
     .map(
@@ -174,6 +213,17 @@ export default function EditTeam({
     }
   };
 
+  const handleSaveTradePreferences = () => {
+    submit(
+      {
+        intent: "update-trade-preferences",
+        lookingFor,
+        willingToTrade,
+      },
+      { method: "post" },
+    );
+  };
+
   return (
     <div className="flex flex-col gap-4 items-center">
       {actionData?.message && (
@@ -196,6 +246,40 @@ export default function EditTeam({
       >
         {optimisticName}
       </h1>
+
+      <div className="flex flex-col gap-3 border border-cell-gray/50 bg-cell-gray/30 rounded-lg p-4 w-full max-w-2xl">
+        <h2 className="text-lg font-bold text-center">Trade Preferences</h2>
+        <div className="flex flex-col gap-4">
+          <TradePreferencesEditor
+            content={lookingFor}
+            onChange={setLookingFor}
+            placeholder="Describe what players you're looking for..."
+            teams={allTeams}
+            players={allPlayers}
+            label="Looking For"
+            labelColor="text-green-400"
+          />
+          <TradePreferencesEditor
+            content={willingToTrade}
+            onChange={setWillingToTrade}
+            placeholder="List players you're willing to trade..."
+            teams={allTeams}
+            players={allPlayers}
+            label="Willing to Trade"
+            labelColor="text-orange-400"
+          />
+          <p className="text-xs text-gray-400">
+            Type @ to mention teams or players
+          </p>
+          <button
+            type="button"
+            onClick={handleSaveTradePreferences}
+            className="bg-blue-800 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm self-start cursor-pointer"
+          >
+            Save Trade Preferences
+          </button>
+        </div>
+      </div>
 
       <div className="flex flex-col gap-4 w-full">
         <LineupEditor key={lineupKey} team={team} />

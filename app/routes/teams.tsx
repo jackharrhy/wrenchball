@@ -21,7 +21,18 @@ export async function loader({ request }: Route.LoaderArgs) {
 
   const teamsWithFullPlayers = allTeams.map((team) => {
     const players = team.players ?? [];
-    const filledPlayers: ((typeof players)[0] | null)[] = [...players];
+    const sortedPlayers = [...players].sort((a, b) => {
+      const aOrder = a.lineup?.battingOrder;
+      const bOrder = b.lineup?.battingOrder;
+      // Both have batting order - sort by order
+      if (aOrder != null && bOrder != null) return aOrder - bOrder;
+      // One has batting order - that one comes first
+      if (aOrder != null) return -1;
+      if (bOrder != null) return 1;
+      // Neither has batting order - sort by name
+      return a.name.localeCompare(b.name);
+    });
+    const filledPlayers: ((typeof players)[0] | null)[] = [...sortedPlayers];
     while (filledPlayers.length < TEAM_SIZE) {
       filledPlayers.push(null);
     }

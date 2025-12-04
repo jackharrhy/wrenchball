@@ -3,6 +3,8 @@ import { db, type Database } from "~/database/db";
 import { TEAM_SIZE, LINEUP_SIZE } from "~/consts";
 import { eq, inArray } from "drizzle-orm";
 import { teams, teamLineups, players } from "~/database/schema";
+import { createTradePreferencesUpdateEvent } from "./events.server";
+import { getSeasonState } from "./admin.server";
 
 /**
  * Fetches a team with its players and lineup data
@@ -75,6 +77,69 @@ export async function updateTeamName(
   return { success: true };
 }
 
+/**
+ * Updates a team's trade preferences (looking for, willing to trade)
+ * Now stores plain text with <@id>/<#id> mention tokens
+ * Returns an object with success status and optional error message
+ */
+export async function updateTeamTradePreferences(
+  db: Database,
+  teamId: string | number,
+  userId: number,
+  lookingFor: string | null,
+  willingToTrade: string | null,
+): Promise<{ success: boolean; message?: string }> {
+  const cleanedLookingFor = lookingFor?.trim() || null;
+  const cleanedWillingToTrade = willingToTrade?.trim() || null;
+  const teamIdNum = Number(teamId);
+
+  // Fetch current preferences to check if anything changed
+  const currentTeam = await db.query.teams.findFirst({
+    where: (teams, { eq }) => eq(teams.id, teamIdNum),
+    columns: { lookingFor: true, willingToTrade: true },
+  });
+
+  const hasChanged =
+    currentTeam?.lookingFor !== cleanedLookingFor ||
+    currentTeam?.willingToTrade !== cleanedWillingToTrade;
+
+  if (!hasChanged) {
+    return { success: true };
+  }
+
+  await db
+    .update(teams)
+    .set({
+      lookingFor: cleanedLookingFor,
+      willingToTrade: cleanedWillingToTrade,
+      tradePreferencesUpdatedAt: new Date(),
+    })
+    .where(eq(teams.id, teamIdNum));
+
+  const seasonState = await getSeasonState(db);
+  if (seasonState) {
+    if (!cleanedLookingFor && !cleanedWillingToTrade) {
+      return { success: true };
+    }
+    const eventResult = await createTradePreferencesUpdateEvent(
+      db,
+      userId,
+      teamIdNum,
+      seasonState.id,
+      cleanedLookingFor,
+      cleanedWillingToTrade,
+    );
+    if (!eventResult.success) {
+      console.error(
+        "Failed to create trade preferencs update event:",
+        eventResult.error,
+      );
+    }
+  }
+
+  return { success: true };
+}
+
 export interface LineupEntry {
   playerId: number;
   fieldingPosition: FieldingPosition | null;
@@ -126,9 +191,7 @@ export async function updateTeamLineup(
   const playingEntries = lineupEntries.filter(
     (e) => e.fieldingPosition !== null,
   );
-  const benchEntries = lineupEntries.filter(
-    (e) => e.fieldingPosition === null,
-  );
+  const benchEntries = lineupEntries.filter((e) => e.fieldingPosition === null);
 
   // Validate all 9 fielding positions are filled (no duplicates)
   if (playingEntries.length !== LINEUP_SIZE) {
@@ -163,7 +226,8 @@ export async function updateTeamLineup(
   if (uniqueBattingOrders.size !== LINEUP_SIZE) {
     return {
       success: false,
-      message: "Each batting order (1-9) must be assigned to exactly one player",
+      message:
+        "Each batting order (1-9) must be assigned to exactly one player",
     };
   }
 

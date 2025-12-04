@@ -32,6 +32,9 @@ export const teams = pgTable("team", {
   captainId: integer("captain_id").references((): AnyPgColumn => players.id, {
     onDelete: "set null",
   }),
+  lookingFor: text("looking_for"),
+  willingToTrade: text("willing_to_trade"),
+  tradePreferencesUpdatedAt: timestamp("trade_preferences_updated_at"),
 });
 
 export type Team = typeof teams.$inferSelect;
@@ -217,6 +220,7 @@ export const eventType = pgEnum("event_type", [
   "season_state_change",
   "trade",
   "match_state_change",
+  "trade_preferences_update",
 ]);
 
 export type EventType = (typeof eventType.enumValues)[number];
@@ -294,6 +298,7 @@ export const tradeStatus = pgEnum("trade_status", [
   "pending",
   "accepted",
   "denied",
+  "cancelled",
 ]);
 
 export type TradeStatus = (typeof tradeStatus.enumValues)[number];
@@ -460,6 +465,10 @@ export const eventsRelations = relations(events, ({ one, many }) => ({
     fields: [events.id],
     references: [eventMatchStateChange.eventId],
   }),
+  tradePreferencesUpdate: one(eventTradePreferencesUpdate, {
+    fields: [events.id],
+    references: [eventTradePreferencesUpdate.eventId],
+  }),
 }));
 
 export const eventDraftRelations = relations(eventDraft, ({ one }) => ({
@@ -497,6 +506,37 @@ export const eventTradeRelations = relations(eventTrade, ({ one }) => ({
     references: [trades.id],
   }),
 }));
+
+export const eventTradePreferencesUpdate = pgTable(
+  "event_trade_preferences_update",
+  {
+    eventId: integer("event_id")
+      .primaryKey()
+      .references(() => events.id, { onDelete: "cascade" }),
+    teamId: integer("team_id")
+      .notNull()
+      .references(() => teams.id, { onDelete: "cascade" }),
+    lookingFor: text("looking_for"),
+    willingToTrade: text("willing_to_trade"),
+  },
+);
+
+export type EventTradePreferencesUpdate =
+  typeof eventTradePreferencesUpdate.$inferSelect;
+
+export const eventTradePreferencesUpdateRelations = relations(
+  eventTradePreferencesUpdate,
+  ({ one }) => ({
+    event: one(events, {
+      fields: [eventTradePreferencesUpdate.eventId],
+      references: [events.id],
+    }),
+    team: one(teams, {
+      fields: [eventTradePreferencesUpdate.teamId],
+      references: [teams.id],
+    }),
+  }),
+);
 
 // Match-related schema
 export const matchState = pgEnum("match_state", [

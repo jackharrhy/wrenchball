@@ -3,11 +3,16 @@ import type { Route } from "./+types/players._index";
 import { db } from "~/database/db";
 import { cn } from "~/utils/cn";
 import { Link } from "react-router";
+import { TeamLogo } from "~/components/TeamLogo";
 
 export async function loader({ request }: Route.LoaderArgs) {
   const allPlayers = await db.query.players.findMany({
     with: {
-      team: true,
+      team: {
+        with: {
+          captain: true,
+        },
+      },
       lineup: true,
     },
     orderBy: (players, { asc }) => asc(players.sortPosition),
@@ -37,11 +42,21 @@ export default function PlayersIndex({ loaderData }: Route.ComponentProps) {
           <span className="text-xs text-center">{player.name}</span>
           <span
             className={cn(
-              "text-xs absolute top-1 right-1.5 opacity-50 rotate-8",
-              player.team?.abbreviation ? "" : "text-green-300",
+              "text-[0.6rem] absolute top-1 right-1.5 opacity-70 rotate-8",
+              player.team?.abbreviation ? "" : "text-green-300 opacity-50",
             )}
           >
-            {player.team?.abbreviation ?? "Free"}
+            {player.team?.abbreviation ? (
+              <div className="flex items-center gap-1">
+                <TeamLogo
+                  captainStatsCharacter={player.team.captain?.statsCharacter}
+                  size="xs"
+                />
+                {player.team?.abbreviation}
+              </div>
+            ) : (
+              "Free"
+            )}
           </span>
         </Link>
       ))}

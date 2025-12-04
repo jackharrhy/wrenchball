@@ -6,6 +6,7 @@ import {
   eventSeasonStateChange,
   eventTrade,
   eventMatchStateChange,
+  eventTradePreferencesUpdate,
   type SeasonState,
   type TradeAction,
   type MatchState,
@@ -13,11 +14,12 @@ import {
   players,
   teams,
   trades,
-  tradePlayers,
   matches,
 } from "~/database/schema";
 import { postEvent } from "~/discord/client.server";
 import { BASE_URL } from "~/server-consts";
+import { resolveMentions } from "~/utils/mentions.server";
+import { mentionsToMarkdown } from "~/utils/mentions";
 
 /**
  * Calculates the next pick number for a season by counting existing draft events
@@ -336,6 +338,89 @@ export const createMatchStateChangeEvent = async (
         error instanceof Error
           ? error.message
           : "Failed to create match state change event",
+    };
+  }
+};
+
+export const createTradePreferencesUpdateEvent = async (
+  db: Database,
+  userId: number,
+  teamId: number,
+  seasonId: number,
+  lookingFor: string | null,
+  willingToTrade: string | null,
+): Promise<{ success: boolean; error?: string }> => {
+  try {
+    const [event] = await db
+      .insert(events)
+      .values({
+        eventType: "trade_preferences_update",
+        userId,
+        seasonId,
+      })
+      .returning({ id: events.id });
+
+    await db.insert(eventTradePreferencesUpdate).values({
+      eventId: event.id,
+      teamId,
+      lookingFor,
+      willingToTrade,
+    });
+
+    const [user] = await db
+      .select()
+      .from(users)
+      .where(eq(users.id, userId))
+      .limit(1);
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    const [team] = await db
+      .select()
+      .from(teams)
+      .where(eq(teams.id, teamId))
+      .limit(1);
+
+    if (!team) {
+      throw new Error("Team not found");
+    }
+
+    const allText = [lookingFor, willingToTrade].filter(Boolean).join(" ");
+    const { context } = await resolveMentions(db, allText);
+
+    let message = `_Trade Preferences Updated_: **[${team.name}](${BASE_URL}/team/${team.id})**`;
+
+    const lookingForMarkdown = mentionsToMarkdown(
+      lookingFor,
+      context,
+      BASE_URL,
+    );
+    const willingToTradeMarkdown = mentionsToMarkdown(
+      willingToTrade,
+      context,
+      BASE_URL,
+    );
+
+    if (lookingForMarkdown) {
+      message += `\n\n**Looking For:** ${lookingForMarkdown}`;
+    }
+    if (willingToTradeMarkdown) {
+      message += `\n\n**Willing to Trade:** ${willingToTradeMarkdown}`;
+    }
+
+    await postEvent("trade_preferences_update", message);
+
+    return { success: true };
+  } catch (error) {
+    console.error("Error creating trade preferencs update event:", error);
+    return {
+      success: false,
+      error:
+        error instanceof Error
+          ? error.message
+          : "Failed to create trade preferencs update event",
     };
   }
 };

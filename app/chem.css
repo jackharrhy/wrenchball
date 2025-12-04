@@ -150,11 +150,13 @@
 [data-player="Birdo"] [data-player="Yoshi (Red)"] span {opacity: 1;}
 [data-player="Birdo"] [data-player="Yoshi (Yellow)"] span {opacity: 1;}
 [data-player="Birdo"] [data-player="Yoshi"] span {opacity: 1;}
+[data-player="Black Mii (F)"] [data-player="Black Mii (F)"] span {opacity: 1;}
 [data-player="Black Mii (F)"] [data-player="Black Mii"] span {opacity: 1;}
 [data-player="Black Mii (F)"] [data-player="Bowser Jr."] span {opacity: 1;}
 [data-player="Black Mii (F)"] [data-player="Bowser"] span {opacity: 1;}
 [data-player="Black Mii (F)"] [data-player="Shy Guy (Gray)"] span {opacity: 1;}
 [data-player="Black Mii"] [data-player="Black Mii (F)"] span {opacity: 1;}
+[data-player="Black Mii"] [data-player="Black Mii"] span {opacity: 1;}
 [data-player="Black Mii"] [data-player="Bowser Jr."] span {opacity: 1;}
 [data-player="Black Mii"] [data-player="Bowser"] span {opacity: 1;}
 [data-player="Black Mii"] [data-player="Shy Guy (Gray)"] span {opacity: 1;}
@@ -168,6 +170,7 @@
 [data-player="Blooper"] [data-player="White Mii (F)"] span {opacity: 1;}
 [data-player="Blooper"] [data-player="White Mii"] span {opacity: 1;}
 [data-player="Blooper"] [data-player="Wiggler"] span {opacity: 1;}
+[data-player="Blue Mii (F)"] [data-player="Blue Mii (F)"] span {opacity: 1;}
 [data-player="Blue Mii (F)"] [data-player="Blue Mii"] span {opacity: 1;}
 [data-player="Blue Mii (F)"] [data-player="Boomerang Bro."] span {opacity: 1;}
 [data-player="Blue Mii (F)"] [data-player="Dry Bones (Blue)"] span {opacity: 1;}
@@ -181,6 +184,7 @@
 [data-player="Blue Mii (F)"] [data-player="Waluigi"] span {opacity: 1;}
 [data-player="Blue Mii (F)"] [data-player="Yoshi (Blue)"] span {opacity: 1;}
 [data-player="Blue Mii"] [data-player="Blue Mii (F)"] span {opacity: 1;}
+[data-player="Blue Mii"] [data-player="Blue Mii"] span {opacity: 1;}
 [data-player="Blue Mii"] [data-player="Boomerang Bro."] span {opacity: 1;}
 [data-player="Blue Mii"] [data-player="Dry Bones (Blue)"] span {opacity: 1;}
 [data-player="Blue Mii"] [data-player="Kritter (Blue)"] span {opacity: 1;}
@@ -289,6 +293,7 @@
 [data-player="Bowser"] [data-player="White Mii (F)"] span {opacity: 1;}
 [data-player="Bowser"] [data-player="White Mii"] span {opacity: 1;}
 [data-player="Brown Mii (F)"] [data-player="Baby DK"] span {opacity: 1;}
+[data-player="Brown Mii (F)"] [data-player="Brown Mii (F)"] span {opacity: 1;}
 [data-player="Brown Mii (F)"] [data-player="Brown Mii"] span {opacity: 1;}
 [data-player="Brown Mii (F)"] [data-player="Diddy Kong"] span {opacity: 1;}
 [data-player="Brown Mii (F)"] [data-player="Donkey Kong"] span {opacity: 1;}
@@ -299,6 +304,7 @@
 [data-player="Brown Mii (F)"] [data-player="Toadsworth"] span {opacity: 1;}
 [data-player="Brown Mii"] [data-player="Baby DK"] span {opacity: 1;}
 [data-player="Brown Mii"] [data-player="Brown Mii (F)"] span {opacity: 1;}
+[data-player="Brown Mii"] [data-player="Brown Mii"] span {opacity: 1;}
 [data-player="Brown Mii"] [data-player="Diddy Kong"] span {opacity: 1;}
 [data-player="Brown Mii"] [data-player="Donkey Kong"] span {opacity: 1;}
 [data-player="Brown Mii"] [data-player="Goomba"] span {opacity: 1;}
@@ -450,6 +456,7 @@
 [data-player="Goomba"] [data-player="Toadsworth"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
 [data-player="Green Mii (F)"] [data-player="Baby Luigi"] span {opacity: 1;}
 [data-player="Green Mii (F)"] [data-player="Dry Bones (Green)"] span {opacity: 1;}
+[data-player="Green Mii (F)"] [data-player="Green Mii (F)"] span {opacity: 1;}
 [data-player="Green Mii (F)"] [data-player="Green Mii"] span {opacity: 1;}
 [data-player="Green Mii (F)"] [data-player="Hammer Bro."] span {opacity: 1;}
 [data-player="Green Mii (F)"] [data-player="King K. Rool"] span {opacity: 1;}
@@ -465,6 +472,7 @@
 [data-player="Green Mii"] [data-player="Baby Luigi"] span {opacity: 1;}
 [data-player="Green Mii"] [data-player="Dry Bones (Green)"] span {opacity: 1;}
 [data-player="Green Mii"] [data-player="Green Mii (F)"] span {opacity: 1;}
+[data-player="Green Mii"] [data-player="Green Mii"] span {opacity: 1;}
 [data-player="Green Mii"] [data-player="Hammer Bro."] span {opacity: 1;}
 [data-player="Green Mii"] [data-player="King K. Rool"] span {opacity: 1;}
 [data-player="Green Mii"] [data-player="Koopa Paratroopa (Green)"] span {opacity: 1;}
@@ -608,6 +616,7 @@
 [data-player="Kritter (Red)"] [data-player="Red Mii"] span {opacity: 1;}
 [data-player="Kritter (Red)"] [data-player="Tiny Kong"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
 [data-player="Light Blue Mii (F)"] [data-player="Funky Kong"] span {opacity: 1;}
+[data-player="Light Blue Mii (F)"] [data-player="Light Blue Mii (F)"] span {opacity: 1;}
 [data-player="Light Blue Mii (F)"] [data-player="Light Blue Mii"] span {opacity: 1;}
 [data-player="Light Blue Mii (F)"] [data-player="Mario"] span {opacity: 1;}
 [data-player="Light Blue Mii (F)"] [data-player="Peach"] span {opacity: 1;}
@@ -615,16 +624,19 @@
 [data-player="Light Blue Mii (F)"] [data-player="Yoshi (Light Blue)"] span {opacity: 1;}
 [data-player="Light Blue Mii"] [data-player="Funky Kong"] span {opacity: 1;}
 [data-player="Light Blue Mii"] [data-player="Light Blue Mii (F)"] span {opacity: 1;}
+[data-player="Light Blue Mii"] [data-player="Light Blue Mii"] span {opacity: 1;}
 [data-player="Light Blue Mii"] [data-player="Mario"] span {opacity: 1;}
 [data-player="Light Blue Mii"] [data-player="Peach"] span {opacity: 1;}
 [data-player="Light Blue Mii"] [data-player="Tiny Kong"] span {opacity: 1;}
 [data-player="Light Blue Mii"] [data-player="Yoshi (Light Blue)"] span {opacity: 1;}
 [data-player="Light Green Mii (F)"] [data-player="Bowser Jr."] span {opacity: 1;}
+[data-player="Light Green Mii (F)"] [data-player="Light Green Mii (F)"] span {opacity: 1;}
 [data-player="Light Green Mii (F)"] [data-player="Light Green Mii"] span {opacity: 1;}
 [data-player="Light Green Mii (F)"] [data-player="Petey Piranha"] span {opacity: 1;}
 [data-player="Light Green Mii (F)"] [data-player="Yoshi"] span {opacity: 1;}
 [data-player="Light Green Mii"] [data-player="Bowser Jr."] span {opacity: 1;}
 [data-player="Light Green Mii"] [data-player="Light Green Mii (F)"] span {opacity: 1;}
+[data-player="Light Green Mii"] [data-player="Light Green Mii"] span {opacity: 1;}
 [data-player="Light Green Mii"] [data-player="Petey Piranha"] span {opacity: 1;}
 [data-player="Light Green Mii"] [data-player="Yoshi"] span {opacity: 1;}
 [data-player="Luigi"] [data-player="Blue Mii (F)"] span {opacity: 1;}
@@ -797,11 +809,13 @@
 [data-player="Orange Mii (F)"] [data-player="Baby Daisy"] span {opacity: 1;}
 [data-player="Orange Mii (F)"] [data-player="Daisy"] span {opacity: 1;}
 [data-player="Orange Mii (F)"] [data-player="Donkey Kong"] span {opacity: 1;}
+[data-player="Orange Mii (F)"] [data-player="Orange Mii (F)"] span {opacity: 1;}
 [data-player="Orange Mii (F)"] [data-player="Orange Mii"] span {opacity: 1;}
 [data-player="Orange Mii"] [data-player="Baby Daisy"] span {opacity: 1;}
 [data-player="Orange Mii"] [data-player="Daisy"] span {opacity: 1;}
 [data-player="Orange Mii"] [data-player="Donkey Kong"] span {opacity: 1;}
 [data-player="Orange Mii"] [data-player="Orange Mii (F)"] span {opacity: 1;}
+[data-player="Orange Mii"] [data-player="Orange Mii"] span {opacity: 1;}
 [data-player="Paragoomba"] [data-player="Brown Mii (F)"] span {opacity: 1;}
 [data-player="Paragoomba"] [data-player="Brown Mii"] span {opacity: 1;}
 [data-player="Paragoomba"] [data-player="Goomba"] span {opacity: 1;}
@@ -904,6 +918,7 @@
 [data-player="Pink Mii (F)"] [data-player="Birdo"] span {opacity: 1;}
 [data-player="Pink Mii (F)"] [data-player="Dixie Kong"] span {opacity: 1;}
 [data-player="Pink Mii (F)"] [data-player="Peach"] span {opacity: 1;}
+[data-player="Pink Mii (F)"] [data-player="Pink Mii (F)"] span {opacity: 1;}
 [data-player="Pink Mii (F)"] [data-player="Pink Mii"] span {opacity: 1;}
 [data-player="Pink Mii (F)"] [data-player="Toadette"] span {opacity: 1;}
 [data-player="Pink Mii (F)"] [data-player="Yoshi (Pink)"] span {opacity: 1;}
@@ -912,13 +927,16 @@
 [data-player="Pink Mii"] [data-player="Dixie Kong"] span {opacity: 1;}
 [data-player="Pink Mii"] [data-player="Peach"] span {opacity: 1;}
 [data-player="Pink Mii"] [data-player="Pink Mii (F)"] span {opacity: 1;}
+[data-player="Pink Mii"] [data-player="Pink Mii"] span {opacity: 1;}
 [data-player="Pink Mii"] [data-player="Toadette"] span {opacity: 1;}
 [data-player="Pink Mii"] [data-player="Yoshi (Pink)"] span {opacity: 1;}
+[data-player="Purple Mii (F)"] [data-player="Purple Mii (F)"] span {opacity: 1;}
 [data-player="Purple Mii (F)"] [data-player="Purple Mii"] span {opacity: 1;}
 [data-player="Purple Mii (F)"] [data-player="Toad (Purple)"] span {opacity: 1;}
 [data-player="Purple Mii (F)"] [data-player="Waluigi"] span {opacity: 1;}
 [data-player="Purple Mii (F)"] [data-player="Wario"] span {opacity: 1;}
 [data-player="Purple Mii"] [data-player="Purple Mii (F)"] span {opacity: 1;}
+[data-player="Purple Mii"] [data-player="Purple Mii"] span {opacity: 1;}
 [data-player="Purple Mii"] [data-player="Toad (Purple)"] span {opacity: 1;}
 [data-player="Purple Mii"] [data-player="Waluigi"] span {opacity: 1;}
 [data-player="Purple Mii"] [data-player="Wario"] span {opacity: 1;}
@@ -933,6 +951,7 @@
 [data-player="Red Mii (F)"] [data-player="Mario"] span {opacity: 1;}
 [data-player="Red Mii (F)"] [data-player="Noki (Red)"] span {opacity: 1;}
 [data-player="Red Mii (F)"] [data-player="Pianta (Red)"] span {opacity: 1;}
+[data-player="Red Mii (F)"] [data-player="Red Mii (F)"] span {opacity: 1;}
 [data-player="Red Mii (F)"] [data-player="Red Mii"] span {opacity: 1;}
 [data-player="Red Mii (F)"] [data-player="Shy Guy (Red)"] span {opacity: 1;}
 [data-player="Red Mii (F)"] [data-player="Toad (Red)"] span {opacity: 1;}
@@ -949,6 +968,7 @@
 [data-player="Red Mii"] [data-player="Noki (Red)"] span {opacity: 1;}
 [data-player="Red Mii"] [data-player="Pianta (Red)"] span {opacity: 1;}
 [data-player="Red Mii"] [data-player="Red Mii (F)"] span {opacity: 1;}
+[data-player="Red Mii"] [data-player="Red Mii"] span {opacity: 1;}
 [data-player="Red Mii"] [data-player="Shy Guy (Red)"] span {opacity: 1;}
 [data-player="Red Mii"] [data-player="Toad (Red)"] span {opacity: 1;}
 [data-player="Red Mii"] [data-player="Yoshi (Red)"] span {opacity: 1;}
@@ -961,6 +981,7 @@
 [data-player="Shy Guy (Blue)"] [data-player="Blue Mii"] span {opacity: 1;}
 [data-player="Shy Guy (Blue)"] [data-player="Boo"] span {opacity: 1;}
 [data-player="Shy Guy (Blue)"] [data-player="Monty Mole"] span {opacity: 1;}
+[data-player="Shy Guy (Blue)"] [data-player="Shy Guy (Blue)"] span {opacity: 1;}
 [data-player="Shy Guy (Blue)"] [data-player="Shy Guy (Gray)"] span {opacity: 1;}
 [data-player="Shy Guy (Blue)"] [data-player="Shy Guy (Green)"] span {opacity: 1;}
 [data-player="Shy Guy (Blue)"] [data-player="Shy Guy (Yellow)"] span {opacity: 1;}
@@ -980,6 +1001,7 @@
 [data-player="Shy Guy (Gray)"] [data-player="Boo"] span {opacity: 1;}
 [data-player="Shy Guy (Gray)"] [data-player="Monty Mole"] span {opacity: 1;}
 [data-player="Shy Guy (Gray)"] [data-player="Shy Guy (Blue)"] span {opacity: 1;}
+[data-player="Shy Guy (Gray)"] [data-player="Shy Guy (Gray)"] span {opacity: 1;}
 [data-player="Shy Guy (Gray)"] [data-player="Shy Guy (Red)"] span {opacity: 1;}
 [data-player="Shy Guy (Gray)"] [data-player="Shy Guy (Yellow)"] span {opacity: 1;}
 [data-player="Shy Guy (Gray)"] [data-player="Yoshi (Blue)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
@@ -999,6 +1021,7 @@
 [data-player="Shy Guy (Green)"] [data-player="Monty Mole"] span {opacity: 1;}
 [data-player="Shy Guy (Green)"] [data-player="Shy Guy (Blue)"] span {opacity: 1;}
 [data-player="Shy Guy (Green)"] [data-player="Shy Guy (Gray)"] span {opacity: 1;}
+[data-player="Shy Guy (Green)"] [data-player="Shy Guy (Green)"] span {opacity: 1;}
 [data-player="Shy Guy (Green)"] [data-player="Shy Guy (Red)"] span {opacity: 1;}
 [data-player="Shy Guy (Green)"] [data-player="Yoshi (Blue)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
 [data-player="Shy Guy (Green)"] [data-player="Yoshi (Light Blue)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
@@ -1031,6 +1054,7 @@
 [data-player="Shy Guy (Yellow)"] [data-player="Shy Guy (Gray)"] span {opacity: 1;}
 [data-player="Shy Guy (Yellow)"] [data-player="Shy Guy (Green)"] span {opacity: 1;}
 [data-player="Shy Guy (Yellow)"] [data-player="Shy Guy (Red)"] span {opacity: 1;}
+[data-player="Shy Guy (Yellow)"] [data-player="Shy Guy (Yellow)"] span {opacity: 1;}
 [data-player="Shy Guy (Yellow)"] [data-player="Yellow Mii (F)"] span {opacity: 1;}
 [data-player="Shy Guy (Yellow)"] [data-player="Yellow Mii"] span {opacity: 1;}
 [data-player="Shy Guy (Yellow)"] [data-player="Yoshi (Blue)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
@@ -1191,6 +1215,7 @@
 [data-player="White Mii (F)"] [data-player="Bowser"] span {opacity: 1;}
 [data-player="White Mii (F)"] [data-player="Dry Bones (White)"] span {opacity: 1;}
 [data-player="White Mii (F)"] [data-player="King Boo"] span {opacity: 1;}
+[data-player="White Mii (F)"] [data-player="White Mii (F)"] span {opacity: 1;}
 [data-player="White Mii (F)"] [data-player="White Mii"] span {opacity: 1;}
 [data-player="White Mii"] [data-player="Birdo"] span {opacity: 1;}
 [data-player="White Mii"] [data-player="Blooper"] span {opacity: 1;}
@@ -1199,6 +1224,7 @@
 [data-player="White Mii"] [data-player="Dry Bones (White)"] span {opacity: 1;}
 [data-player="White Mii"] [data-player="King Boo"] span {opacity: 1;}
 [data-player="White Mii"] [data-player="White Mii (F)"] span {opacity: 1;}
+[data-player="White Mii"] [data-player="White Mii"] span {opacity: 1;}
 [data-player="Wiggler"] [data-player="Blooper"] span {opacity: 1;}
 [data-player="Wiggler"] [data-player="King Boo"] span {opacity: 1;}
 [data-player="Wiggler"] [data-player="Petey Piranha"] span {opacity: 1;}
@@ -1211,6 +1237,7 @@
 [data-player="Yellow Mii (F)"] [data-player="Toad (Yellow)"] span {opacity: 1;}
 [data-player="Yellow Mii (F)"] [data-player="Wario"] span {opacity: 1;}
 [data-player="Yellow Mii (F)"] [data-player="Wiggler"] span {opacity: 1;}
+[data-player="Yellow Mii (F)"] [data-player="Yellow Mii (F)"] span {opacity: 1;}
 [data-player="Yellow Mii (F)"] [data-player="Yellow Mii"] span {opacity: 1;}
 [data-player="Yellow Mii (F)"] [data-player="Yoshi (Yellow)"] span {opacity: 1;}
 [data-player="Yellow Mii"] [data-player="Daisy"] span {opacity: 1;}
@@ -1221,6 +1248,7 @@
 [data-player="Yellow Mii"] [data-player="Wario"] span {opacity: 1;}
 [data-player="Yellow Mii"] [data-player="Wiggler"] span {opacity: 1;}
 [data-player="Yellow Mii"] [data-player="Yellow Mii (F)"] span {opacity: 1;}
+[data-player="Yellow Mii"] [data-player="Yellow Mii"] span {opacity: 1;}
 [data-player="Yellow Mii"] [data-player="Yoshi (Yellow)"] span {opacity: 1;}
 [data-player="Yoshi (Blue)"] [data-player="Baby DK"] span {opacity: 1;}
 [data-player="Yoshi (Blue)"] [data-player="Baby Daisy"] span {opacity: 1;}

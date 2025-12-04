@@ -9,7 +9,7 @@ export function PlayerIcon({
   isQuestionMark = false,
 }: {
   player?: Pick<Player, "imageUrl" | "name" | "statsCharacter"> | null;
-  size?: "sm" | "md" | "lg" | "xl";
+  size?: "xs" | "sm" | "md" | "lg" | "xl";
   isStarred?: boolean;
   isQuestionMark?: boolean;
   isCaptain?: boolean;
@@ -23,6 +23,7 @@ export function PlayerIcon({
   const alt = player?.name ?? "Blank Player";
 
   const sizeClasses = {
+    xs: "w-[1rem] h-[1rem]",
     sm: "w-[1.5rem] h-[1.5rem]",
     md: "w-[2rem] h-[2rem]",
     lg: "w-[3rem] h-[3rem]",
@@ -30,6 +31,7 @@ export function PlayerIcon({
   };
 
   const starSizeClasses = {
+    xs: "text-[6px] pl-0.5",
     sm: "text-[8px] pl-0.5",
     md: "text-[10px] px-[0.15rem]",
     lg: "text-xs px-[0.15rem]",
@@ -37,6 +39,7 @@ export function PlayerIcon({
   };
 
   const captainSizeClasses = {
+    xs: "text-[6px] w-2 h-2",
     sm: "text-[8px] w-3 h-3",
     md: "text-[10px] w-3.5 h-3.5",
     lg: "text-xs w-4 h-4",

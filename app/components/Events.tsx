@@ -1,16 +1,11 @@
 import type { Event } from "~/database/schema";
 import { PlayerIcon } from "~/components/PlayerIcon";
-
-function formatTimeAgo(date: Date): string {
-  const seconds = Math.floor((new Date().getTime() - date.getTime()) / 1000);
-
-  if (seconds < 60) return "just now";
-  if (seconds < 3600) return `${Math.floor(seconds / 60)} minutes ago`;
-  if (seconds < 86400) return `${Math.floor(seconds / 3600)} hours ago`;
-  if (seconds < 604800) return `${Math.floor(seconds / 86400)} days ago`;
-
-  return date.toLocaleDateString();
-}
+import {
+  renderMentionedText,
+  type MentionContext,
+  createEmptyContext,
+} from "~/utils/mentions";
+import { formatTimeAgo } from "~/utils/time";
 
 type EventWithRelations = Event & {
   user?: { id: number; name: string } | null;
@@ -22,6 +17,7 @@ type EventWithRelations = Event & {
       id: number;
       name: string;
       imageUrl: string | null;
+      statsCharacter: string | null;
       lineup?: { isStarred: boolean } | null;
     };
     team: {
@@ -50,9 +46,26 @@ type EventWithRelations = Event & {
       }>;
     };
   } | null;
+  tradePreferencesUpdate?: {
+    teamId: number;
+    lookingFor?: string | null;
+    willingToTrade?: string | null;
+    team: {
+      id: number;
+      name: string;
+      abbreviation: string;
+    };
+  } | null;
 };
 
-export function Events({ events }: { events: EventWithRelations[] }) {
+interface EventsProps {
+  events: EventWithRelations[];
+  mentionContext?: MentionContext;
+}
+
+export function Events({ events, mentionContext }: EventsProps) {
+  const context = mentionContext ?? createEmptyContext();
+
   if (events.length === 0) {
     return (
       <div className="text-center text-gray-400 italic py-8">No events yet</div>
@@ -233,7 +246,7 @@ export function Events({ events }: { events: EventWithRelations[] }) {
                       ))}
                     </>
                   )}
-                  {fromPlayers.length > 0 && toPlayers.length > 0 && " | "}
+                  {fromPlayers.length > 0 && toPlayers.length > 0 && " - "}
                   {toPlayers.length > 0 && (
                     <>
                       <span className="text-yellow-300">
@@ -252,6 +265,55 @@ export function Events({ events }: { events: EventWithRelations[] }) {
                         </span>
                       ))}
                     </>
+                  )}
+                </div>
+                <div
+                  className="text-xs text-gray-400 mt-1"
+                  title={event.createdAt.toLocaleString()}
+                >
+                  {formatTimeAgo(new Date(event.createdAt))}
+                </div>
+              </div>
+            </div>
+          );
+        }
+
+        if (
+          event.eventType === "trade_preferences_update" &&
+          event.tradePreferencesUpdate
+        ) {
+          const { team, lookingFor, willingToTrade } =
+            event.tradePreferencesUpdate;
+          return (
+            <div
+              key={event.id}
+              className="flex items-center gap-3 p-3 bg-cell-gray/40 border border-cell-gray/50 rounded-lg"
+            >
+              <div className="flex-1 min-w-0">
+                <div className="text-sm font-medium">
+                  <span className="text-teal-300 font-bold">
+                    Trade Preferences Updated
+                  </span>
+                  {" for "}
+                  <a href={`/team/${team.id}`} className="hover:underline">
+                    <span className="text-green-300 font-bold">
+                      {team.name}
+                    </span>
+                  </a>
+                  {": "}
+                </div>
+                <div className="flex flex-col gap-4">
+                  {lookingFor && (
+                    <div>
+                      <p className="text-gray-300">Looking For: </p>
+                      {renderMentionedText(lookingFor, context)}
+                    </div>
+                  )}
+                  {willingToTrade && (
+                    <div>
+                      <p className="text-gray-300">Willing to Trade:</p>
+                      {renderMentionedText(willingToTrade, context)}
+                    </div>
                   )}
                 </div>
                 <div

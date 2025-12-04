@@ -1,5 +1,6 @@
 import type { Route } from "./+types/team";
 import { TeamPlayerList } from "~/components/TeamPlayerList";
+import { TradePreferencesDisplay } from "~/components/TradePreferencesEditor";
 import { getUser } from "~/auth.server";
 import { Link } from "react-router";
 import { Lineup } from "~/components/Lineup";
@@ -8,6 +9,9 @@ import {
   fillPlayersToTeamSize,
   checkCanEdit,
 } from "~/utils/team.server";
+import { resolveMentionsMultiple } from "~/utils/mentions.server";
+import { db } from "~/database/db";
+import { formatTimeAgo } from "~/utils/time";
 
 export async function loader({
   params: { teamId },
@@ -22,12 +26,32 @@ export async function loader({
   const user = await getUser(request);
   const canEdit = checkCanEdit(user, team.userId);
 
-  return { team: teamWithFullPlayers, canEdit };
+  const { mergedContext: mentionContext } = await resolveMentionsMultiple(db, [
+    team.lookingFor,
+    team.willingToTrade,
+  ]);
+
+  return {
+    team: {
+      ...teamWithFullPlayers,
+    },
+    canEdit,
+    mentionContext: {
+      players: Array.from(mentionContext.players.entries()),
+      teams: Array.from(mentionContext.teams.entries()),
+    },
+  };
 }
 
 export default function Team({
-  loaderData: { team, canEdit },
+  loaderData: { team, canEdit, mentionContext },
 }: Route.ComponentProps) {
+  // Reconstruct Map from serialized entries
+  const context = {
+    players: new Map(mentionContext.players),
+    teams: new Map(mentionContext.teams),
+  };
+
   // Filter out null players and split into lineup and bench
   const allPlayers = team.players.filter(
     (player): player is NonNullable<typeof player> => player !== null,
@@ -41,9 +65,9 @@ export default function Team({
     );
 
   // Players without a lineup (bench)
-  const benchPlayers = allPlayers.filter(
-    (player) => player.lineup?.battingOrder == null,
-  );
+  const benchPlayers = allPlayers
+    .filter((player) => player.lineup?.battingOrder == null)
+    .sort((a, b) => a.name.localeCompare(b.name));
 
   // Create team objects for each list
   const lineupTeam = {
@@ -59,6 +83,32 @@ export default function Team({
   return (
     <div className="flex flex-col gap-4 items-center">
       <h1 className="text-2xl font-rodin font-bold">{team.name}</h1>
+
+      {(team.lookingFor || team.willingToTrade) && (
+        <div className="flex flex-col gap-4 border border-cell-gray/50 bg-cell-gray/30 rounded-lg p-4 w-full max-w-2xl">
+          <h2 className="text-lg font-bold text-center">Trade Preferences</h2>
+          <div className="flex flex-col gap-4">
+            <TradePreferencesDisplay
+              content={team.lookingFor}
+              context={context}
+              label="Looking For"
+              labelColor="text-green-400"
+            />
+            <TradePreferencesDisplay
+              content={team.willingToTrade}
+              context={context}
+              label="Willing to Trade"
+              labelColor="text-orange-400"
+            />
+          </div>
+          {team.tradePreferencesUpdatedAt && (
+            <span className="text-sm text-gray-300/80 italic">
+              (updated {formatTimeAgo(new Date(team.tradePreferencesUpdatedAt))}
+              )
+            </span>
+          )}
+        </div>
+      )}
 
       <div
         key={team.id}
@@ -83,6 +133,7 @@ export default function Team({
           captainStatsCharacter={team.captain?.statsCharacter}
         />
       </div>
+
       {canEdit && (
         <Link
           to={`/team/${team.id}/edit`}

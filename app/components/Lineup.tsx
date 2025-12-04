@@ -161,7 +161,7 @@ export function Lineup({
 }) {
   return (
     <div className="flex flex-col items-center gap-6">
-      <TeamLogo size="large" captainStatsCharacter={captainStatsCharacter} />
+      <TeamLogo size="lg" captainStatsCharacter={captainStatsCharacter} />
       <BattingOrder players={players} captainId={captainId} />
       <div className="w-full max-w-md border-t border-cell-gray/30"></div>
       <Field players={players} captainId={captainId} />

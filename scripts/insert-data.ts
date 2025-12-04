@@ -230,18 +230,10 @@ await db.transaction(async (tx) => {
       .returning();
 
     const teamName = `${user.name}'s Team`;
-    const abbreviation =
-      user.name
-        .split(/\s+/)
-        .filter(Boolean)
-        .map((w) => w[0])
-        .join("")
-        .toUpperCase()
-        .slice(0, 3) || user.name.slice(0, 3).toUpperCase();
     await tx.insert(schema.teams).values({
       name: teamName,
       userId: dbUser.id,
-      abbreviation,
+      abbreviation: user.initial,
       color: "white",
     });
 

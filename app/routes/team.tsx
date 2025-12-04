@@ -65,9 +65,9 @@ export default function Team({
     );
 
   // Players without a lineup (bench)
-  const benchPlayers = allPlayers.filter(
-    (player) => player.lineup?.battingOrder == null,
-  );
+  const benchPlayers = allPlayers
+    .filter((player) => player.lineup?.battingOrder == null)
+    .sort((a, b) => a.name.localeCompare(b.name));
 
   // Create team objects for each list
   const lineupTeam = {

@@ -27,7 +27,7 @@ if [ "$confirm" != "yes" ]; then
 fi
 
 echo ""
-echo "Step 1: Dropping all database objects..."
+echo "Dropping all database objects..."
 
 # Create temporary SQL file
 TEMP_SQL=$(mktemp)
@@ -91,5 +91,16 @@ if [ $SQL_EXIT_CODE -eq 0 ]; then
     echo "[OK] Dropped all tables and enums"
 else
     echo "ERROR: Failed to drop database objects"
+    exit 1
+fi
+
+echo "Running migrations..."
+npm run db:migrate
+MIGRATE_EXIT_CODE=$?
+
+if [ $MIGRATE_EXIT_CODE -eq 0 ]; then
+    echo "[OK] Migrations applied successfully"
+else
+    echo "ERROR: Failed to apply migrations"
     exit 1
 fi

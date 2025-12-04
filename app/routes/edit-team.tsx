@@ -1,10 +1,10 @@
 import type { Route } from "./+types/edit-team";
 import { db } from "~/database/db";
 import { getUser } from "~/auth.server";
-import { useSubmit, redirect, Form } from "react-router";
+import { useSubmit, redirect } from "react-router";
 import { useRef, useState } from "react";
 import { LineupEditor } from "~/components/LineupEditor";
-import { TradeBlockEditor } from "~/components/TradeBlockEditor";
+import { TradePreferencesEditor } from "~/components/TradePreferencesEditor";
 import {
   getTeamWithPlayers,
   fillPlayersToTeamSize,
@@ -14,7 +14,10 @@ import {
   updateTeamTradePreferences,
   type LineupEntry,
 } from "~/utils/team.server";
-import { teams as teamsTable, players as playersTable } from "~/database/schema";
+import {
+  teams as teamsTable,
+  players as playersTable,
+} from "~/database/schema";
 
 async function getTeamWithPermissionCheck(teamId: string, request: Request) {
   const user = await getUser(request);
@@ -49,7 +52,13 @@ export async function loader({
     .select({ id: playersTable.id, name: playersTable.name })
     .from(playersTable);
 
-  return { team: teamWithFullPlayers, allTeams, allPlayers };
+  return {
+    team: {
+      ...teamWithFullPlayers,
+    },
+    allTeams,
+    allPlayers,
+  };
 }
 
 export async function action({
@@ -135,13 +144,17 @@ export async function action({
   if (intent === "update-trade-preferences") {
     const lookingFor = formData.get("lookingFor");
     const willingToTrade = formData.get("willingToTrade");
-    return await updateTeamTradePreferences(
+    const result = await updateTeamTradePreferences(
       db,
       teamId,
       user!.id,
       typeof lookingFor === "string" ? lookingFor : null,
       typeof willingToTrade === "string" ? willingToTrade : null,
     );
+    if (result.success) {
+      throw redirect(`/team/${teamId}`);
+    }
+    return result;
   }
 
   return { success: false, message: "Invalid action" };
@@ -155,21 +168,11 @@ export default function EditTeam({
   const [isEditing, setIsEditing] = useState(false);
   const [optimisticName, setOptimisticName] = useState(team.name);
   const titleRef = useRef<HTMLHeadingElement>(null);
-  // Store the stringified JSON from the editor
-  const [lookingFor, setLookingFor] = useState(() => {
-    if (team.lookingFor && typeof team.lookingFor === "object") {
-      return JSON.stringify(team.lookingFor);
-    }
-    return team.lookingFor ?? "";
-  });
-  const [willingToTrade, setWillingToTrade] = useState(() => {
-    if (team.willingToTrade && typeof team.willingToTrade === "object") {
-      return JSON.stringify(team.willingToTrade);
-    }
-    return team.willingToTrade ?? "";
-  });
+  const [lookingFor, setLookingFor] = useState(team.lookingFor ?? "");
+  const [willingToTrade, setWillingToTrade] = useState(
+    team.willingToTrade ?? "",
+  );
 
-  // Create a key based on lineup data - when lineup changes after save, component remounts
   const lineupKey = team.players
     .filter((p) => p !== null)
     .map(
@@ -244,40 +247,42 @@ export default function EditTeam({
         {optimisticName}
       </h1>
 
-      <div className="flex flex-col gap-4 w-full">
-        <LineupEditor key={lineupKey} team={team} />
-      </div>
-
-      {/* Trade Preferences Section */}
       <div className="flex flex-col gap-3 border border-cell-gray/50 bg-cell-gray/30 rounded-lg p-4 w-full max-w-2xl">
-        <h2 className="text-lg font-bold text-center">Trade Block</h2>
+        <h2 className="text-lg font-bold text-center">Trade Preferences</h2>
         <div className="flex flex-col gap-4">
-          <TradeBlockEditor
+          <TradePreferencesEditor
             content={lookingFor}
             onChange={setLookingFor}
-            placeholder="Describe what players/positions you're looking for... Type @ to mention teams or players"
+            placeholder="Describe what players you're looking for..."
             teams={allTeams}
             players={allPlayers}
             label="Looking For"
             labelColor="text-green-400"
           />
-          <TradeBlockEditor
+          <TradePreferencesEditor
             content={willingToTrade}
             onChange={setWillingToTrade}
-            placeholder="List players you're willing to trade... Type @ to mention teams or players"
+            placeholder="List players you're willing to trade..."
             teams={allTeams}
             players={allPlayers}
             label="Willing to Trade"
             labelColor="text-orange-400"
           />
+          <p className="text-xs text-gray-400">
+            Type @ to mention teams or players
+          </p>
           <button
             type="button"
             onClick={handleSaveTradePreferences}
-            className="bg-blue-800 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm self-start"
+            className="bg-blue-800 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm self-start cursor-pointer"
           >
             Save Trade Preferences
           </button>
         </div>
+      </div>
+
+      <div className="flex flex-col gap-4 w-full">
+        <LineupEditor key={lineupKey} team={team} />
       </div>
     </div>
   );

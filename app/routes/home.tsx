@@ -3,6 +3,7 @@ import { db } from "~/database/db";
 import { events } from "~/database/schema";
 import { desc } from "drizzle-orm";
 import { Events } from "~/components/Events";
+import { resolveMentionsMultiple } from "~/utils/mentions.server";
 
 export async function loader({}: Route.LoaderArgs) {
   const allEvents = await db.query.events.findMany({
@@ -34,7 +35,7 @@ export async function loader({}: Route.LoaderArgs) {
           },
         },
       },
-      tradeBlockUpdate: {
+      tradePreferencesUpdate: {
         with: {
           team: true,
         },
@@ -44,10 +45,39 @@ export async function loader({}: Route.LoaderArgs) {
     limit: 50,
   });
 
-  return { events: allEvents };
+  const tradePreferencesTexts = allEvents
+    .filter((e) => e.tradePreferencesUpdate)
+    .flatMap((e) => {
+      const update = e.tradePreferencesUpdate!;
+      const lookingFor =
+        typeof update.lookingFor === "string" ? update.lookingFor : null;
+      const willingToTrade =
+        typeof update.willingToTrade === "string"
+          ? update.willingToTrade
+          : null;
+      return [lookingFor, willingToTrade];
+    });
+
+  const { mergedContext } = await resolveMentionsMultiple(
+    db,
+    tradePreferencesTexts,
+  );
+
+  return {
+    events: allEvents,
+    mentionContext: {
+      players: Array.from(mergedContext.players.entries()),
+      teams: Array.from(mergedContext.teams.entries()),
+    },
+  };
 }
 
 export default function Home({ loaderData }: Route.ComponentProps) {
+  const mentionContext = {
+    players: new Map(loaderData.mentionContext.players),
+    teams: new Map(loaderData.mentionContext.teams),
+  };
+
   return (
     <>
       <main className="flex-1 flex flex-col gap-6">
@@ -57,7 +87,7 @@ export default function Home({ loaderData }: Route.ComponentProps) {
         </div>
         <div className="max-w-4xl mx-auto w-full">
           <h3 className="text-xl font-semibold mb-4">Recent Events</h3>
-          <Events events={loaderData.events} />
+          <Events events={loaderData.events} mentionContext={mentionContext} />
         </div>
       </main>
       <footer className="text-center">

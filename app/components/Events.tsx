@@ -1,6 +1,10 @@
 import type { Event } from "~/database/schema";
-import type { TiptapNode } from "~/types/tiptap";
 import { PlayerIcon } from "~/components/PlayerIcon";
+import {
+  renderMentionedText,
+  type MentionContext,
+  createEmptyContext,
+} from "~/utils/mentions";
 
 function formatTimeAgo(date: Date): string {
   const seconds = Math.floor((new Date().getTime() - date.getTime()) / 1000);
@@ -13,48 +17,6 @@ function formatTimeAgo(date: Date): string {
   return date.toLocaleDateString();
 }
 
-// Render Tiptap JSON content as React nodes
-function renderTiptapContent(content: unknown): React.ReactNode {
-  if (!content || typeof content !== "object") return null;
-
-  const doc = content as TiptapNode;
-  if (doc.type !== "doc" || !doc.content) return null;
-
-  return doc.content.map((node, index) => {
-    if (node.type === "paragraph") {
-      return (
-        <span key={index}>
-          {node.content?.map((child, childIndex) => {
-            if (child.type === "text") {
-              return <span key={childIndex}>{child.text}</span>;
-            }
-            if (child.type === "mention") {
-              const isTeam = child.attrs?.id?.startsWith("team-");
-              const entityId = child.attrs?.id?.replace(/^(team-|player-)/, "");
-              return (
-                <a
-                  key={childIndex}
-                  href={isTeam ? `/team/${entityId}` : `/player/${entityId}`}
-                  className={`inline-block px-1 rounded ${
-                    isTeam
-                      ? "bg-green-600/30 text-green-300 hover:bg-green-600/50"
-                      : "bg-orange-600/30 text-orange-300 hover:bg-orange-600/50"
-                  }`}
-                >
-                  @{child.attrs?.label}
-                </a>
-              );
-            }
-            return null;
-          }) ?? null}
-          {index < (doc.content?.length ?? 0) - 1 ? " " : ""}
-        </span>
-      );
-    }
-    return null;
-  });
-}
-
 type EventWithRelations = Event & {
   user?: { id: number; name: string } | null;
   draft?: {
@@ -65,6 +27,7 @@ type EventWithRelations = Event & {
       id: number;
       name: string;
       imageUrl: string | null;
+      statsCharacter: string | null;
       lineup?: { isStarred: boolean } | null;
     };
     team: {
@@ -93,10 +56,10 @@ type EventWithRelations = Event & {
       }>;
     };
   } | null;
-  tradeBlockUpdate?: {
+  tradePreferencesUpdate?: {
     teamId: number;
-    lookingFor: unknown;
-    willingToTrade: unknown;
+    lookingFor?: string | null;
+    willingToTrade?: string | null;
     team: {
       id: number;
       name: string;
@@ -105,7 +68,14 @@ type EventWithRelations = Event & {
   } | null;
 };
 
-export function Events({ events }: { events: EventWithRelations[] }) {
+interface EventsProps {
+  events: EventWithRelations[];
+  mentionContext?: MentionContext;
+}
+
+export function Events({ events, mentionContext }: EventsProps) {
+  const context = mentionContext ?? createEmptyContext();
+
   if (events.length === 0) {
     return (
       <div className="text-center text-gray-400 italic py-8">No events yet</div>
@@ -319,10 +289,11 @@ export function Events({ events }: { events: EventWithRelations[] }) {
         }
 
         if (
-          event.eventType === "trade_block_update" &&
-          event.tradeBlockUpdate
+          event.eventType === "trade_preferences_update" &&
+          event.tradePreferencesUpdate
         ) {
-          const { team, lookingFor, willingToTrade } = event.tradeBlockUpdate;
+          const { team, lookingFor, willingToTrade } =
+            event.tradePreferencesUpdate;
           return (
             <div
               key={event.id}
@@ -331,25 +302,28 @@ export function Events({ events }: { events: EventWithRelations[] }) {
               <div className="flex-1 min-w-0">
                 <div className="text-sm font-medium">
                   <span className="text-teal-300 font-bold">
-                    Trade Block Updated
+                    Trade Preferences Updated
                   </span>
-                  {" - "}
+                  {" for "}
                   <a href={`/team/${team.id}`} className="hover:underline">
-                    <span className="text-green-300 font-bold">{team.name}</span>
+                    <span className="text-green-300 font-bold">
+                      {team.name}
+                    </span>
                   </a>
-                  {lookingFor != null && (
-                    <>
-                      {" | "}
-                      <span className="text-gray-300">Looking For: </span>
-                      {renderTiptapContent(lookingFor)}
-                    </>
+                  {": "}
+                </div>
+                <div className="flex flex-col gap-4">
+                  {lookingFor && (
+                    <div>
+                      <p className="text-gray-300">Looking For: </p>
+                      {renderMentionedText(lookingFor, context)}
+                    </div>
                   )}
-                  {willingToTrade != null && (
-                    <>
-                      {" | "}
-                      <span className="text-gray-300">Willing to Trade: </span>
-                      {renderTiptapContent(willingToTrade)}
-                    </>
+                  {willingToTrade && (
+                    <div>
+                      <p className="text-gray-300">Willing to Trade:</p>
+                      {renderMentionedText(willingToTrade, context)}
+                    </div>
                   )}
                 </div>
                 <div

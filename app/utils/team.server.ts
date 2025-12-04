@@ -3,7 +3,7 @@ import { db, type Database } from "~/database/db";
 import { TEAM_SIZE, LINEUP_SIZE } from "~/consts";
 import { eq, inArray } from "drizzle-orm";
 import { teams, teamLineups, players } from "~/database/schema";
-import { createTradeBlockUpdateEvent } from "./events.server";
+import { createTradePreferencesUpdateEvent } from "./events.server";
 import { getSeasonState } from "./admin.server";
 
 /**
@@ -78,20 +78,8 @@ export async function updateTeamName(
 }
 
 /**
- * Parses JSON content from the editor, falling back to the original value if not valid JSON
- */
-function parseEditorContent(content: string | null): unknown {
-  if (!content?.trim()) return null;
-  try {
-    return JSON.parse(content);
-  } catch {
-    // If not valid JSON, store as-is (for backward compatibility)
-    return content;
-  }
-}
-
-/**
  * Updates a team's trade preferences (looking for, willing to trade)
+ * Now stores plain text with <@id>/<#id> mention tokens
  * Returns an object with success status and optional error message
  */
 export async function updateTeamTradePreferences(
@@ -101,35 +89,51 @@ export async function updateTeamTradePreferences(
   lookingFor: string | null,
   willingToTrade: string | null,
 ): Promise<{ success: boolean; message?: string }> {
-  const parsedLookingFor = parseEditorContent(lookingFor);
-  const parsedWillingToTrade = parseEditorContent(willingToTrade);
+  const cleanedLookingFor = lookingFor?.trim() || null;
+  const cleanedWillingToTrade = willingToTrade?.trim() || null;
+  const teamIdNum = Number(teamId);
+
+  // Fetch current preferences to check if anything changed
+  const currentTeam = await db.query.teams.findFirst({
+    where: (teams, { eq }) => eq(teams.id, teamIdNum),
+    columns: { lookingFor: true, willingToTrade: true },
+  });
+
+  const hasChanged =
+    currentTeam?.lookingFor !== cleanedLookingFor ||
+    currentTeam?.willingToTrade !== cleanedWillingToTrade;
+
+  if (!hasChanged) {
+    return { success: true };
+  }
 
   await db
     .update(teams)
     .set({
-      lookingFor: parsedLookingFor,
-      willingToTrade: parsedWillingToTrade,
-      tradeBlockUpdatedAt: new Date(),
+      lookingFor: cleanedLookingFor,
+      willingToTrade: cleanedWillingToTrade,
+      tradePreferencesUpdatedAt: new Date(),
     })
-    .where(eq(teams.id, Number(teamId)));
+    .where(eq(teams.id, teamIdNum));
 
-  // Create event for the trade block update
   const seasonState = await getSeasonState(db);
   if (seasonState) {
-    const eventResult = await createTradeBlockUpdateEvent(
+    if (!cleanedLookingFor && !cleanedWillingToTrade) {
+      return { success: true };
+    }
+    const eventResult = await createTradePreferencesUpdateEvent(
       db,
       userId,
-      Number(teamId),
+      teamIdNum,
       seasonState.id,
-      parsedLookingFor,
-      parsedWillingToTrade,
+      cleanedLookingFor,
+      cleanedWillingToTrade,
     );
     if (!eventResult.success) {
       console.error(
-        "Failed to create trade block update event:",
+        "Failed to create trade preferencs update event:",
         eventResult.error,
       );
-      // Don't fail the update if event creation fails
     }
   }
 
@@ -187,9 +191,7 @@ export async function updateTeamLineup(
   const playingEntries = lineupEntries.filter(
     (e) => e.fieldingPosition !== null,
   );
-  const benchEntries = lineupEntries.filter(
-    (e) => e.fieldingPosition === null,
-  );
+  const benchEntries = lineupEntries.filter((e) => e.fieldingPosition === null);
 
   // Validate all 9 fielding positions are filled (no duplicates)
   if (playingEntries.length !== LINEUP_SIZE) {
@@ -224,7 +226,8 @@ export async function updateTeamLineup(
   if (uniqueBattingOrders.size !== LINEUP_SIZE) {
     return {
       success: false,
-      message: "Each batting order (1-9) must be assigned to exactly one player",
+      message:
+        "Each batting order (1-9) must be assigned to exactly one player",
     };
   }
 

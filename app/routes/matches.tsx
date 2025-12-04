@@ -1,8 +1,7 @@
-import { useState } from "react";
 import { Link } from "react-router";
 import type { Route } from "./+types/matches";
 import { db } from "~/database/db";
-import { matches, matchBattingOrders } from "~/database/schema";
+import { matches } from "~/database/schema";
 import { cn } from "~/utils/cn";
 import { asc, desc } from "drizzle-orm";
 import { TeamLogo } from "~/components/TeamLogo";
@@ -126,7 +125,7 @@ function MatchCard({ match }: MatchCardProps) {
     >
       <div className="flex-1 flex items-center justify-center gap-4">
         <TeamLogo
-          size="small"
+          size="sm"
           captainStatsCharacter={
             match.teamA.captain?.statsCharacter ?? undefined
           }
@@ -147,7 +146,7 @@ function MatchCard({ match }: MatchCardProps) {
         )}
         <span className="font-bold text-lg">{match.teamB.name}</span>
         <TeamLogo
-          size="small"
+          size="sm"
           captainStatsCharacter={
             match.teamB.captain?.statsCharacter ?? undefined
           }

@@ -246,7 +246,7 @@ export function Events({ events, mentionContext }: EventsProps) {
                       ))}
                     </>
                   )}
-                  {fromPlayers.length > 0 && toPlayers.length > 0 && " | "}
+                  {fromPlayers.length > 0 && toPlayers.length > 0 && " - "}
                   {toPlayers.length > 0 && (
                     <>
                       <span className="text-yellow-300">

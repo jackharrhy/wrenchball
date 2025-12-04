@@ -1,20 +1,15 @@
 import { useEditor, EditorContent, ReactRenderer } from "@tiptap/react";
+import type { JSONContent } from "@tiptap/core";
 import StarterKit from "@tiptap/starter-kit";
 import Mention from "@tiptap/extension-mention";
 import type { SuggestionOptions } from "@tiptap/suggestion";
 import tippy from "tippy.js";
 import type { Instance as TippyInstance } from "tippy.js";
-import {
-  forwardRef,
-  useEffect,
-  useImperativeHandle,
-  useState,
-  useCallback,
-} from "react";
-import type { TiptapNode } from "~/types/tiptap";
+import { forwardRef, useImperativeHandle, useState, useCallback } from "react";
+import { renderMentionedText, type MentionContext } from "~/utils/mentions";
 
 interface MentionItem {
-  id: string;
+  id: string; // Format: "player-42" or "team-5"
   label: string;
   type: "team" | "player";
 }
@@ -42,9 +37,11 @@ const MentionList = forwardRef<MentionListRef, MentionListProps>(
       [items, command],
     );
 
-    useEffect(() => {
+    // Reset selected index when items change
+    const prevItemsLength = useState(items.length)[0];
+    if (items.length !== prevItemsLength && selectedIndex >= items.length) {
       setSelectedIndex(0);
-    }, [items]);
+    }
 
     useImperativeHandle(ref, () => ({
       onKeyDown: ({ event }) => {
@@ -98,7 +95,7 @@ const MentionList = forwardRef<MentionListRef, MentionListProps>(
                   : "bg-orange-600 text-white"
               }`}
             >
-              {item.type === "team" ? "T" : "P"}
+              {item.type === "team" ? "#" : "@"}
             </span>
             {item.label}
           </button>
@@ -110,8 +107,107 @@ const MentionList = forwardRef<MentionListRef, MentionListProps>(
 
 MentionList.displayName = "MentionList";
 
-interface TradeBlockEditorProps {
-  content: unknown;
+function plainTextToTiptap(
+  text: string,
+  playerMap: Map<number, string>,
+  teamMap: Map<number, string>,
+): JSONContent {
+  if (!text) {
+    return { type: "doc", content: [{ type: "paragraph" }] };
+  }
+
+  const lines = text.split("\n");
+  const content = lines.map((line) => {
+    const paragraphContent: JSONContent[] = [];
+    const combinedRegex = /<@(\d+)>|<#(\d+)>/g;
+
+    let lastIndex = 0;
+    let match;
+
+    while ((match = combinedRegex.exec(line)) !== null) {
+      if (match.index > lastIndex) {
+        paragraphContent.push({
+          type: "text",
+          text: line.slice(lastIndex, match.index),
+        });
+      }
+
+      if (match[1] !== undefined) {
+        const playerId = parseInt(match[1], 10);
+        const playerName = playerMap.get(playerId) ?? "Unknown";
+        paragraphContent.push({
+          type: "mention",
+          attrs: {
+            id: `player-${playerId}`,
+            label: playerName,
+          },
+        });
+      } else if (match[2] !== undefined) {
+        const teamId = parseInt(match[2], 10);
+        const teamName = teamMap.get(teamId) ?? "Unknown";
+        paragraphContent.push({
+          type: "mention",
+          attrs: {
+            id: `team-${teamId}`,
+            label: teamName,
+          },
+        });
+      }
+
+      lastIndex = match.index + match[0].length;
+    }
+
+    if (lastIndex < line.length) {
+      paragraphContent.push({
+        type: "text",
+        text: line.slice(lastIndex),
+      });
+    }
+
+    return {
+      type: "paragraph",
+      content: paragraphContent.length > 0 ? paragraphContent : undefined,
+    };
+  });
+
+  return { type: "doc", content };
+}
+
+function tiptapToPlainText(doc: JSONContent): string {
+  if (!doc.content) return "";
+
+  const lines = doc.content.map((paragraph) => {
+    if (paragraph.type !== "paragraph" || !paragraph.content) return "";
+
+    return paragraph.content
+      .map((node) => {
+        if (node.type === "text") {
+          return node.text ?? "";
+        }
+        if (node.type === "hardBreak") {
+          return "\n";
+        }
+        if (node.type === "mention" && node.attrs?.id) {
+          const id = String(node.attrs.id);
+          if (id.startsWith("player-")) {
+            const playerId = id.replace("player-", "");
+            return `<@${playerId}>`;
+          }
+          if (id.startsWith("team-")) {
+            const teamId = id.replace("team-", "");
+            return `<#${teamId}>`;
+          }
+        }
+        return "";
+      })
+      .join("");
+  });
+
+  return lines.join("\n");
+}
+
+interface TradePreferencesEditorProps {
+  content: string | null | undefined;
   onChange: (content: string) => void;
   placeholder?: string;
   teams: Array<{ id: number; name: string }>;
@@ -120,7 +216,7 @@ interface TradeBlockEditorProps {
   labelColor: string;
 }
 
-export function TradeBlockEditor({
+export function TradePreferencesEditor({
   content,
   onChange,
   placeholder,
@@ -128,7 +224,10 @@ export function TradeBlockEditor({
   players,
   label,
   labelColor,
-}: TradeBlockEditorProps) {
+}: TradePreferencesEditorProps) {
+  const playerMap = new Map(players.map((p) => [p.id, p.name]));
+  const teamMap = new Map(teams.map((t) => [t.id, t.name]));
+
   const mentionItems: MentionItem[] = [
     ...teams.map((t) => ({
       id: `team-${t.id}`,
@@ -206,10 +305,12 @@ export function TradeBlockEditor({
     },
   };
 
+  const initialContent = plainTextToTiptap(content ?? "", playerMap, teamMap);
+
   const editor = useEditor({
+    immediatelyRender: false,
     extensions: [
       StarterKit.configure({
-        // Disable features we don't need
         heading: false,
         codeBlock: false,
         blockquote: false,
@@ -227,21 +328,23 @@ export function TradeBlockEditor({
           class: "mention",
         },
         suggestion,
-        renderHTML({ options, node }) {
+        renderHTML({ node }) {
+          const isTeam = node.attrs.id?.startsWith("team-");
           return [
             "span",
             {
-              class: `mention ${node.attrs.id?.startsWith("team-") ? "mention-team" : "mention-player"}`,
+              class: `mention ${isTeam ? "mention-team" : "mention-player"}`,
               "data-mention-id": node.attrs.id,
             },
-            `@${node.attrs.label}`,
+            `${isTeam ? "#" : "@"}${node.attrs.label}`,
           ];
         },
       }),
     ],
-    content: "",
+    content: initialContent,
     onUpdate: ({ editor }) => {
-      onChange(JSON.stringify(editor.getJSON()));
+      const plainText = tiptapToPlainText(editor.getJSON());
+      onChange(plainText);
     },
     editorProps: {
       attributes: {
@@ -250,32 +353,6 @@ export function TradeBlockEditor({
       },
     },
   });
-
-  // Initialize editor content from JSON object or string
-  useEffect(() => {
-    if (editor && content) {
-      // Content is now a JSON object directly from the database (jsonb)
-      if (typeof content === "object" && content !== null) {
-        const contentObj = content as { type?: string };
-        if (contentObj.type === "doc") {
-          editor.commands.setContent(content);
-        }
-      } else if (typeof content === "string") {
-        // Legacy string content - try to parse as JSON first
-        try {
-          const parsed = JSON.parse(content);
-          if (parsed.type === "doc") {
-            editor.commands.setContent(parsed);
-          } else {
-            editor.commands.setContent(content);
-          }
-        } catch {
-          // Plain text fallback
-          editor.commands.setContent(content);
-        }
-      }
-    }
-  }, []);
 
   if (!editor) {
     return null;
@@ -287,104 +364,36 @@ export function TradeBlockEditor({
       <div className="relative">
         <EditorContent editor={editor} />
         {editor.isEmpty && placeholder && (
-          <div className="absolute top-2 left-2 text-gray-500 text-sm pointer-events-none">
+          <div className="absolute top-2 left-2 text-gray-300/40 text-sm pointer-events-none">
             {placeholder}
           </div>
         )}
       </div>
-      <p className="text-xs text-gray-400">
-        Type @ to mention teams or players
-      </p>
     </div>
   );
 }
 
-interface TradeBlockDisplayProps {
-  content: unknown;
+interface TradePreferencesDisplayProps {
+  content: string | null | undefined;
+  context: MentionContext;
   label: string;
   labelColor: string;
 }
 
-export function TradeBlockDisplay({
+export function TradePreferencesDisplay({
   content,
+  context,
   label,
   labelColor,
-}: TradeBlockDisplayProps) {
+}: TradePreferencesDisplayProps) {
   if (!content) return null;
-
-  // Content is now a JSON object directly from the database (jsonb)
-  let displayContent: React.ReactNode;
-
-  if (typeof content === "object" && content !== null) {
-    const contentObj = content as TiptapNode;
-    if (contentObj.type === "doc") {
-      displayContent = renderTiptapContent(contentObj);
-    } else {
-      displayContent = JSON.stringify(content);
-    }
-  } else if (typeof content === "string") {
-    // Legacy string content - try to parse as JSON first
-    try {
-      const parsed = JSON.parse(content) as TiptapNode;
-      if (parsed.type === "doc") {
-        displayContent = renderTiptapContent(parsed);
-      } else {
-        displayContent = content;
-      }
-    } catch {
-      // Plain text fallback
-      displayContent = content;
-    }
-  } else {
-    return null;
-  }
 
   return (
     <div className="flex-1">
       <p className={`text-sm font-semibold ${labelColor} mb-1`}>{label}:</p>
       <div className="text-sm text-gray-200 whitespace-pre-wrap trade-block-content">
-        {displayContent}
+        {renderMentionedText(content, context)}
       </div>
     </div>
   );
-}
-
-function renderTiptapContent(doc: TiptapNode): React.ReactNode {
-  if (!doc.content) return null;
-
-  return doc.content.map((node, index) => {
-    if (node.type === "paragraph") {
-      return (
-        <p key={index} className="mb-1 last:mb-0">
-          {node.content?.map((child, childIndex) => {
-            if (child.type === "text") {
-              return <span key={childIndex}>{child.text}</span>;
-            }
-            if (child.type === "mention") {
-              const isTeam = child.attrs?.id?.startsWith("team-");
-              return (
-                <a
-                  key={childIndex}
-                  href={
-                    isTeam
-                      ? `/team/${child.attrs?.id?.replace("team-", "")}`
-                      : `/player/${child.attrs?.id?.replace("player-", "")}`
-                  }
-                  className={`inline-block px-1 rounded ${
-                    isTeam
-                      ? "bg-green-600/30 text-green-300 hover:bg-green-600/50"
-                      : "bg-orange-600/30 text-orange-300 hover:bg-orange-600/50"
-                  }`}
-                >
-                  @{child.attrs?.label}
-                </a>
-              );
-            }
-            return null;
-          }) ?? null}
-        </p>
-      );
-    }
-    return null;
-  });
 }

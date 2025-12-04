@@ -258,7 +258,7 @@ export function LineupEditor({ team }: LineupEditorProps) {
             <div className="pt-2">
               <button
                 type="submit"
-                className="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded text-sm"
+                className="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded text-sm cursor-pointer"
               >
                 Save Lineup
               </button>

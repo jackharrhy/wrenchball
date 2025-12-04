@@ -6,7 +6,7 @@ import {
   eventSeasonStateChange,
   eventTrade,
   eventMatchStateChange,
-  eventTradeBlockUpdate,
+  eventTradePreferencesUpdate,
   type SeasonState,
   type TradeAction,
   type MatchState,
@@ -14,11 +14,12 @@ import {
   players,
   teams,
   trades,
-  tradePlayers,
   matches,
 } from "~/database/schema";
 import { postEvent } from "~/discord/client.server";
 import { BASE_URL } from "~/server-consts";
+import { resolveMentions } from "~/utils/mentions.server";
+import { mentionsToMarkdown } from "~/utils/mentions";
 
 /**
  * Calculates the next pick number for a season by counting existing draft events
@@ -341,73 +342,31 @@ export const createMatchStateChangeEvent = async (
   }
 };
 
-import type { TiptapNode } from "~/types/tiptap";
-
-/**
- * Converts Tiptap JSON content to markdown-style text with links for Discord
- */
-function tiptapToMarkdown(content: unknown): string {
-  if (!content || typeof content !== "object") return "";
-
-  const doc = content as TiptapNode;
-  if (doc.type !== "doc" || !doc.content) return "";
-
-  const parts: string[] = [];
-
-  for (const paragraph of doc.content) {
-    if (paragraph.type === "paragraph" && paragraph.content) {
-      const paragraphParts: string[] = [];
-      for (const node of paragraph.content) {
-        if (node.type === "text" && node.text) {
-          paragraphParts.push(node.text);
-        } else if (node.type === "mention" && node.attrs) {
-          const { id, label } = node.attrs;
-          if (id && label) {
-            const isTeam = id.startsWith("team-");
-            const entityId = id.replace(/^(team-|player-)/, "");
-            const url = isTeam
-              ? `${BASE_URL}/team/${entityId}`
-              : `${BASE_URL}/player/${entityId}`;
-            paragraphParts.push(`[${label}](${url})`);
-          }
-        }
-      }
-      parts.push(paragraphParts.join(""));
-    }
-  }
-
-  return parts.join("\n");
-}
-
-/**
- * Creates a trade block update event record
- */
-export const createTradeBlockUpdateEvent = async (
+export const createTradePreferencesUpdateEvent = async (
   db: Database,
   userId: number,
   teamId: number,
   seasonId: number,
-  lookingFor: unknown,
-  willingToTrade: unknown,
+  lookingFor: string | null,
+  willingToTrade: string | null,
 ): Promise<{ success: boolean; error?: string }> => {
   try {
     const [event] = await db
       .insert(events)
       .values({
-        eventType: "trade_block_update",
+        eventType: "trade_preferences_update",
         userId,
         seasonId,
       })
       .returning({ id: events.id });
 
-    await db.insert(eventTradeBlockUpdate).values({
+    await db.insert(eventTradePreferencesUpdate).values({
       eventId: event.id,
       teamId,
       lookingFor,
       willingToTrade,
     });
 
-    // Fetch user and team for Discord message
     const [user] = await db
       .select()
       .from(users)
@@ -428,30 +387,40 @@ export const createTradeBlockUpdateEvent = async (
       throw new Error("Team not found");
     }
 
-    // Build Discord message with markdown links
-    let message = `_Trade Block Updated_: **[${team.name}](${BASE_URL}/team/${team.id})**`;
+    const allText = [lookingFor, willingToTrade].filter(Boolean).join(" ");
+    const { context } = await resolveMentions(db, allText);
 
-    const lookingForText = tiptapToMarkdown(lookingFor);
-    const willingToTradeText = tiptapToMarkdown(willingToTrade);
+    let message = `_Trade Preferences Updated_: **[${team.name}](${BASE_URL}/team/${team.id})**`;
 
-    if (lookingForText) {
-      message += `\n**Looking For:** ${lookingForText}`;
+    const lookingForMarkdown = mentionsToMarkdown(
+      lookingFor,
+      context,
+      BASE_URL,
+    );
+    const willingToTradeMarkdown = mentionsToMarkdown(
+      willingToTrade,
+      context,
+      BASE_URL,
+    );
+
+    if (lookingForMarkdown) {
+      message += `\n\n**Looking For:** ${lookingForMarkdown}`;
     }
-    if (willingToTradeText) {
-      message += `\n**Willing to Trade:** ${willingToTradeText}`;
+    if (willingToTradeMarkdown) {
+      message += `\n\n**Willing to Trade:** ${willingToTradeMarkdown}`;
     }
 
-    await postEvent("trade_block_update", message);
+    await postEvent("trade_preferences_update", message);
 
     return { success: true };
   } catch (error) {
-    console.error("Error creating trade block update event:", error);
+    console.error("Error creating trade preferencs update event:", error);
     return {
       success: false,
       error:
         error instanceof Error
           ? error.message
-          : "Failed to create trade block update event",
+          : "Failed to create trade preferencs update event",
     };
   }
 };

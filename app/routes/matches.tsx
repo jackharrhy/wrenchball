@@ -17,12 +17,14 @@ export async function loader({ request }: Route.LoaderArgs) {
             with: {
               captain: true,
               conference: true,
+              user: true,
             },
           },
           teamB: {
             with: {
               captain: true,
               conference: true,
+              user: true,
             },
           },
           location: true,
@@ -41,12 +43,14 @@ export async function loader({ request }: Route.LoaderArgs) {
         with: {
           captain: true,
           conference: true,
+          user: true,
         },
       },
       teamB: {
         with: {
           captain: true,
           conference: true,
+          user: true,
         },
       },
       location: true,
@@ -91,7 +95,7 @@ function getStateColor(state: string) {
 }
 
 function getMatchDayConferenceInfo(matchDay: MatchDayWithMatches) {
-  const conferenceIds = new Set<number | null>();
+  let hasCrossConferenceMatch = false;
   const conferenceNames = new Map<
     number,
     { name: string; color: string | null }
@@ -101,9 +105,7 @@ function getMatchDayConferenceInfo(matchDay: MatchDayWithMatches) {
     const teamAConf = match.teamA.conference;
     const teamBConf = match.teamB.conference;
 
-    conferenceIds.add(teamAConf?.id ?? null);
-    conferenceIds.add(teamBConf?.id ?? null);
-
+    // Collect conference info
     if (teamAConf) {
       conferenceNames.set(teamAConf.id, {
         name: teamAConf.name,
@@ -116,25 +118,34 @@ function getMatchDayConferenceInfo(matchDay: MatchDayWithMatches) {
         color: teamBConf.color,
       });
     }
+
+    // Check if this specific match is cross-conference
+    // (two teams from different conferences playing against each other)
+    if (teamAConf && teamBConf && teamAConf.id !== teamBConf.id) {
+      hasCrossConferenceMatch = true;
+    }
   }
 
-  // Remove null entries (teams without conferences)
-  conferenceIds.delete(null);
-
-  if (conferenceIds.size === 0) {
+  if (conferenceNames.size === 0) {
     return { type: "none" as const };
   }
 
-  if (conferenceIds.size === 1) {
-    const confId = [...conferenceIds][0]!;
-    const conf = conferenceNames.get(confId)!;
+  if (hasCrossConferenceMatch) {
+    return {
+      type: "cross" as const,
+      conferences: [...conferenceNames.values()],
+    };
+  }
+
+  // No cross-conference matches - check if all matches are from the same conference
+  if (conferenceNames.size === 1) {
+    const conf = [...conferenceNames.values()][0]!;
     return { type: "single" as const, conference: conf };
   }
 
-  return {
-    type: "cross" as const,
-    conferences: [...conferenceNames.values()],
-  };
+  // Multiple conferences but no cross-conference matches
+  // (e.g., A vs B from conf 1, C vs D from conf 2 on the same day)
+  return { type: "none" as const };
 }
 
 function getMatchDayState(
@@ -216,6 +227,7 @@ function MatchDayCard({ matchDay }: MatchDayCardProps) {
           <h3 className="text-base font-bold text-gray-100">
             {matchDay.name ?? `Matchday`}
           </h3>
+          <ConferenceBadge conferenceInfo={conferenceInfo} />
           {matchDayState === "live" && (
             <span className="px-2 py-0.5 text-xs font-semibold rounded bg-green-500/20 text-green-300 border border-green-500/40 animate-pulse">
               LIVE
@@ -226,7 +238,6 @@ function MatchDayCard({ matchDay }: MatchDayCardProps) {
           {formatMatchDayDate(matchDay.date)}
         </span>
       </div>
-      <ConferenceBadge conferenceInfo={conferenceInfo} />
       <div className="space-y-2">
         {matchDay.matches.map((match) => (
           <MatchCard key={match.id} match={match} />
@@ -263,7 +274,7 @@ function ConferenceBadge({ conferenceInfo }: ConferenceBadgeProps) {
 
   return (
     <div className="flex items-center gap-2">
-      <span className="px-3 py-1 text-xs font-semibold rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/40">
+      <span className="px-3 py-1 text-xs font-semibold rounded-full bg-yellow-500/20 text-yellow-300 border border-yellow-400/40">
         Cross-Conference
       </span>
       <div className="flex gap-1">
@@ -316,9 +327,10 @@ function MatchCard({ match, showDate }: MatchCardProps) {
       )}
 
       <div className="flex items-center justify-end gap-2 min-w-0">
-        <span className="font-semibold truncate text-sm">
-          {match.teamA.name}
-        </span>
+        <div className="flex flex-col gap-0.5 font-semibold truncate text-sm">
+          <p>{match.teamA.name}</p>
+          <p className="text-xs text-gray-200/80">{match.teamA.user?.name}</p>
+        </div>
         <TeamLogo
           size="sm"
           captainStatsCharacter={
@@ -330,11 +342,25 @@ function MatchCard({ match, showDate }: MatchCardProps) {
       <div className="flex items-center justify-center gap-2 px-3 shrink-0">
         {hasScore ? (
           <>
-            <span className="text-lg font-bold text-yellow-300">
+            <span
+              className={cn(
+                "text-lg font-bold",
+                match.teamAScore! > match.teamBScore!
+                  ? "text-green-300"
+                  : "text-gray-300",
+              )}
+            >
               {match.teamAScore}
             </span>
-            <span className="text-gray-500 font-bold">-</span>
-            <span className="text-lg font-bold text-yellow-300">
+            <span className="text-gray-200/50 font-bold">-</span>
+            <span
+              className={cn(
+                "text-lg font-bold",
+                match.teamBScore! > match.teamAScore!
+                  ? "text-green-300"
+                  : "text-gray-300",
+              )}
+            >
               {match.teamBScore}
             </span>
           </>
@@ -350,9 +376,10 @@ function MatchCard({ match, showDate }: MatchCardProps) {
             match.teamB.captain?.statsCharacter ?? undefined
           }
         />
-        <span className="font-semibold truncate text-sm">
-          {match.teamB.name}
-        </span>
+        <div className="flex flex-col gap-0.5 font-semibold truncate text-sm">
+          <p>{match.teamB.name}</p>
+          <p className="text-xs text-gray-200/80">{match.teamB.user?.name}</p>
+        </div>
         {showDate && (
           <span className="text-xs text-gray-400 ml-auto">
             {formatDate(match.scheduledDate)}

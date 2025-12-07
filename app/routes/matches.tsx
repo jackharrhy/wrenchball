@@ -79,6 +79,7 @@ function formatMatchDayDate(date: Date | null) {
     weekday: "long",
     month: "long",
     day: "numeric",
+    timeZone: "UTC",
   }).format(new Date(date));
 }
 

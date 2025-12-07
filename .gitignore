@@ -13,3 +13,5 @@ public/images
 *.tsbuildinfo
 
 *.context.md
+
+backups

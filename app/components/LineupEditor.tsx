@@ -15,6 +15,7 @@ interface LineupEditorEntry {
   playerId: number;
   fieldingPosition: FieldingPosition | null;
   battingOrder: number | null;
+  isStarred: boolean;
 }
 
 interface LineupEditorProps {
@@ -36,9 +37,26 @@ export function LineupEditor({ team }: LineupEditorProps) {
         playerId: player.id,
         fieldingPosition: player.lineup?.fieldingPosition ?? null,
         battingOrder: player.lineup?.battingOrder ?? null,
+        isStarred: player.lineup?.isStarred ?? false,
       }));
     },
   );
+
+  // Check if a player is a Mii (cannot be starred)
+  const isMiiPlayer = (player: Player) => {
+    const char = player.statsCharacter;
+    return char?.endsWith("Mii") || char?.endsWith("Mii (F)");
+  };
+
+  // Set starred player (only one can be starred at a time)
+  const setStarredPlayer = (playerId: number, isStarred: boolean) => {
+    setLineupEntries((prev) =>
+      prev.map((entry) => ({
+        ...entry,
+        isStarred: entry.playerId === playerId ? isStarred : false,
+      })),
+    );
+  };
 
   // Swap fielding position with player who has the target position
   const swapFieldingPosition = (
@@ -131,7 +149,7 @@ export function LineupEditor({ team }: LineupEditorProps) {
               playerId: entry.playerId,
               fieldingPosition: entry.fieldingPosition,
               battingOrder: entry.battingOrder,
-              isStarred: player.lineup?.isStarred ?? false,
+              isStarred: entry.isStarred,
             }
           : undefined,
       };
@@ -178,7 +196,7 @@ export function LineupEditor({ team }: LineupEditorProps) {
                         player={player}
                         size="md"
                         isCaptain={isCaptain}
-                        isStarred={player.lineup?.isStarred ?? false}
+                        isStarred={entry?.isStarred ?? false}
                       />
                       <span className="text-xs font-medium truncate">
                         {player.name}
@@ -191,6 +209,32 @@ export function LineupEditor({ team }: LineupEditorProps) {
                     </div>
 
                     <div className="flex items-center gap-2 flex-1">
+                      <label
+                        htmlFor={`starred-${player.id}`}
+                        className="text-[10px] text-gray-400"
+                      >
+                        Star
+                      </label>
+                      <input
+                        type="checkbox"
+                        id={`starred-${player.id}`}
+                        checked={entry?.isStarred ?? false}
+                        onChange={(e) =>
+                          setStarredPlayer(player.id, e.target.checked)
+                        }
+                        disabled={isMiiPlayer(player)}
+                        className="w-4 h-4 accent-yellow-400 disabled:opacity-50 disabled:cursor-not-allowed"
+                        title={
+                          isMiiPlayer(player)
+                            ? "Mii characters cannot be starred"
+                            : "Star this player"
+                        }
+                      />
+                      <input
+                        type="hidden"
+                        name={`entries[${index}][isStarred]`}
+                        value={entry?.isStarred ? "true" : "false"}
+                      />
                       <label
                         htmlFor={`position-${player.id}`}
                         className="text-[10px] text-gray-400"

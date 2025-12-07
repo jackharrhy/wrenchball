@@ -100,6 +100,7 @@ export async function action({
         `entries[${index}][fieldingPosition]`,
       );
       const battingOrderStr = formData.get(`entries[${index}][battingOrder]`);
+      const isStarredStr = formData.get(`entries[${index}][isStarred]`);
 
       if (!playerIdStr) {
         return {
@@ -126,6 +127,7 @@ export async function action({
           battingOrderStr && battingOrderStr !== "none"
             ? parseInt(battingOrderStr as string, 10)
             : null,
+        isStarred: isStarredStr === "true",
       });
     }
 

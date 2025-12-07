@@ -144,6 +144,7 @@ export interface LineupEntry {
   playerId: number;
   fieldingPosition: FieldingPosition | null;
   battingOrder: number | null;
+  isStarred: boolean;
 }
 
 /**
@@ -158,13 +159,16 @@ export async function updateTeamLineup(
 ): Promise<{ success: boolean; message?: string }> {
   const teamIdNum = Number(teamId);
 
-  // Get all players on the team
+  // Get all players on the team (include statsCharacter for Mii validation)
   const teamPlayers = await db
-    .select({ id: players.id })
+    .select({ id: players.id, statsCharacter: players.statsCharacter })
     .from(players)
     .where(eq(players.teamId, teamIdNum));
 
   const teamPlayerIds = new Set(teamPlayers.map((p) => p.id));
+  const playerStatsMap = new Map(
+    teamPlayers.map((p) => [p.id, p.statsCharacter]),
+  );
 
   // Validate all playerIds belong to the team
   for (const entry of lineupEntries) {
@@ -251,21 +255,37 @@ export async function updateTeamLineup(
     }
   }
 
+  // Validate exactly one starred player among playing entries
+  const starredEntries = playingEntries.filter((e) => e.isStarred);
+  if (starredEntries.length === 0) {
+    return {
+      success: false,
+      message: "Exactly one player must be starred",
+    };
+  }
+  if (starredEntries.length > 1) {
+    return {
+      success: false,
+      message: "Only one player can be starred",
+    };
+  }
+
+  // Validate starred player is not a Mii
+  const starredPlayerId = starredEntries[0].playerId;
+  const starredPlayerStats = playerStatsMap.get(starredPlayerId);
+  if (
+    starredPlayerStats?.endsWith("Mii") ||
+    starredPlayerStats?.endsWith("Mii (F)")
+  ) {
+    return {
+      success: false,
+      message: "Mii characters cannot be starred",
+    };
+  }
+
   // All validations passed, update the lineup
   await db.transaction(async (tx) => {
-    // Get existing lineup entries to preserve isStarred status
     const teamPlayerIdsArray = Array.from(teamPlayerIds);
-    const existingLineups =
-      teamPlayerIdsArray.length > 0
-        ? await tx
-            .select()
-            .from(teamLineups)
-            .where(inArray(teamLineups.playerId, teamPlayerIdsArray))
-        : [];
-
-    const isStarredMap = new Map(
-      existingLineups.map((l) => [l.playerId, l.isStarred]),
-    );
 
     // Delete all existing lineup entries for players on this team
     if (teamPlayerIdsArray.length > 0) {
@@ -274,12 +294,12 @@ export async function updateTeamLineup(
         .where(inArray(teamLineups.playerId, teamPlayerIdsArray));
     }
 
-    // Insert new lineup entries, preserving isStarred status
+    // Insert new lineup entries with provided isStarred value
     const entriesToInsert = lineupEntries.map((entry) => ({
       playerId: entry.playerId,
       fieldingPosition: entry.fieldingPosition,
       battingOrder: entry.battingOrder,
-      isStarred: isStarredMap.get(entry.playerId) ?? false,
+      isStarred: entry.isStarred,
     }));
 
     if (entriesToInsert.length > 0) {

@@ -43,6 +43,13 @@
       "when": 17650784290000,
       "tag": "0005_add_match_days",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 17650784300000,
+      "tag": "0006_add_match_locations",
+      "breakpoints": true
     }
   ]
 }

@@ -18,9 +18,12 @@ import {
   deleteMatch,
   getTeamsForMatchCreation,
   updateMatchOrder,
+  getMatchLocations,
+  updateMatchLocation,
 } from "~/utils/matches.server";
 import { useState } from "react";
 import type { MatchState } from "~/database/schema";
+import { formatLocationName } from "~/utils/location";
 
 type BulkImportData = Record<string, [string, string][]>;
 
@@ -50,6 +53,7 @@ export async function loader({ request }: Route.LoaderArgs) {
               user: true,
             },
           },
+          location: true,
         },
       });
 
@@ -61,11 +65,13 @@ export async function loader({ request }: Route.LoaderArgs) {
   );
 
   const teamsForCreation = await getTeamsForMatchCreation(db);
+  const locations = await getMatchLocations(db);
 
   return {
     user,
     matchDays: matchDaysWithMatches,
     teams: teamsForCreation,
+    locations,
   };
 }
 
@@ -194,6 +200,7 @@ export async function action({ request }: Route.ActionArgs) {
     const teamBIdStr = formData.get("teamBId");
     const matchDayIdStr = formData.get("matchDayId");
     const timeStr = formData.get("scheduledTime") as string | null;
+    const locationIdStr = formData.get("locationId") as string | null;
 
     if (!teamAIdStr || !teamBIdStr || !matchDayIdStr) {
       return { success: false, message: "Missing required fields" };
@@ -202,6 +209,7 @@ export async function action({ request }: Route.ActionArgs) {
     const teamAId = parseInt(teamAIdStr as string, 10);
     const teamBId = parseInt(teamBIdStr as string, 10);
     const matchDayId = parseInt(matchDayIdStr as string, 10);
+    const locationId = locationIdStr ? parseInt(locationIdStr, 10) : null;
 
     if (isNaN(teamAId) || isNaN(teamBId) || isNaN(matchDayId)) {
       return { success: false, message: "Invalid IDs" };
@@ -225,6 +233,7 @@ export async function action({ request }: Route.ActionArgs) {
         teamBId,
         matchDayId,
         scheduledDate,
+        locationId,
       });
       return { success: true, message: "Match created" };
     } catch (error) {
@@ -233,6 +242,34 @@ export async function action({ request }: Route.ActionArgs) {
         success: false,
         message:
           error instanceof Error ? error.message : "Failed to create match",
+      };
+    }
+  }
+
+  if (intent === "update-match-location") {
+    const matchIdStr = formData.get("matchId");
+    const locationIdStr = formData.get("locationId") as string | null;
+
+    if (!matchIdStr) {
+      return { success: false, message: "Invalid parameters" };
+    }
+
+    const matchId = parseInt(matchIdStr as string, 10);
+    const locationId = locationIdStr ? parseInt(locationIdStr, 10) : null;
+
+    if (isNaN(matchId)) {
+      return { success: false, message: "Invalid match ID" };
+    }
+
+    try {
+      await updateMatchLocation(db, matchId, locationId);
+      return { success: true, message: "Location updated" };
+    } catch (error) {
+      console.error("Error updating match location:", error);
+      return {
+        success: false,
+        message:
+          error instanceof Error ? error.message : "Failed to update location",
       };
     }
   }
@@ -485,6 +522,7 @@ export async function action({ request }: Route.ActionArgs) {
 function MatchDayRow({
   matchDay,
   teams,
+  locations,
   index,
   totalMatchDays,
 }: {
@@ -500,6 +538,8 @@ function MatchDayRow({
       teamAScore: number | null;
       teamBScore: number | null;
       scheduledDate: Date | null;
+      locationId: number | null;
+      location: { id: number; name: string } | null;
       teamA: {
         id: number;
         name: string;
@@ -517,6 +557,7 @@ function MatchDayRow({
     name: string;
     user: { id: number; name: string } | null;
   }>;
+  locations: Array<{ id: number; name: string }>;
   index: number;
   totalMatchDays: number;
 }) {
@@ -720,6 +761,33 @@ function MatchDayRow({
                       </div>
                     )}
                   </div>
+
+                  {/* Location selector */}
+                  <fetcher.Form
+                    method="post"
+                    className="flex items-center gap-1"
+                  >
+                    <input
+                      type="hidden"
+                      name="intent"
+                      value="update-match-location"
+                    />
+                    <input type="hidden" name="matchId" value={match.id} />
+                    <select
+                      name="locationId"
+                      defaultValue={match.locationId ?? ""}
+                      onChange={(e) => e.target.form?.requestSubmit()}
+                      className="px-2 py-1 rounded border border-cell-gray bg-cell-gray/60 text-sm max-w-[180px]"
+                    >
+                      <option value="">No location</option>
+                      {locations.map((loc) => (
+                        <option key={loc.id} value={loc.id}>
+                          {formatLocationName(loc.name)}
+                        </option>
+                      ))}
+                    </select>
+                  </fetcher.Form>
+
                   <div className="flex items-center gap-2">
                     <span
                       className={`text-xs px-2 py-0.5 rounded ${
@@ -912,6 +980,22 @@ function MatchDayRow({
                 </select>
               </div>
               <div className="flex flex-col gap-1">
+                <label className="text-xs text-gray-400">
+                  Location (optional)
+                </label>
+                <select
+                  name="locationId"
+                  className="px-3 py-2 rounded border border-cell-gray bg-cell-gray/60 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="">No location</option>
+                  {locations.map((loc) => (
+                    <option key={loc.id} value={loc.id}>
+                      {formatLocationName(loc.name)}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="flex flex-col gap-1">
                 <label className="text-xs text-gray-400">Time (optional)</label>
                 <input
                   type="time"
@@ -1064,6 +1148,7 @@ export default function AdminMatches({
                 key={matchDay.id}
                 matchDay={matchDay}
                 teams={loaderData.teams}
+                locations={loaderData.locations}
                 index={index}
                 totalMatchDays={loaderData.matchDays.length}
               />

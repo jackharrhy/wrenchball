@@ -206,6 +206,29 @@ await db.transaction(async (tx) => {
     sortPosition++;
   }
 
+  // Insert match locations
+  console.log("Inserting match locations");
+  const matchLocationNames = [
+    "Mario Stadium (Day)",
+    "Mario Stadium (Night)",
+    "Yoshi Park (Day)",
+    "Yoshi Park (Night)",
+    "Wario City (Day)",
+    "Wario City (Night)",
+    "DK Jungle (Day)",
+    "DK Jungle (Night)",
+    "Daisy Cruiser (Day)",
+    "Daisy Cruiser (Night)",
+    "Bowser Jr's Playroom",
+    "Bowser's Castle",
+  ];
+
+  for (const locationName of matchLocationNames) {
+    await tx.insert(schema.matchLocations).values({
+      name: locationName,
+    });
+  }
+
   console.log("Data inserted successfully");
 });
 

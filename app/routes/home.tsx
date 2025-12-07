@@ -58,7 +58,6 @@ export async function loader({}: Route.LoaderArgs) {
       return [lookingFor, willingToTrade];
     });
 
-  // Collect proposal and response texts from trade events
   const tradeProposalTexts = allEvents
     .filter((e) => e.trade?.trade?.proposalText)
     .map((e) => e.trade!.trade!.proposalText);

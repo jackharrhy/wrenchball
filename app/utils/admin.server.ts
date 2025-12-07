@@ -1,4 +1,4 @@
-import { eq, isNull, and, asc } from "drizzle-orm";
+import { eq, isNull, and, asc, max, gt } from "drizzle-orm";
 import { LINEUP_SIZE, TEAM_SIZE } from "~/consts";
 import { type Database } from "~/database/db";
 import {
@@ -706,10 +706,7 @@ export const assignTeamToConference = async (
   teamId: number,
   conferenceId: number | null,
 ): Promise<void> => {
-  await db
-    .update(teams)
-    .set({ conferenceId })
-    .where(eq(teams.id, teamId));
+  await db.update(teams).set({ conferenceId }).where(eq(teams.id, teamId));
 };
 
 /**
@@ -741,7 +738,7 @@ export const getMatchDays = async (db: Database): Promise<MatchDay[]> => {
     .select()
     .from(matchDays)
     .where(eq(matchDays.seasonId, currentSeason.id))
-    .orderBy(asc(matchDays.date));
+    .orderBy(asc(matchDays.orderInSeason));
 };
 
 /**
@@ -750,18 +747,27 @@ export const getMatchDays = async (db: Database): Promise<MatchDay[]> => {
 export const createMatchDay = async (
   db: Database,
   name: string | null,
-  date: Date,
+  date: Date | null,
 ): Promise<MatchDay> => {
   const currentSeason = await getSeasonState(db);
   if (!currentSeason) {
     throw new Error("No current season found");
   }
 
+  // Get the next order position for this season
+  const [maxOrder] = await db
+    .select({ maxOrder: max(matchDays.orderInSeason) })
+    .from(matchDays)
+    .where(eq(matchDays.seasonId, currentSeason.id));
+
+  const orderInSeason = (maxOrder?.maxOrder ?? 0) + 1;
+
   const [matchDay] = await db
     .insert(matchDays)
     .values({
       name,
       date,
+      orderInSeason,
       seasonId: currentSeason.id,
     })
     .returning();
@@ -775,20 +781,96 @@ export const createMatchDay = async (
 export const updateMatchDay = async (
   db: Database,
   matchDayId: number,
-  updates: { name?: string | null; date?: Date },
+  updates: { name?: string | null; date?: Date | null },
 ): Promise<void> => {
-  await db
-    .update(matchDays)
-    .set(updates)
-    .where(eq(matchDays.id, matchDayId));
+  await db.update(matchDays).set(updates).where(eq(matchDays.id, matchDayId));
 };
 
 /**
- * Delete a match day (will cascade delete its matches)
+ * Update the order of a match day within its season (swaps with adjacent match day)
+ */
+export const updateMatchDayOrder = async (
+  db: Database,
+  matchDayId: number,
+  newOrder: number,
+): Promise<void> => {
+  await db.transaction(async (tx) => {
+    // Get the current match day
+    const currentMatchDay = await tx.query.matchDays.findFirst({
+      where: eq(matchDays.id, matchDayId),
+    });
+
+    if (!currentMatchDay) {
+      throw new Error("Match day not found");
+    }
+
+    const currentOrder = currentMatchDay.orderInSeason ?? 0;
+
+    // Find the match day at the target position
+    const targetMatchDay = await tx.query.matchDays.findFirst({
+      where: and(
+        eq(matchDays.seasonId, currentMatchDay.seasonId),
+        eq(matchDays.orderInSeason, newOrder),
+      ),
+    });
+
+    // Swap orders
+    await tx
+      .update(matchDays)
+      .set({ orderInSeason: newOrder })
+      .where(eq(matchDays.id, matchDayId));
+
+    if (targetMatchDay) {
+      await tx
+        .update(matchDays)
+        .set({ orderInSeason: currentOrder })
+        .where(eq(matchDays.id, targetMatchDay.id));
+    }
+  });
+};
+
+/**
+ * Delete a match day (will cascade delete its matches) and reflow orders
  */
 export const deleteMatchDay = async (
   db: Database,
   matchDayId: number,
 ): Promise<void> => {
-  await db.delete(matchDays).where(eq(matchDays.id, matchDayId));
+  await db.transaction(async (tx) => {
+    // Get the match day to find its seasonId and orderInSeason
+    const matchDayToDelete = await tx.query.matchDays.findFirst({
+      where: eq(matchDays.id, matchDayId),
+    });
+
+    if (!matchDayToDelete) {
+      return;
+    }
+
+    const { seasonId, orderInSeason } = matchDayToDelete;
+
+    // Delete the match day
+    await tx.delete(matchDays).where(eq(matchDays.id, matchDayId));
+
+    // Reflow orderInSeason for remaining match days in the same season
+    if (orderInSeason !== null) {
+      // Get all match days in the same season with higher orderInSeason
+      const matchDaysToUpdate = await tx
+        .select({ id: matchDays.id, orderInSeason: matchDays.orderInSeason })
+        .from(matchDays)
+        .where(
+          and(
+            eq(matchDays.seasonId, seasonId),
+            gt(matchDays.orderInSeason, orderInSeason),
+          ),
+        );
+
+      // Decrement each match day's orderInSeason by 1
+      for (const md of matchDaysToUpdate) {
+        await tx
+          .update(matchDays)
+          .set({ orderInSeason: (md.orderInSeason ?? 0) - 1 })
+          .where(eq(matchDays.id, md.id));
+      }
+    }
+  });
 };

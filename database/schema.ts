@@ -582,7 +582,8 @@ export type MatchState = (typeof matchState.enumValues)[number];
 export const matchDays = pgTable("match_days", {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
   name: text("name"),
-  date: timestamp("date").notNull(),
+  date: timestamp("date"),
+  orderInSeason: integer("order_in_season"),
   seasonId: integer("season_id")
     .notNull()
     .references(() => season.id, { onDelete: "cascade" }),

@@ -1,29 +1,57 @@
 import { Link } from "react-router";
 import type { Route } from "./+types/matches";
 import { db } from "~/database/db";
-import { matches } from "~/database/schema";
+import { matchDays, matches } from "~/database/schema";
 import { cn } from "~/utils/cn";
-import { asc, desc } from "drizzle-orm";
+import { asc, desc, isNull } from "drizzle-orm";
 import { TeamLogo } from "~/components/TeamLogo";
 
 export async function loader({ request }: Route.LoaderArgs) {
-  const allMatches = await db.query.matches.findMany({
+  // Fetch match days with their matches
+  const allMatchDays = await db.query.matchDays.findMany({
+    with: {
+      matches: {
+        with: {
+          teamA: {
+            with: {
+              captain: true,
+              conference: true,
+            },
+          },
+          teamB: {
+            with: {
+              captain: true,
+              conference: true,
+            },
+          },
+        },
+        orderBy: [asc(matches.orderInDay), asc(matches.scheduledDate)],
+      },
+    },
+    orderBy: [asc(matchDays.orderInSeason)],
+  });
+
+  // Also fetch matches without a match day (orphan matches)
+  const orphanMatches = await db.query.matches.findMany({
+    where: isNull(matches.matchDayId),
     with: {
       teamA: {
         with: {
           captain: true,
+          conference: true,
         },
       },
       teamB: {
         with: {
           captain: true,
+          conference: true,
         },
       },
     },
     orderBy: [asc(matches.scheduledDate), desc(matches.createdAt)],
   });
 
-  return { matches: allMatches };
+  return { matchDays: allMatchDays, orphanMatches };
 }
 
 function formatDate(date: Date | null) {
@@ -37,23 +65,93 @@ function formatDate(date: Date | null) {
   }).format(new Date(date));
 }
 
+function formatMatchDayDate(date: Date | null) {
+  if (!date) return "TBD";
+  return new Intl.DateTimeFormat("en-US", {
+    weekday: "long",
+    month: "long",
+    day: "numeric",
+  }).format(new Date(date));
+}
+
 function getStateColor(state: string) {
   switch (state) {
     case "upcoming":
-      return "bg-blue-500/20 text-blue-300 border-blue-500/40";
+      return "bg-blue-500/20 text-blue-100 border-blue-500/40";
     case "live":
-      return "bg-green-500/20 text-green-300 border-green-500/40";
+      return "bg-green-500/20 text-green-100 border-green-500/40";
     case "finished":
-      return "bg-gray-500/20 text-gray-300 border-gray-500/40";
+      return "bg-gray-500/20 text-gray-100 border-gray-500/40";
     default:
-      return "bg-gray-500/20 text-gray-300 border-gray-500/40";
+      return "bg-gray-500/20 text-gray-100 border-gray-500/40";
   }
 }
 
-export default function Matches({ loaderData }: Route.ComponentProps) {
-  const { matches } = loaderData;
+function getMatchDayConferenceInfo(matchDay: MatchDayWithMatches) {
+  const conferenceIds = new Set<number | null>();
+  const conferenceNames = new Map<
+    number,
+    { name: string; color: string | null }
+  >();
 
-  if (matches.length === 0) {
+  for (const match of matchDay.matches) {
+    const teamAConf = match.teamA.conference;
+    const teamBConf = match.teamB.conference;
+
+    conferenceIds.add(teamAConf?.id ?? null);
+    conferenceIds.add(teamBConf?.id ?? null);
+
+    if (teamAConf) {
+      conferenceNames.set(teamAConf.id, {
+        name: teamAConf.name,
+        color: teamAConf.color,
+      });
+    }
+    if (teamBConf) {
+      conferenceNames.set(teamBConf.id, {
+        name: teamBConf.name,
+        color: teamBConf.color,
+      });
+    }
+  }
+
+  // Remove null entries (teams without conferences)
+  conferenceIds.delete(null);
+
+  if (conferenceIds.size === 0) {
+    return { type: "none" as const };
+  }
+
+  if (conferenceIds.size === 1) {
+    const confId = [...conferenceIds][0]!;
+    const conf = conferenceNames.get(confId)!;
+    return { type: "single" as const, conference: conf };
+  }
+
+  return {
+    type: "cross" as const,
+    conferences: [...conferenceNames.values()],
+  };
+}
+
+function getMatchDayState(
+  matchDay: MatchDayWithMatches,
+): "live" | "upcoming" | "finished" {
+  const hasLive = matchDay.matches.some((m) => m.state === "live");
+  if (hasLive) return "live";
+
+  const allFinished = matchDay.matches.every((m) => m.state === "finished");
+  if (allFinished && matchDay.matches.length > 0) return "finished";
+
+  return "upcoming";
+}
+
+export default function Matches({ loaderData }: Route.ComponentProps) {
+  const { matchDays, orphanMatches } = loaderData;
+
+  const hasContent = matchDays.length > 0 || orphanMatches.length > 0;
+
+  if (!hasContent) {
     return (
       <div className="text-center text-gray-400 italic py-8">
         No matches scheduled yet.
@@ -61,57 +159,131 @@ export default function Matches({ loaderData }: Route.ComponentProps) {
     );
   }
 
-  // Group matches by state
-  const upcomingMatches = matches.filter((m) => m.state === "upcoming");
-  const liveMatches = matches.filter((m) => m.state === "live");
-  const finishedMatches = matches.filter((m) => m.state === "finished");
+  // Sort match days by their state priority: live > upcoming > finished
+  const sortedMatchDays = [...matchDays].sort((a, b) => {
+    const stateA = getMatchDayState(a);
+    const stateB = getMatchDayState(b);
+    const priority = { live: 0, upcoming: 1, finished: 2 };
+    return priority[stateA] - priority[stateB];
+  });
 
   return (
-    <div className="space-y-8">
-      {liveMatches.length > 0 && (
-        <section>
-          <h2 className="text-xl font-bold mb-4 text-green-400">Live Now</h2>
-          <div className="space-y-3">
-            {liveMatches.map((match) => (
-              <MatchCard key={match.id} match={match} />
-            ))}
-          </div>
-        </section>
-      )}
+    <div className="space-y-6">
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
+        {sortedMatchDays.map((matchDay) => (
+          <MatchDayCard key={matchDay.id} matchDay={matchDay} />
+        ))}
+      </div>
 
-      {upcomingMatches.length > 0 && (
-        <section>
-          <h2 className="text-xl font-bold mb-4 text-blue-400">Upcoming</h2>
-          <div className="space-y-3">
-            {upcomingMatches.map((match) => (
-              <MatchCard key={match.id} match={match} />
+      {orphanMatches.length > 0 && (
+        <div className="rounded-xl bg-cell-gray/30 border border-cell-gray/50 p-4">
+          <h3 className="text-lg font-bold mb-3 text-gray-400">
+            Unscheduled Matches
+          </h3>
+          <div className="space-y-2">
+            {orphanMatches.map((match) => (
+              <MatchCard key={match.id} match={match} showDate />
             ))}
           </div>
-        </section>
-      )}
-
-      {finishedMatches.length > 0 && (
-        <section>
-          <h2 className="text-xl font-bold mb-4 text-gray-400">Finished</h2>
-          <div className="space-y-3">
-            {finishedMatches.map((match) => (
-              <MatchCard key={match.id} match={match} />
-            ))}
-          </div>
-        </section>
+        </div>
       )}
     </div>
   );
 }
 
-type MatchWithTeams = Awaited<ReturnType<typeof loader>>["matches"][number];
+type MatchDayWithMatches = Awaited<
+  ReturnType<typeof loader>
+>["matchDays"][number];
+type MatchWithTeams =
+  | MatchDayWithMatches["matches"][number]
+  | Awaited<ReturnType<typeof loader>>["orphanMatches"][number];
+
+interface MatchDayCardProps {
+  matchDay: MatchDayWithMatches;
+}
+
+function MatchDayCard({ matchDay }: MatchDayCardProps) {
+  const conferenceInfo = getMatchDayConferenceInfo(matchDay);
+  const matchDayState = getMatchDayState(matchDay);
+
+  return (
+    <div className="bg-cell-gray/30 border border-cell-gray/50 rounded-xl p-4 transition-colors">
+      <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center gap-2">
+          <h3 className="text-base font-bold text-gray-100">
+            {matchDay.name ?? `Matchday`}
+          </h3>
+          {matchDayState === "live" && (
+            <span className="px-2 py-0.5 text-xs font-semibold rounded bg-green-500/20 text-green-300 border border-green-500/40 animate-pulse">
+              LIVE
+            </span>
+          )}
+        </div>
+        <span className="text-sm text-gray-400">
+          {formatMatchDayDate(matchDay.date)}
+        </span>
+      </div>
+      <ConferenceBadge conferenceInfo={conferenceInfo} />
+      <div className="space-y-2">
+        {matchDay.matches.map((match) => (
+          <MatchCard key={match.id} match={match} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+interface ConferenceBadgeProps {
+  conferenceInfo: ReturnType<typeof getMatchDayConferenceInfo>;
+}
+
+function ConferenceBadge({ conferenceInfo }: ConferenceBadgeProps) {
+  if (conferenceInfo.type === "none") {
+    return null;
+  }
+
+  if (conferenceInfo.type === "single") {
+    const { name, color } = conferenceInfo.conference;
+    return (
+      <span
+        className="px-3 py-1 text-xs font-semibold rounded-full border"
+        style={{
+          backgroundColor: color ? `${color}20` : undefined,
+          borderColor: color ? `${color}60` : undefined,
+          color: color ?? undefined,
+        }}
+      >
+        {name} Conference
+      </span>
+    );
+  }
+
+  return (
+    <div className="flex items-center gap-2">
+      <span className="px-3 py-1 text-xs font-semibold rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/40">
+        Cross-Conference
+      </span>
+      <div className="flex gap-1">
+        {conferenceInfo.conferences.map((conf, i) => (
+          <span
+            key={i}
+            className="w-2.5 h-2.5 rounded-full"
+            style={{ backgroundColor: conf.color ?? "#888" }}
+            title={conf.name}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
 
 interface MatchCardProps {
   match: MatchWithTeams;
+  showDate?: boolean;
 }
 
-function MatchCard({ match }: MatchCardProps) {
-  const showScore =
+function MatchCard({ match, showDate }: MatchCardProps) {
+  const hasScore =
     match.state === "finished" &&
     match.teamAScore !== null &&
     match.teamBScore !== null;
@@ -120,50 +292,63 @@ function MatchCard({ match }: MatchCardProps) {
     <Link
       to={`/match/${match.id}`}
       className={cn(
-        "flex items-center gap-6 px-4 py-3 rounded-lg bg-cell-gray/40 border border-cell-gray/50 hover:bg-cell-gray/60 transition-colors",
+        "relative grid grid-cols-[1fr_auto_1fr] items-center gap-3 px-4 py-3 rounded-lg bg-cell-gray/40 border border-cell-gray/50 hover:bg-cell-gray/60 transition-colors",
       )}
     >
-      <div className="flex-1 flex items-center justify-center gap-4">
+      {match.state !== "finished" && (
+        <span
+          className={cn(
+            "absolute top-1 right-1.5 px-1.5 py-0.5 text-[10px] font-semibold rounded border capitalize",
+            getStateColor(match.state),
+          )}
+        >
+          {match.state}
+        </span>
+      )}
+
+      <div className="flex items-center justify-end gap-2 min-w-0">
+        <span className="font-semibold truncate text-sm">
+          {match.teamA.name}
+        </span>
         <TeamLogo
           size="sm"
           captainStatsCharacter={
             match.teamA.captain?.statsCharacter ?? undefined
           }
         />
-        <span className="font-bold text-lg">{match.teamA.name}</span>
-        {showScore && (
-          <span className="text-xl font-bold text-yellow-300">
-            {match.teamAScore}
-          </span>
+      </div>
+
+      <div className="flex items-center justify-center gap-2 px-3 shrink-0">
+        {hasScore ? (
+          <>
+            <span className="text-lg font-bold text-yellow-300">
+              {match.teamAScore}
+            </span>
+            <span className="text-gray-500 font-bold">-</span>
+            <span className="text-lg font-bold text-yellow-300">
+              {match.teamBScore}
+            </span>
+          </>
+        ) : (
+          <span className="text-gray-300/50 font-medium">vs</span>
         )}
-        <span className="text-gray-400 font-bold">
-          {showScore ? "-" : "vs"}
-        </span>
-        {showScore && (
-          <span className="text-xl font-bold text-yellow-300">
-            {match.teamBScore}
-          </span>
-        )}
-        <span className="font-bold text-lg">{match.teamB.name}</span>
+      </div>
+
+      <div className="flex items-center justify-start gap-2 min-w-0">
         <TeamLogo
           size="sm"
           captainStatsCharacter={
             match.teamB.captain?.statsCharacter ?? undefined
           }
         />
-      </div>
-      <div className="flex items-center gap-3">
-        <span className="text-sm text-gray-400">
-          {formatDate(match.scheduledDate)}
+        <span className="font-semibold truncate text-sm">
+          {match.teamB.name}
         </span>
-        <span
-          className={cn(
-            "px-2 py-1 text-xs font-semibold rounded border capitalize",
-            getStateColor(match.state),
-          )}
-        >
-          {match.state}
-        </span>
+        {showDate && (
+          <span className="text-xs text-gray-400 ml-auto">
+            {formatDate(match.scheduledDate)}
+          </span>
+        )}
       </div>
     </Link>
   );

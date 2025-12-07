@@ -9,6 +9,7 @@ import {
   createMatchDay,
   updateMatchDay,
   deleteMatchDay,
+  updateMatchDayOrder,
 } from "~/utils/admin.server";
 import {
   createMatch,
@@ -18,8 +19,10 @@ import {
   getTeamsForMatchCreation,
   updateMatchOrder,
 } from "~/utils/matches.server";
-import { useState, useRef } from "react";
+import { useState } from "react";
 import type { MatchState } from "~/database/schema";
+
+type BulkImportData = Record<string, [string, string][]>;
 
 export async function loader({ request }: Route.LoaderArgs) {
   const user = await requireUser(request);
@@ -211,7 +214,7 @@ export async function action({ request }: Route.ActionArgs) {
       });
 
       let scheduledDate: Date | null = null;
-      if (timeStr && matchDay) {
+      if (timeStr && matchDay && matchDay.date) {
         const [hours, minutes] = timeStr.split(":").map(Number);
         scheduledDate = new Date(matchDay.date);
         scheduledDate.setHours(hours, minutes, 0, 0);
@@ -270,11 +273,7 @@ export async function action({ request }: Route.ActionArgs) {
     const teamAScoreStr = formData.get("teamAScore");
     const teamBScoreStr = formData.get("teamBScore");
 
-    if (
-      !matchIdStr ||
-      teamAScoreStr === null ||
-      teamBScoreStr === null
-    ) {
+    if (!matchIdStr || teamAScoreStr === null || teamBScoreStr === null) {
       return { success: false, message: "Invalid parameters" };
     }
 
@@ -357,17 +356,143 @@ export async function action({ request }: Route.ActionArgs) {
     }
   }
 
+  if (intent === "update-match-day-order") {
+    const matchDayIdStr = formData.get("matchDayId");
+    const direction = formData.get("direction") as "up" | "down";
+    const currentOrderStr = formData.get("currentOrder");
+
+    if (!matchDayIdStr || !direction || !currentOrderStr) {
+      return { success: false, message: "Invalid parameters" };
+    }
+
+    const matchDayId = parseInt(matchDayIdStr as string, 10);
+    const currentOrder = parseInt(currentOrderStr as string, 10);
+
+    if (isNaN(matchDayId) || isNaN(currentOrder)) {
+      return { success: false, message: "Invalid values" };
+    }
+
+    const newOrder = direction === "up" ? currentOrder - 1 : currentOrder + 1;
+
+    try {
+      await updateMatchDayOrder(db, matchDayId, newOrder);
+      return { success: true, message: "Match day order updated" };
+    } catch (error) {
+      console.error("Error updating match day order:", error);
+      return {
+        success: false,
+        message:
+          error instanceof Error
+            ? error.message
+            : "Failed to update match day order",
+      };
+    }
+  }
+
+  if (intent === "bulk-import-matches") {
+    const jsonData = formData.get("jsonData") as string;
+
+    if (!jsonData) {
+      return { success: false, message: "No JSON data provided" };
+    }
+
+    let parsed: BulkImportData;
+    try {
+      parsed = JSON.parse(jsonData);
+    } catch {
+      return { success: false, message: "Invalid JSON format" };
+    }
+
+    // Get all users and teams for lookup
+    const allTeams = await db.query.teams.findMany({
+      with: { user: true },
+    });
+
+    // Build a map of user name (lowercase) -> team
+    const userNameToTeam = new Map<string, { id: number; name: string }>();
+    for (const team of allTeams) {
+      if (team.user) {
+        userNameToTeam.set(team.user.name.toLowerCase(), {
+          id: team.id,
+          name: team.name,
+        });
+      }
+    }
+
+    // Validate all user names first
+    const errors: string[] = [];
+    for (const [matchDayName, matchList] of Object.entries(parsed)) {
+      for (const [userA, userB] of matchList) {
+        if (!userNameToTeam.has(userA.toLowerCase())) {
+          errors.push(`Unknown user "${userA}" in ${matchDayName}`);
+        }
+        if (!userNameToTeam.has(userB.toLowerCase())) {
+          errors.push(`Unknown user "${userB}" in ${matchDayName}`);
+        }
+      }
+    }
+
+    if (errors.length > 0) {
+      return {
+        success: false,
+        message: `Validation errors:\n${errors.join("\n")}`,
+      };
+    }
+
+    // Create match days and matches
+    try {
+      let matchDaysCreated = 0;
+      let matchesCreated = 0;
+
+      for (const [matchDayName, matchList] of Object.entries(parsed)) {
+        // Create match day with null date
+        const matchDay = await createMatchDay(db, matchDayName, null);
+        matchDaysCreated++;
+
+        // Create matches for this match day
+        for (const [userA, userB] of matchList) {
+          const teamA = userNameToTeam.get(userA.toLowerCase())!;
+          const teamB = userNameToTeam.get(userB.toLowerCase())!;
+
+          await createMatch(db, {
+            teamAId: teamA.id,
+            teamBId: teamB.id,
+            matchDayId: matchDay.id,
+          });
+          matchesCreated++;
+        }
+      }
+
+      return {
+        success: true,
+        message: `Successfully created ${matchDaysCreated} match days with ${matchesCreated} matches`,
+      };
+    } catch (error) {
+      console.error("Error bulk importing matches:", error);
+      return {
+        success: false,
+        message:
+          error instanceof Error
+            ? error.message
+            : "Failed to bulk import matches",
+      };
+    }
+  }
+
   return { success: false, message: "Invalid action" };
 }
 
 function MatchDayRow({
   matchDay,
   teams,
+  index,
+  totalMatchDays,
 }: {
   matchDay: {
     id: number;
     name: string | null;
-    date: Date;
+    date: Date | null;
+    orderInSeason: number | null;
     matches: Array<{
       id: number;
       orderInDay: number | null;
@@ -375,11 +500,25 @@ function MatchDayRow({
       teamAScore: number | null;
       teamBScore: number | null;
       scheduledDate: Date | null;
-      teamA: { id: number; name: string; user: { id: number; name: string } | null };
-      teamB: { id: number; name: string; user: { id: number; name: string } | null };
+      teamA: {
+        id: number;
+        name: string;
+        user: { id: number; name: string } | null;
+      };
+      teamB: {
+        id: number;
+        name: string;
+        user: { id: number; name: string } | null;
+      };
     }>;
   };
-  teams: Array<{ id: number; name: string; user: { id: number; name: string } | null }>;
+  teams: Array<{
+    id: number;
+    name: string;
+    user: { id: number; name: string } | null;
+  }>;
+  index: number;
+  totalMatchDays: number;
 }) {
   const fetcher = useFetcher();
   const [editingName, setEditingName] = useState(false);
@@ -402,7 +541,11 @@ function MatchDayRow({
     });
   };
 
-  const getTeamDisplay = (team: { id: number; name: string; user: { id: number; name: string } | null }) => {
+  const getTeamDisplay = (team: {
+    id: number;
+    name: string;
+    user: { id: number; name: string } | null;
+  }) => {
     return team.user ? `${team.name} (${team.user.name})` : team.name;
   };
 
@@ -470,17 +613,68 @@ function MatchDayRow({
             </span>
           )}
           <span className="text-sm text-gray-400 ml-2">
-            ({matchDay.matches.length} {matchDay.matches.length === 1 ? "match" : "matches"})
+            ({matchDay.matches.length}{" "}
+            {matchDay.matches.length === 1 ? "match" : "matches"})
           </span>
         </div>
         <input
           type="date"
-          value={new Date(matchDay.date).toISOString().split("T")[0]}
+          value={
+            matchDay.date
+              ? new Date(matchDay.date).toISOString().split("T")[0]
+              : ""
+          }
           onClick={(e) => e.stopPropagation()}
           onChange={(e) => handleDateChange(e.target.value)}
           className="px-2 py-1 rounded border border-cell-gray bg-cell-gray/60 focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
-        <span className="text-sm text-gray-400">{formatDate(matchDay.date)}</span>
+        <span className="text-sm text-gray-400">
+          {matchDay.date ? formatDate(matchDay.date) : "No date set"}
+        </span>
+        <div className="flex gap-1" onClick={(e) => e.stopPropagation()}>
+          <Form method="post" className="inline-block">
+            <input type="hidden" name="intent" value="update-match-day-order" />
+            <input type="hidden" name="matchDayId" value={matchDay.id} />
+            <input type="hidden" name="direction" value="up" />
+            <input
+              type="hidden"
+              name="currentOrder"
+              value={matchDay.orderInSeason ?? index + 1}
+            />
+            <button
+              type="submit"
+              disabled={index === 0}
+              className={`px-2 py-1 rounded text-sm ${
+                index === 0
+                  ? "bg-gray-500 text-gray-300 cursor-not-allowed"
+                  : "bg-green-600 hover:bg-green-700 text-white"
+              }`}
+            >
+              ▲
+            </button>
+          </Form>
+          <Form method="post" className="inline-block">
+            <input type="hidden" name="intent" value="update-match-day-order" />
+            <input type="hidden" name="matchDayId" value={matchDay.id} />
+            <input type="hidden" name="direction" value="down" />
+            <input
+              type="hidden"
+              name="currentOrder"
+              value={matchDay.orderInSeason ?? index + 1}
+            />
+            <button
+              type="submit"
+              disabled={index === totalMatchDays - 1}
+              className={`px-2 py-1 rounded text-sm ${
+                index === totalMatchDays - 1
+                  ? "bg-gray-500 text-gray-300 cursor-not-allowed"
+                  : "bg-red-600 hover:bg-red-700 text-white"
+              }`}
+            >
+              ▼
+            </button>
+          </Form>
+        </div>
         <Form
           method="post"
           className="inline-block"
@@ -488,7 +682,11 @@ function MatchDayRow({
         >
           <input type="hidden" name="intent" value="delete-match-day" />
           <input type="hidden" name="matchDayId" value={matchDay.id} />
-          <input type="hidden" name="matchDayName" value={matchDay.name || ""} />
+          <input
+            type="hidden"
+            name="matchDayName"
+            value={matchDay.name || ""}
+          />
           <button
             type="submit"
             className="px-3 py-1 rounded bg-red-600 hover:bg-red-700 text-white text-sm transition-colors"
@@ -513,7 +711,8 @@ function MatchDayRow({
                   </span>
                   <div className="flex-1">
                     <div className="font-medium">
-                      {getTeamDisplay(match.teamA)} vs {getTeamDisplay(match.teamB)}
+                      {getTeamDisplay(match.teamA)} vs{" "}
+                      {getTeamDisplay(match.teamB)}
                     </div>
                     {match.scheduledDate && (
                       <div className="text-sm text-gray-400">
@@ -543,7 +742,11 @@ function MatchDayRow({
                   {/* Reorder buttons */}
                   <div className="flex gap-1">
                     <Form method="post" className="inline-block">
-                      <input type="hidden" name="intent" value="update-match-order" />
+                      <input
+                        type="hidden"
+                        name="intent"
+                        value="update-match-order"
+                      />
                       <input type="hidden" name="matchId" value={match.id} />
                       <input type="hidden" name="direction" value="up" />
                       <input
@@ -564,7 +767,11 @@ function MatchDayRow({
                       </button>
                     </Form>
                     <Form method="post" className="inline-block">
-                      <input type="hidden" name="intent" value="update-match-order" />
+                      <input
+                        type="hidden"
+                        name="intent"
+                        value="update-match-order"
+                      />
                       <input type="hidden" name="matchId" value={match.id} />
                       <input type="hidden" name="direction" value="down" />
                       <input
@@ -587,8 +794,15 @@ function MatchDayRow({
                   </div>
 
                   {/* State and score controls */}
-                  <fetcher.Form method="post" className="flex items-center gap-2">
-                    <input type="hidden" name="intent" value="update-match-state" />
+                  <fetcher.Form
+                    method="post"
+                    className="flex items-center gap-2"
+                  >
+                    <input
+                      type="hidden"
+                      name="intent"
+                      value="update-match-state"
+                    />
                     <input type="hidden" name="matchId" value={match.id} />
                     <select
                       name="state"
@@ -698,9 +912,7 @@ function MatchDayRow({
                 </select>
               </div>
               <div className="flex flex-col gap-1">
-                <label className="text-xs text-gray-400">
-                  Time (optional)
-                </label>
+                <label className="text-xs text-gray-400">Time (optional)</label>
                 <input
                   type="time"
                   name="scheduledTime"
@@ -721,6 +933,70 @@ function MatchDayRow({
   );
 }
 
+function BulkImportSection() {
+  const [expanded, setExpanded] = useState(false);
+  const [jsonData, setJsonData] = useState("");
+  const fetcher = useFetcher();
+
+  const exampleJson = `{
+  "Matchday 1": [
+    ["UserA", "UserB"],
+    ["UserC", "UserD"]
+  ],
+  "Matchday 2": [
+    ["UserA", "UserC"],
+    ["UserB", "UserD"]
+  ]
+}`;
+
+  return (
+    <div className="border rounded bg-cell-gray/40 border-cell-gray/50">
+      <div
+        className="flex items-center gap-4 p-3 cursor-pointer hover:bg-cell-gray/60 transition-colors"
+        onClick={() => setExpanded(!expanded)}
+      >
+        <span className="text-lg">{expanded ? "▼" : "▶"}</span>
+        <h2 className="text-xl font-semibold">Bulk Import Matches</h2>
+      </div>
+
+      {expanded && (
+        <div className="border-t border-cell-gray/50 p-4 space-y-4">
+          <p className="text-sm text-gray-400">
+            Paste JSON with match day names as keys and arrays of user name
+            pairs as values. Match days will be created without dates (add them
+            later).
+          </p>
+          <details className="text-sm">
+            <summary className="cursor-pointer text-blue-400 hover:text-blue-300">
+              Show example format
+            </summary>
+            <pre className="mt-2 p-3 bg-black/30 rounded text-xs overflow-x-auto">
+              {exampleJson}
+            </pre>
+          </details>
+          <fetcher.Form method="post" className="space-y-4">
+            <input type="hidden" name="intent" value="bulk-import-matches" />
+            <textarea
+              name="jsonData"
+              value={jsonData}
+              onChange={(e) => setJsonData(e.target.value)}
+              placeholder="Paste JSON here..."
+              className="w-full h-64 px-3 py-2 rounded border border-cell-gray bg-cell-gray/60 focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono text-sm"
+            />
+            <button
+              type="submit"
+              disabled={!jsonData.trim() || fetcher.state !== "idle"}
+              className="px-4 py-2 rounded bg-green-600 hover:bg-green-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white transition-colors"
+            >
+              {fetcher.state !== "idle" ? "Importing..." : "Import Matches"}
+            </button>
+          </fetcher.Form>
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function AdminMatches({
   loaderData,
   actionData,
@@ -729,11 +1005,14 @@ export default function AdminMatches({
     <div className="flex flex-col gap-6">
       {actionData?.message && (
         <div
-          className={`p-4 rounded ${actionData.success ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}`}
+          className={`p-4 rounded whitespace-pre-wrap ${actionData.success ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}`}
         >
           {actionData.message}
         </div>
       )}
+
+      {/* Bulk Import Section */}
+      <BulkImportSection />
 
       {/* Create Match Day Form */}
       <div className="border rounded p-4 bg-cell-gray/40 border-cell-gray/50">
@@ -780,11 +1059,13 @@ export default function AdminMatches({
           <p className="text-gray-200">No match days created yet</p>
         ) : (
           <div className="space-y-2">
-            {loaderData.matchDays.map((matchDay) => (
+            {loaderData.matchDays.map((matchDay, index) => (
               <MatchDayRow
                 key={matchDay.id}
                 matchDay={matchDay}
                 teams={loaderData.teams}
+                index={index}
+                totalMatchDays={loaderData.matchDays.length}
               />
             ))}
           </div>
@@ -793,4 +1074,3 @@ export default function AdminMatches({
     </div>
   );
 }
-

@@ -36,11 +36,19 @@ export const teams = pgTable("team", {
   lookingFor: text("looking_for"),
   willingToTrade: text("willing_to_trade"),
   tradePreferencesUpdatedAt: timestamp("trade_preferences_updated_at"),
+  conferenceId: integer("conference_id").references(
+    (): AnyPgColumn => conferences.id,
+    { onDelete: "set null" },
+  ),
 });
 
 export type Team = typeof teams.$inferSelect;
 
-export const teamRealtions = relations(teams, ({ many, one }) => ({
+export const teamRelations = relations(teams, ({ many, one }) => ({
+  user: one(users, {
+    fields: [teams.userId],
+    references: [users.id],
+  }),
   players: many(players, {
     relationName: "players",
   }),
@@ -48,6 +56,10 @@ export const teamRealtions = relations(teams, ({ many, one }) => ({
     fields: [teams.captainId],
     references: [players.id],
     relationName: "captain",
+  }),
+  conference: one(conferences, {
+    fields: [teams.conferenceId],
+    references: [conferences.id],
   }),
 }));
 
@@ -234,11 +246,32 @@ export const season = pgTable("season", {
 
 export type Season = typeof season.$inferSelect;
 
-export const seasonRelations = relations(season, ({ one }) => ({
+export const seasonRelations = relations(season, ({ one, many }) => ({
   currentDraftingUser: one(users, {
     fields: [season.currentDraftingUserId],
     references: [users.id],
   }),
+  conferences: many(conferences),
+}));
+
+// Conferences - season-specific groupings of teams
+export const conferences = pgTable("conferences", {
+  id: integer().primaryKey().generatedAlwaysAsIdentity(),
+  name: text("name").notNull(),
+  color: text("color"),
+  seasonId: integer("season_id")
+    .notNull()
+    .references(() => season.id, { onDelete: "cascade" }),
+});
+
+export type Conference = typeof conferences.$inferSelect;
+
+export const conferencesRelations = relations(conferences, ({ one, many }) => ({
+  season: one(season, {
+    fields: [conferences.seasonId],
+    references: [season.id],
+  }),
+  teams: many(teams),
 }));
 
 export const usersSeasons = pgTable("users_seasons", {
@@ -544,6 +577,26 @@ export const matchState = pgEnum("match_state", [
 
 export type MatchState = (typeof matchState.enumValues)[number];
 
+// Match Days - containers for matches on a specific date
+export const matchDays = pgTable("match_days", {
+  id: integer().primaryKey().generatedAlwaysAsIdentity(),
+  name: text("name"),
+  date: timestamp("date").notNull(),
+  seasonId: integer("season_id")
+    .notNull()
+    .references(() => season.id, { onDelete: "cascade" }),
+});
+
+export type MatchDay = typeof matchDays.$inferSelect;
+
+export const matchDaysRelations = relations(matchDays, ({ one, many }) => ({
+  season: one(season, {
+    fields: [matchDays.seasonId],
+    references: [season.id],
+  }),
+  matches: many(matches),
+}));
+
 export const eventMatchStateChange = pgTable("event_match_state_change", {
   eventId: integer("event_id")
     .primaryKey()
@@ -573,6 +626,10 @@ export const eventMatchStateChangeRelations = relations(
 
 export const matches = pgTable("matches", {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
+  matchDayId: integer("match_day_id").references(() => matchDays.id, {
+    onDelete: "cascade",
+  }),
+  orderInDay: integer("order_in_day"),
   teamAId: integer("team_a_id")
     .notNull()
     .references(() => teams.id, { onDelete: "cascade" }),
@@ -650,6 +707,10 @@ export type MatchPlayerStats = typeof matchPlayerStats.$inferSelect;
 
 // Match relations
 export const matchesRelations = relations(matches, ({ one, many }) => ({
+  matchDay: one(matchDays, {
+    fields: [matches.matchDayId],
+    references: [matchDays.id],
+  }),
   teamA: one(teams, {
     fields: [matches.teamAId],
     references: [teams.id],

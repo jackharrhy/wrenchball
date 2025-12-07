@@ -29,6 +29,20 @@
       "when": 17650784270000,
       "tag": "0003_add_trade_messages",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 17650784280000,
+      "tag": "0004_add_conferences",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 17650784290000,
+      "tag": "0005_add_match_days",
+      "breakpoints": true
     }
   ]
 }

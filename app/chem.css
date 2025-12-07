@@ -2,22 +2,22 @@
 [data-player="Baby DK"] [data-player="Baby Luigi"] span {opacity: 1;}
 [data-player="Baby DK"] [data-player="Baby Mario"] span {opacity: 1;}
 [data-player="Baby DK"] [data-player="Baby Peach"] span {opacity: 1;}
-[data-player="Baby DK"] [data-player="Bowser"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
+[data-player="Baby DK"] [data-player="Bowser"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
 [data-player="Baby DK"] [data-player="Brown Mii (F)"] span {opacity: 1;}
 [data-player="Baby DK"] [data-player="Brown Mii"] span {opacity: 1;}
 [data-player="Baby DK"] [data-player="Dixie Kong"] span {opacity: 1;}
 [data-player="Baby DK"] [data-player="Funky Kong"] span {opacity: 1;}
-[data-player="Baby DK"] [data-player="King K. Rool"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Baby DK"] [data-player="Kritter (Blue)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Baby DK"] [data-player="Kritter (Brown)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Baby DK"] [data-player="Kritter (Green)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Baby DK"] [data-player="Kritter (Red)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Baby DK"] [data-player="Petey Piranha"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Baby DK"] [data-player="Shy Guy (Blue)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Baby DK"] [data-player="Shy Guy (Gray)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Baby DK"] [data-player="Shy Guy (Green)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Baby DK"] [data-player="Shy Guy (Red)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Baby DK"] [data-player="Shy Guy (Yellow)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
+[data-player="Baby DK"] [data-player="King K. Rool"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Baby DK"] [data-player="Kritter (Blue)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Baby DK"] [data-player="Kritter (Brown)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Baby DK"] [data-player="Kritter (Green)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Baby DK"] [data-player="Kritter (Red)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Baby DK"] [data-player="Petey Piranha"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Baby DK"] [data-player="Shy Guy (Blue)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Baby DK"] [data-player="Shy Guy (Gray)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Baby DK"] [data-player="Shy Guy (Green)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Baby DK"] [data-player="Shy Guy (Red)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Baby DK"] [data-player="Shy Guy (Yellow)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
 [data-player="Baby DK"] [data-player="Tiny Kong"] span {opacity: 1;}
 [data-player="Baby DK"] [data-player="Yoshi (Blue)"] span {opacity: 1;}
 [data-player="Baby DK"] [data-player="Yoshi (Light Blue)"] span {opacity: 1;}
@@ -29,16 +29,16 @@
 [data-player="Baby Daisy"] [data-player="Baby Luigi"] span {opacity: 1;}
 [data-player="Baby Daisy"] [data-player="Baby Mario"] span {opacity: 1;}
 [data-player="Baby Daisy"] [data-player="Baby Peach"] span {opacity: 1;}
-[data-player="Baby Daisy"] [data-player="Boo"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Baby Daisy"] [data-player="Bowser"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Baby Daisy"] [data-player="Dark Bones (Red)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Baby Daisy"] [data-player="Dry Bones (Blue)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Baby Daisy"] [data-player="Dry Bones (Green)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Baby Daisy"] [data-player="Dry Bones (White)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Baby Daisy"] [data-player="King Boo"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
+[data-player="Baby Daisy"] [data-player="Boo"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Baby Daisy"] [data-player="Bowser"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Baby Daisy"] [data-player="Dark Bones (Red)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Baby Daisy"] [data-player="Dry Bones (Blue)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Baby Daisy"] [data-player="Dry Bones (Green)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Baby Daisy"] [data-player="Dry Bones (White)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Baby Daisy"] [data-player="King Boo"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
 [data-player="Baby Daisy"] [data-player="Orange Mii (F)"] span {opacity: 1;}
 [data-player="Baby Daisy"] [data-player="Orange Mii"] span {opacity: 1;}
-[data-player="Baby Daisy"] [data-player="Petey Piranha"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
+[data-player="Baby Daisy"] [data-player="Petey Piranha"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
 [data-player="Baby Daisy"] [data-player="Yoshi (Blue)"] span {opacity: 1;}
 [data-player="Baby Daisy"] [data-player="Yoshi (Light Blue)"] span {opacity: 1;}
 [data-player="Baby Daisy"] [data-player="Yoshi (Pink)"] span {opacity: 1;}
@@ -49,21 +49,21 @@
 [data-player="Baby Luigi"] [data-player="Baby Daisy"] span {opacity: 1;}
 [data-player="Baby Luigi"] [data-player="Baby Mario"] span {opacity: 1;}
 [data-player="Baby Luigi"] [data-player="Baby Peach"] span {opacity: 1;}
-[data-player="Baby Luigi"] [data-player="Boo"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Baby Luigi"] [data-player="Bowser"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
+[data-player="Baby Luigi"] [data-player="Boo"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Baby Luigi"] [data-player="Bowser"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
 [data-player="Baby Luigi"] [data-player="Green Mii (F)"] span {opacity: 1;}
 [data-player="Baby Luigi"] [data-player="Green Mii"] span {opacity: 1;}
-[data-player="Baby Luigi"] [data-player="King Boo"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Baby Luigi"] [data-player="Magikoopa (Blue)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Baby Luigi"] [data-player="Magikoopa (Green)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Baby Luigi"] [data-player="Magikoopa (Red)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Baby Luigi"] [data-player="Magikoopa (Yellow)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Baby Luigi"] [data-player="Petey Piranha"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Baby Luigi"] [data-player="Shy Guy (Blue)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Baby Luigi"] [data-player="Shy Guy (Gray)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Baby Luigi"] [data-player="Shy Guy (Green)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Baby Luigi"] [data-player="Shy Guy (Red)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Baby Luigi"] [data-player="Shy Guy (Yellow)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
+[data-player="Baby Luigi"] [data-player="King Boo"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Baby Luigi"] [data-player="Magikoopa (Blue)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Baby Luigi"] [data-player="Magikoopa (Green)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Baby Luigi"] [data-player="Magikoopa (Red)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Baby Luigi"] [data-player="Magikoopa (Yellow)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Baby Luigi"] [data-player="Petey Piranha"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Baby Luigi"] [data-player="Shy Guy (Blue)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Baby Luigi"] [data-player="Shy Guy (Gray)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Baby Luigi"] [data-player="Shy Guy (Green)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Baby Luigi"] [data-player="Shy Guy (Red)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Baby Luigi"] [data-player="Shy Guy (Yellow)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
 [data-player="Baby Luigi"] [data-player="Yoshi (Blue)"] span {opacity: 1;}
 [data-player="Baby Luigi"] [data-player="Yoshi (Light Blue)"] span {opacity: 1;}
 [data-player="Baby Luigi"] [data-player="Yoshi (Pink)"] span {opacity: 1;}
@@ -74,21 +74,21 @@
 [data-player="Baby Mario"] [data-player="Baby Daisy"] span {opacity: 1;}
 [data-player="Baby Mario"] [data-player="Baby Luigi"] span {opacity: 1;}
 [data-player="Baby Mario"] [data-player="Baby Peach"] span {opacity: 1;}
-[data-player="Baby Mario"] [data-player="Boo"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Baby Mario"] [data-player="Bowser"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Baby Mario"] [data-player="King Boo"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Baby Mario"] [data-player="Magikoopa (Blue)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Baby Mario"] [data-player="Magikoopa (Green)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Baby Mario"] [data-player="Magikoopa (Red)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Baby Mario"] [data-player="Magikoopa (Yellow)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Baby Mario"] [data-player="Petey Piranha"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
+[data-player="Baby Mario"] [data-player="Boo"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Baby Mario"] [data-player="Bowser"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Baby Mario"] [data-player="King Boo"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Baby Mario"] [data-player="Magikoopa (Blue)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Baby Mario"] [data-player="Magikoopa (Green)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Baby Mario"] [data-player="Magikoopa (Red)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Baby Mario"] [data-player="Magikoopa (Yellow)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Baby Mario"] [data-player="Petey Piranha"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
 [data-player="Baby Mario"] [data-player="Red Mii (F)"] span {opacity: 1;}
 [data-player="Baby Mario"] [data-player="Red Mii"] span {opacity: 1;}
-[data-player="Baby Mario"] [data-player="Shy Guy (Blue)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Baby Mario"] [data-player="Shy Guy (Gray)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Baby Mario"] [data-player="Shy Guy (Green)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Baby Mario"] [data-player="Shy Guy (Red)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Baby Mario"] [data-player="Shy Guy (Yellow)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
+[data-player="Baby Mario"] [data-player="Shy Guy (Blue)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Baby Mario"] [data-player="Shy Guy (Gray)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Baby Mario"] [data-player="Shy Guy (Green)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Baby Mario"] [data-player="Shy Guy (Red)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Baby Mario"] [data-player="Shy Guy (Yellow)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
 [data-player="Baby Mario"] [data-player="Yoshi (Blue)"] span {opacity: 1;}
 [data-player="Baby Mario"] [data-player="Yoshi (Light Blue)"] span {opacity: 1;}
 [data-player="Baby Mario"] [data-player="Yoshi (Pink)"] span {opacity: 1;}
@@ -99,21 +99,21 @@
 [data-player="Baby Peach"] [data-player="Baby Daisy"] span {opacity: 1;}
 [data-player="Baby Peach"] [data-player="Baby Luigi"] span {opacity: 1;}
 [data-player="Baby Peach"] [data-player="Baby Mario"] span {opacity: 1;}
-[data-player="Baby Peach"] [data-player="Boo"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Baby Peach"] [data-player="Bowser"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Baby Peach"] [data-player="Dark Bones (Red)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Baby Peach"] [data-player="Dry Bones (Blue)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Baby Peach"] [data-player="Dry Bones (Green)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Baby Peach"] [data-player="Dry Bones (White)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Baby Peach"] [data-player="King Boo"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Baby Peach"] [data-player="Petey Piranha"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
+[data-player="Baby Peach"] [data-player="Boo"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Baby Peach"] [data-player="Bowser"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Baby Peach"] [data-player="Dark Bones (Red)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Baby Peach"] [data-player="Dry Bones (Blue)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Baby Peach"] [data-player="Dry Bones (Green)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Baby Peach"] [data-player="Dry Bones (White)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Baby Peach"] [data-player="King Boo"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Baby Peach"] [data-player="Petey Piranha"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
 [data-player="Baby Peach"] [data-player="Pink Mii (F)"] span {opacity: 1;}
 [data-player="Baby Peach"] [data-player="Pink Mii"] span {opacity: 1;}
-[data-player="Baby Peach"] [data-player="Shy Guy (Blue)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Baby Peach"] [data-player="Shy Guy (Gray)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Baby Peach"] [data-player="Shy Guy (Green)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Baby Peach"] [data-player="Shy Guy (Red)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Baby Peach"] [data-player="Shy Guy (Yellow)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
+[data-player="Baby Peach"] [data-player="Shy Guy (Blue)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Baby Peach"] [data-player="Shy Guy (Gray)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Baby Peach"] [data-player="Shy Guy (Green)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Baby Peach"] [data-player="Shy Guy (Red)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Baby Peach"] [data-player="Shy Guy (Yellow)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
 [data-player="Baby Peach"] [data-player="Toad (Blue)"] span {opacity: 1;}
 [data-player="Baby Peach"] [data-player="Toad (Green)"] span {opacity: 1;}
 [data-player="Baby Peach"] [data-player="Toad (Purple)"] span {opacity: 1;}
@@ -127,9 +127,9 @@
 [data-player="Baby Peach"] [data-player="Yoshi (Red)"] span {opacity: 1;}
 [data-player="Baby Peach"] [data-player="Yoshi (Yellow)"] span {opacity: 1;}
 [data-player="Baby Peach"] [data-player="Yoshi"] span {opacity: 1;}
-[data-player="Birdo"] [data-player="Blooper"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
+[data-player="Birdo"] [data-player="Blooper"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
 [data-player="Birdo"] [data-player="Daisy"] span {opacity: 1;}
-[data-player="Birdo"] [data-player="Peach"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
+[data-player="Birdo"] [data-player="Peach"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
 [data-player="Birdo"] [data-player="Petey Piranha"] span {opacity: 1;}
 [data-player="Birdo"] [data-player="Pink Mii (F)"] span {opacity: 1;}
 [data-player="Birdo"] [data-player="Pink Mii"] span {opacity: 1;}
@@ -138,10 +138,10 @@
 [data-player="Birdo"] [data-player="Shy Guy (Green)"] span {opacity: 1;}
 [data-player="Birdo"] [data-player="Shy Guy (Red)"] span {opacity: 1;}
 [data-player="Birdo"] [data-player="Shy Guy (Yellow)"] span {opacity: 1;}
-[data-player="Birdo"] [data-player="Tiny Kong"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
+[data-player="Birdo"] [data-player="Tiny Kong"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
 [data-player="Birdo"] [data-player="Toadette"] span {opacity: 1;}
-[data-player="Birdo"] [data-player="Waluigi"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Birdo"] [data-player="Wario"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
+[data-player="Birdo"] [data-player="Waluigi"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Birdo"] [data-player="Wario"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
 [data-player="Birdo"] [data-player="White Mii (F)"] span {opacity: 1;}
 [data-player="Birdo"] [data-player="White Mii"] span {opacity: 1;}
 [data-player="Birdo"] [data-player="Yoshi (Blue)"] span {opacity: 1;}
@@ -160,7 +160,7 @@
 [data-player="Black Mii"] [data-player="Bowser Jr."] span {opacity: 1;}
 [data-player="Black Mii"] [data-player="Bowser"] span {opacity: 1;}
 [data-player="Black Mii"] [data-player="Shy Guy (Gray)"] span {opacity: 1;}
-[data-player="Blooper"] [data-player="Birdo"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
+[data-player="Blooper"] [data-player="Birdo"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
 [data-player="Blooper"] [data-player="Boo"] span {opacity: 1;}
 [data-player="Blooper"] [data-player="Petey Piranha"] span {opacity: 1;}
 [data-player="Blooper"] [data-player="White Mii (F)"] span {opacity: 1;}
@@ -192,13 +192,13 @@
 [data-player="Blue Mii"] [data-player="Toad (Blue)"] span {opacity: 1;}
 [data-player="Blue Mii"] [data-player="Waluigi"] span {opacity: 1;}
 [data-player="Blue Mii"] [data-player="Yoshi (Blue)"] span {opacity: 1;}
-[data-player="Boo"] [data-player="Baby Daisy"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Boo"] [data-player="Baby Luigi"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Boo"] [data-player="Baby Mario"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Boo"] [data-player="Baby Peach"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
+[data-player="Boo"] [data-player="Baby Daisy"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Boo"] [data-player="Baby Luigi"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Boo"] [data-player="Baby Mario"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Boo"] [data-player="Baby Peach"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
 [data-player="Boo"] [data-player="Blooper"] span {opacity: 1;}
 [data-player="Boo"] [data-player="King Boo"] span {opacity: 1;}
-[data-player="Boo"] [data-player="Luigi"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
+[data-player="Boo"] [data-player="Luigi"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
 [data-player="Boo"] [data-player="Magikoopa (Blue)"] span {opacity: 1;}
 [data-player="Boo"] [data-player="Magikoopa (Green)"] span {opacity: 1;}
 [data-player="Boo"] [data-player="Magikoopa (Red)"] span {opacity: 1;}
@@ -211,26 +211,26 @@
 [data-player="Boo"] [data-player="Waluigi"] span {opacity: 1;}
 [data-player="Boo"] [data-player="White Mii (F)"] span {opacity: 1;}
 [data-player="Boo"] [data-player="White Mii"] span {opacity: 1;}
-[data-player="Boo"] [data-player="Yoshi (Blue)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Boo"] [data-player="Yoshi (Light Blue)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Boo"] [data-player="Yoshi (Pink)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Boo"] [data-player="Yoshi (Red)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Boo"] [data-player="Yoshi (Yellow)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Boo"] [data-player="Yoshi"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
+[data-player="Boo"] [data-player="Yoshi (Blue)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Boo"] [data-player="Yoshi (Light Blue)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Boo"] [data-player="Yoshi (Pink)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Boo"] [data-player="Yoshi (Red)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Boo"] [data-player="Yoshi (Yellow)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Boo"] [data-player="Yoshi"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
 [data-player="Boomerang Bro."] [data-player="Blue Mii (F)"] span {opacity: 1;}
 [data-player="Boomerang Bro."] [data-player="Blue Mii"] span {opacity: 1;}
 [data-player="Boomerang Bro."] [data-player="Bowser Jr."] span {opacity: 1;}
 [data-player="Boomerang Bro."] [data-player="Bowser"] span {opacity: 1;}
-[data-player="Boomerang Bro."] [data-player="Daisy"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
+[data-player="Boomerang Bro."] [data-player="Daisy"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
 [data-player="Boomerang Bro."] [data-player="Fire Bro."] span {opacity: 1;}
 [data-player="Boomerang Bro."] [data-player="Hammer Bro."] span {opacity: 1;}
 [data-player="Boomerang Bro."] [data-player="Magikoopa (Blue)"] span {opacity: 1;}
 [data-player="Boomerang Bro."] [data-player="Magikoopa (Green)"] span {opacity: 1;}
 [data-player="Boomerang Bro."] [data-player="Magikoopa (Red)"] span {opacity: 1;}
 [data-player="Boomerang Bro."] [data-player="Magikoopa (Yellow)"] span {opacity: 1;}
-[data-player="Boomerang Bro."] [data-player="Noki (Blue)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Boomerang Bro."] [data-player="Noki (Green)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Boomerang Bro."] [data-player="Noki (Red)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
+[data-player="Boomerang Bro."] [data-player="Noki (Blue)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Boomerang Bro."] [data-player="Noki (Green)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Boomerang Bro."] [data-player="Noki (Red)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
 [data-player="Bowser Jr."] [data-player="Black Mii (F)"] span {opacity: 1;}
 [data-player="Bowser Jr."] [data-player="Black Mii"] span {opacity: 1;}
 [data-player="Bowser Jr."] [data-player="Boomerang Bro."] span {opacity: 1;}
@@ -245,18 +245,18 @@
 [data-player="Bowser Jr."] [data-player="Magikoopa (Green)"] span {opacity: 1;}
 [data-player="Bowser Jr."] [data-player="Magikoopa (Red)"] span {opacity: 1;}
 [data-player="Bowser Jr."] [data-player="Magikoopa (Yellow)"] span {opacity: 1;}
-[data-player="Bowser Jr."] [data-player="Mario"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Bowser Jr."] [data-player="Noki (Blue)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Bowser Jr."] [data-player="Noki (Green)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Bowser Jr."] [data-player="Noki (Red)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Bowser Jr."] [data-player="Pianta (Blue)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Bowser Jr."] [data-player="Pianta (Red)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Bowser Jr."] [data-player="Pianta (Yellow)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Bowser"] [data-player="Baby DK"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Bowser"] [data-player="Baby Daisy"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Bowser"] [data-player="Baby Luigi"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Bowser"] [data-player="Baby Mario"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Bowser"] [data-player="Baby Peach"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
+[data-player="Bowser Jr."] [data-player="Mario"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Bowser Jr."] [data-player="Noki (Blue)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Bowser Jr."] [data-player="Noki (Green)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Bowser Jr."] [data-player="Noki (Red)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Bowser Jr."] [data-player="Pianta (Blue)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Bowser Jr."] [data-player="Pianta (Red)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Bowser Jr."] [data-player="Pianta (Yellow)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Bowser"] [data-player="Baby DK"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Bowser"] [data-player="Baby Daisy"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Bowser"] [data-player="Baby Luigi"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Bowser"] [data-player="Baby Mario"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Bowser"] [data-player="Baby Peach"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
 [data-player="Bowser"] [data-player="Black Mii (F)"] span {opacity: 1;}
 [data-player="Bowser"] [data-player="Black Mii"] span {opacity: 1;}
 [data-player="Bowser"] [data-player="Boomerang Bro."] span {opacity: 1;}
@@ -267,25 +267,25 @@
 [data-player="Bowser"] [data-player="Dry Bones (White)"] span {opacity: 1;}
 [data-player="Bowser"] [data-player="Fire Bro."] span {opacity: 1;}
 [data-player="Bowser"] [data-player="Hammer Bro."] span {opacity: 1;}
-[data-player="Bowser"] [data-player="King K. Rool"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
+[data-player="Bowser"] [data-player="King K. Rool"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
 [data-player="Bowser"] [data-player="Koopa Paratroopa (Green)"] span {opacity: 1;}
 [data-player="Bowser"] [data-player="Koopa Paratroopa (Red)"] span {opacity: 1;}
 [data-player="Bowser"] [data-player="Koopa Troopa (Green)"] span {opacity: 1;}
 [data-player="Bowser"] [data-player="Koopa Troopa (Red)"] span {opacity: 1;}
-[data-player="Bowser"] [data-player="Luigi"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
+[data-player="Bowser"] [data-player="Luigi"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
 [data-player="Bowser"] [data-player="Magikoopa (Blue)"] span {opacity: 1;}
 [data-player="Bowser"] [data-player="Magikoopa (Green)"] span {opacity: 1;}
 [data-player="Bowser"] [data-player="Magikoopa (Red)"] span {opacity: 1;}
 [data-player="Bowser"] [data-player="Magikoopa (Yellow)"] span {opacity: 1;}
-[data-player="Bowser"] [data-player="Mario"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Bowser"] [data-player="Peach"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Bowser"] [data-player="Toad (Blue)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Bowser"] [data-player="Toad (Green)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Bowser"] [data-player="Toad (Purple)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Bowser"] [data-player="Toad (Red)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Bowser"] [data-player="Toad (Yellow)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Bowser"] [data-player="Toadette"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Bowser"] [data-player="Toadsworth"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
+[data-player="Bowser"] [data-player="Mario"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Bowser"] [data-player="Peach"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Bowser"] [data-player="Toad (Blue)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Bowser"] [data-player="Toad (Green)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Bowser"] [data-player="Toad (Purple)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Bowser"] [data-player="Toad (Red)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Bowser"] [data-player="Toad (Yellow)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Bowser"] [data-player="Toadette"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Bowser"] [data-player="Toadsworth"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
 [data-player="Bowser"] [data-player="White Mii (F)"] span {opacity: 1;}
 [data-player="Bowser"] [data-player="White Mii"] span {opacity: 1;}
 [data-player="Brown Mii (F)"] [data-player="Baby DK"] span {opacity: 1;}
@@ -309,25 +309,25 @@
 [data-player="Brown Mii"] [data-player="Paragoomba"] span {opacity: 1;}
 [data-player="Brown Mii"] [data-player="Toadsworth"] span {opacity: 1;}
 [data-player="Daisy"] [data-player="Birdo"] span {opacity: 1;}
-[data-player="Daisy"] [data-player="Boomerang Bro."] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Daisy"] [data-player="Fire Bro."] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Daisy"] [data-player="Hammer Bro."] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
+[data-player="Daisy"] [data-player="Boomerang Bro."] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Daisy"] [data-player="Fire Bro."] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Daisy"] [data-player="Hammer Bro."] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
 [data-player="Daisy"] [data-player="Luigi"] span {opacity: 1;}
 [data-player="Daisy"] [data-player="Orange Mii (F)"] span {opacity: 1;}
 [data-player="Daisy"] [data-player="Orange Mii"] span {opacity: 1;}
 [data-player="Daisy"] [data-player="Peach"] span {opacity: 1;}
 [data-player="Daisy"] [data-player="Yellow Mii (F)"] span {opacity: 1;}
 [data-player="Daisy"] [data-player="Yellow Mii"] span {opacity: 1;}
-[data-player="Dark Bones (Red)"] [data-player="Baby Daisy"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Dark Bones (Red)"] [data-player="Baby Peach"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
+[data-player="Dark Bones (Red)"] [data-player="Baby Daisy"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Dark Bones (Red)"] [data-player="Baby Peach"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
 [data-player="Dark Bones (Red)"] [data-player="Bowser"] span {opacity: 1;}
-[data-player="Dark Bones (Red)"] [data-player="Dixie Kong"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
+[data-player="Dark Bones (Red)"] [data-player="Dixie Kong"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
 [data-player="Dark Bones (Red)"] [data-player="Dry Bones (Blue)"] span {opacity: 1;}
 [data-player="Dark Bones (Red)"] [data-player="Dry Bones (Green)"] span {opacity: 1;}
 [data-player="Dark Bones (Red)"] [data-player="Dry Bones (White)"] span {opacity: 1;}
 [data-player="Dark Bones (Red)"] [data-player="Koopa Troopa (Green)"] span {opacity: 1;}
 [data-player="Dark Bones (Red)"] [data-player="Koopa Troopa (Red)"] span {opacity: 1;}
-[data-player="Dark Bones (Red)"] [data-player="Luigi"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
+[data-player="Dark Bones (Red)"] [data-player="Luigi"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
 [data-player="Dark Bones (Red)"] [data-player="Red Mii (F)"] span {opacity: 1;}
 [data-player="Dark Bones (Red)"] [data-player="Red Mii"] span {opacity: 1;}
 [data-player="Diddy Kong"] [data-player="Brown Mii (F)"] span {opacity: 1;}
@@ -335,27 +335,27 @@
 [data-player="Diddy Kong"] [data-player="Dixie Kong"] span {opacity: 1;}
 [data-player="Diddy Kong"] [data-player="Donkey Kong"] span {opacity: 1;}
 [data-player="Diddy Kong"] [data-player="Funky Kong"] span {opacity: 1;}
-[data-player="Diddy Kong"] [data-player="King K. Rool"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Diddy Kong"] [data-player="Kritter (Blue)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Diddy Kong"] [data-player="Kritter (Brown)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Diddy Kong"] [data-player="Kritter (Green)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Diddy Kong"] [data-player="Kritter (Red)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
+[data-player="Diddy Kong"] [data-player="King K. Rool"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Diddy Kong"] [data-player="Kritter (Blue)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Diddy Kong"] [data-player="Kritter (Brown)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Diddy Kong"] [data-player="Kritter (Green)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Diddy Kong"] [data-player="Kritter (Red)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
 [data-player="Diddy Kong"] [data-player="Red Mii (F)"] span {opacity: 1;}
 [data-player="Diddy Kong"] [data-player="Red Mii"] span {opacity: 1;}
 [data-player="Diddy Kong"] [data-player="Tiny Kong"] span {opacity: 1;}
 [data-player="Dixie Kong"] [data-player="Baby DK"] span {opacity: 1;}
-[data-player="Dixie Kong"] [data-player="Dark Bones (Red)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
+[data-player="Dixie Kong"] [data-player="Dark Bones (Red)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
 [data-player="Dixie Kong"] [data-player="Diddy Kong"] span {opacity: 1;}
 [data-player="Dixie Kong"] [data-player="Donkey Kong"] span {opacity: 1;}
-[data-player="Dixie Kong"] [data-player="Dry Bones (Blue)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Dixie Kong"] [data-player="Dry Bones (Green)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Dixie Kong"] [data-player="Dry Bones (White)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
+[data-player="Dixie Kong"] [data-player="Dry Bones (Blue)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Dixie Kong"] [data-player="Dry Bones (Green)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Dixie Kong"] [data-player="Dry Bones (White)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
 [data-player="Dixie Kong"] [data-player="Funky Kong"] span {opacity: 1;}
-[data-player="Dixie Kong"] [data-player="King K. Rool"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Dixie Kong"] [data-player="Kritter (Blue)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Dixie Kong"] [data-player="Kritter (Brown)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Dixie Kong"] [data-player="Kritter (Green)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Dixie Kong"] [data-player="Kritter (Red)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
+[data-player="Dixie Kong"] [data-player="King K. Rool"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Dixie Kong"] [data-player="Kritter (Blue)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Dixie Kong"] [data-player="Kritter (Brown)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Dixie Kong"] [data-player="Kritter (Green)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Dixie Kong"] [data-player="Kritter (Red)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
 [data-player="Dixie Kong"] [data-player="Pink Mii (F)"] span {opacity: 1;}
 [data-player="Dixie Kong"] [data-player="Pink Mii"] span {opacity: 1;}
 [data-player="Dixie Kong"] [data-player="Tiny Kong"] span {opacity: 1;}
@@ -364,73 +364,73 @@
 [data-player="Donkey Kong"] [data-player="Diddy Kong"] span {opacity: 1;}
 [data-player="Donkey Kong"] [data-player="Dixie Kong"] span {opacity: 1;}
 [data-player="Donkey Kong"] [data-player="Funky Kong"] span {opacity: 1;}
-[data-player="Donkey Kong"] [data-player="King K. Rool"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Donkey Kong"] [data-player="Kritter (Blue)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Donkey Kong"] [data-player="Kritter (Brown)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Donkey Kong"] [data-player="Kritter (Green)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Donkey Kong"] [data-player="Kritter (Red)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
+[data-player="Donkey Kong"] [data-player="King K. Rool"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Donkey Kong"] [data-player="Kritter (Blue)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Donkey Kong"] [data-player="Kritter (Brown)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Donkey Kong"] [data-player="Kritter (Green)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Donkey Kong"] [data-player="Kritter (Red)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
 [data-player="Donkey Kong"] [data-player="Orange Mii (F)"] span {opacity: 1;}
 [data-player="Donkey Kong"] [data-player="Orange Mii"] span {opacity: 1;}
 [data-player="Donkey Kong"] [data-player="Tiny Kong"] span {opacity: 1;}
-[data-player="Dry Bones (Blue)"] [data-player="Baby Daisy"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Dry Bones (Blue)"] [data-player="Baby Peach"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
+[data-player="Dry Bones (Blue)"] [data-player="Baby Daisy"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Dry Bones (Blue)"] [data-player="Baby Peach"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
 [data-player="Dry Bones (Blue)"] [data-player="Blue Mii (F)"] span {opacity: 1;}
 [data-player="Dry Bones (Blue)"] [data-player="Blue Mii"] span {opacity: 1;}
 [data-player="Dry Bones (Blue)"] [data-player="Bowser"] span {opacity: 1;}
 [data-player="Dry Bones (Blue)"] [data-player="Dark Bones (Red)"] span {opacity: 1;}
-[data-player="Dry Bones (Blue)"] [data-player="Dixie Kong"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
+[data-player="Dry Bones (Blue)"] [data-player="Dixie Kong"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
 [data-player="Dry Bones (Blue)"] [data-player="Dry Bones (Green)"] span {opacity: 1;}
 [data-player="Dry Bones (Blue)"] [data-player="Dry Bones (White)"] span {opacity: 1;}
 [data-player="Dry Bones (Blue)"] [data-player="Koopa Troopa (Green)"] span {opacity: 1;}
 [data-player="Dry Bones (Blue)"] [data-player="Koopa Troopa (Red)"] span {opacity: 1;}
-[data-player="Dry Bones (Blue)"] [data-player="Luigi"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Dry Bones (Green)"] [data-player="Baby Daisy"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Dry Bones (Green)"] [data-player="Baby Peach"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
+[data-player="Dry Bones (Blue)"] [data-player="Luigi"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Dry Bones (Green)"] [data-player="Baby Daisy"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Dry Bones (Green)"] [data-player="Baby Peach"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
 [data-player="Dry Bones (Green)"] [data-player="Bowser"] span {opacity: 1;}
 [data-player="Dry Bones (Green)"] [data-player="Dark Bones (Red)"] span {opacity: 1;}
-[data-player="Dry Bones (Green)"] [data-player="Dixie Kong"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
+[data-player="Dry Bones (Green)"] [data-player="Dixie Kong"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
 [data-player="Dry Bones (Green)"] [data-player="Dry Bones (Blue)"] span {opacity: 1;}
 [data-player="Dry Bones (Green)"] [data-player="Dry Bones (White)"] span {opacity: 1;}
 [data-player="Dry Bones (Green)"] [data-player="Green Mii (F)"] span {opacity: 1;}
 [data-player="Dry Bones (Green)"] [data-player="Green Mii"] span {opacity: 1;}
 [data-player="Dry Bones (Green)"] [data-player="Koopa Troopa (Green)"] span {opacity: 1;}
 [data-player="Dry Bones (Green)"] [data-player="Koopa Troopa (Red)"] span {opacity: 1;}
-[data-player="Dry Bones (Green)"] [data-player="Luigi"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Dry Bones (White)"] [data-player="Baby Daisy"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Dry Bones (White)"] [data-player="Baby Peach"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
+[data-player="Dry Bones (Green)"] [data-player="Luigi"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Dry Bones (White)"] [data-player="Baby Daisy"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Dry Bones (White)"] [data-player="Baby Peach"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
 [data-player="Dry Bones (White)"] [data-player="Bowser"] span {opacity: 1;}
 [data-player="Dry Bones (White)"] [data-player="Dark Bones (Red)"] span {opacity: 1;}
-[data-player="Dry Bones (White)"] [data-player="Dixie Kong"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
+[data-player="Dry Bones (White)"] [data-player="Dixie Kong"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
 [data-player="Dry Bones (White)"] [data-player="Dry Bones (Blue)"] span {opacity: 1;}
 [data-player="Dry Bones (White)"] [data-player="Dry Bones (Green)"] span {opacity: 1;}
 [data-player="Dry Bones (White)"] [data-player="Koopa Troopa (Green)"] span {opacity: 1;}
 [data-player="Dry Bones (White)"] [data-player="Koopa Troopa (Red)"] span {opacity: 1;}
-[data-player="Dry Bones (White)"] [data-player="Luigi"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
+[data-player="Dry Bones (White)"] [data-player="Luigi"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
 [data-player="Dry Bones (White)"] [data-player="White Mii (F)"] span {opacity: 1;}
 [data-player="Dry Bones (White)"] [data-player="White Mii"] span {opacity: 1;}
 [data-player="Fire Bro."] [data-player="Boomerang Bro."] span {opacity: 1;}
 [data-player="Fire Bro."] [data-player="Bowser Jr."] span {opacity: 1;}
 [data-player="Fire Bro."] [data-player="Bowser"] span {opacity: 1;}
-[data-player="Fire Bro."] [data-player="Daisy"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
+[data-player="Fire Bro."] [data-player="Daisy"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
 [data-player="Fire Bro."] [data-player="Hammer Bro."] span {opacity: 1;}
 [data-player="Fire Bro."] [data-player="Magikoopa (Blue)"] span {opacity: 1;}
 [data-player="Fire Bro."] [data-player="Magikoopa (Green)"] span {opacity: 1;}
 [data-player="Fire Bro."] [data-player="Magikoopa (Red)"] span {opacity: 1;}
 [data-player="Fire Bro."] [data-player="Magikoopa (Yellow)"] span {opacity: 1;}
-[data-player="Fire Bro."] [data-player="Noki (Blue)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Fire Bro."] [data-player="Noki (Green)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Fire Bro."] [data-player="Noki (Red)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
+[data-player="Fire Bro."] [data-player="Noki (Blue)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Fire Bro."] [data-player="Noki (Green)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Fire Bro."] [data-player="Noki (Red)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
 [data-player="Fire Bro."] [data-player="Red Mii (F)"] span {opacity: 1;}
 [data-player="Fire Bro."] [data-player="Red Mii"] span {opacity: 1;}
 [data-player="Funky Kong"] [data-player="Baby DK"] span {opacity: 1;}
 [data-player="Funky Kong"] [data-player="Diddy Kong"] span {opacity: 1;}
 [data-player="Funky Kong"] [data-player="Dixie Kong"] span {opacity: 1;}
 [data-player="Funky Kong"] [data-player="Donkey Kong"] span {opacity: 1;}
-[data-player="Funky Kong"] [data-player="King K. Rool"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Funky Kong"] [data-player="Kritter (Blue)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Funky Kong"] [data-player="Kritter (Brown)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Funky Kong"] [data-player="Kritter (Green)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Funky Kong"] [data-player="Kritter (Red)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
+[data-player="Funky Kong"] [data-player="King K. Rool"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Funky Kong"] [data-player="Kritter (Blue)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Funky Kong"] [data-player="Kritter (Brown)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Funky Kong"] [data-player="Kritter (Green)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Funky Kong"] [data-player="Kritter (Red)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
 [data-player="Funky Kong"] [data-player="Light Blue Mii (F)"] span {opacity: 1;}
 [data-player="Funky Kong"] [data-player="Light Blue Mii"] span {opacity: 1;}
 [data-player="Funky Kong"] [data-player="Tiny Kong"] span {opacity: 1;}
@@ -440,16 +440,16 @@
 [data-player="Goomba"] [data-player="Koopa Troopa (Red)"] span {opacity: 1;}
 [data-player="Goomba"] [data-player="Monty Mole"] span {opacity: 1;}
 [data-player="Goomba"] [data-player="Paragoomba"] span {opacity: 1;}
-[data-player="Goomba"] [data-player="Pianta (Blue)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Goomba"] [data-player="Pianta (Red)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Goomba"] [data-player="Pianta (Yellow)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Goomba"] [data-player="Toad (Blue)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Goomba"] [data-player="Toad (Green)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Goomba"] [data-player="Toad (Purple)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Goomba"] [data-player="Toad (Red)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Goomba"] [data-player="Toad (Yellow)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Goomba"] [data-player="Toadette"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Goomba"] [data-player="Toadsworth"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
+[data-player="Goomba"] [data-player="Pianta (Blue)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Goomba"] [data-player="Pianta (Red)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Goomba"] [data-player="Pianta (Yellow)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Goomba"] [data-player="Toad (Blue)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Goomba"] [data-player="Toad (Green)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Goomba"] [data-player="Toad (Purple)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Goomba"] [data-player="Toad (Red)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Goomba"] [data-player="Toad (Yellow)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Goomba"] [data-player="Toadette"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Goomba"] [data-player="Toadsworth"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
 [data-player="Green Mii (F)"] [data-player="Baby Luigi"] span {opacity: 1;}
 [data-player="Green Mii (F)"] [data-player="Dry Bones (Green)"] span {opacity: 1;}
 [data-player="Green Mii (F)"] [data-player="Green Mii (F)"] span {opacity: 1;}
@@ -483,7 +483,7 @@
 [data-player="Hammer Bro."] [data-player="Boomerang Bro."] span {opacity: 1;}
 [data-player="Hammer Bro."] [data-player="Bowser Jr."] span {opacity: 1;}
 [data-player="Hammer Bro."] [data-player="Bowser"] span {opacity: 1;}
-[data-player="Hammer Bro."] [data-player="Daisy"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
+[data-player="Hammer Bro."] [data-player="Daisy"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
 [data-player="Hammer Bro."] [data-player="Fire Bro."] span {opacity: 1;}
 [data-player="Hammer Bro."] [data-player="Green Mii (F)"] span {opacity: 1;}
 [data-player="Hammer Bro."] [data-player="Green Mii"] span {opacity: 1;}
@@ -491,33 +491,33 @@
 [data-player="Hammer Bro."] [data-player="Magikoopa (Green)"] span {opacity: 1;}
 [data-player="Hammer Bro."] [data-player="Magikoopa (Red)"] span {opacity: 1;}
 [data-player="Hammer Bro."] [data-player="Magikoopa (Yellow)"] span {opacity: 1;}
-[data-player="Hammer Bro."] [data-player="Noki (Blue)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Hammer Bro."] [data-player="Noki (Green)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Hammer Bro."] [data-player="Noki (Red)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="King Boo"] [data-player="Baby Daisy"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="King Boo"] [data-player="Baby Luigi"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="King Boo"] [data-player="Baby Mario"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="King Boo"] [data-player="Baby Peach"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
+[data-player="Hammer Bro."] [data-player="Noki (Blue)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Hammer Bro."] [data-player="Noki (Green)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Hammer Bro."] [data-player="Noki (Red)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="King Boo"] [data-player="Baby Daisy"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="King Boo"] [data-player="Baby Luigi"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="King Boo"] [data-player="Baby Mario"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="King Boo"] [data-player="Baby Peach"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
 [data-player="King Boo"] [data-player="Boo"] span {opacity: 1;}
 [data-player="King Boo"] [data-player="King K. Rool"] span {opacity: 1;}
-[data-player="King Boo"] [data-player="Luigi"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="King Boo"] [data-player="Mario"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
+[data-player="King Boo"] [data-player="Luigi"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="King Boo"] [data-player="Mario"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
 [data-player="King Boo"] [data-player="Petey Piranha"] span {opacity: 1;}
 [data-player="King Boo"] [data-player="White Mii (F)"] span {opacity: 1;}
 [data-player="King Boo"] [data-player="White Mii"] span {opacity: 1;}
 [data-player="King Boo"] [data-player="Wiggler"] span {opacity: 1;}
-[data-player="King Boo"] [data-player="Yoshi (Blue)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="King Boo"] [data-player="Yoshi (Light Blue)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="King Boo"] [data-player="Yoshi (Pink)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="King Boo"] [data-player="Yoshi (Red)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="King Boo"] [data-player="Yoshi (Yellow)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="King Boo"] [data-player="Yoshi"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="King K. Rool"] [data-player="Baby DK"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="King K. Rool"] [data-player="Bowser"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="King K. Rool"] [data-player="Diddy Kong"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="King K. Rool"] [data-player="Dixie Kong"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="King K. Rool"] [data-player="Donkey Kong"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="King K. Rool"] [data-player="Funky Kong"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
+[data-player="King Boo"] [data-player="Yoshi (Blue)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="King Boo"] [data-player="Yoshi (Light Blue)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="King Boo"] [data-player="Yoshi (Pink)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="King Boo"] [data-player="Yoshi (Red)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="King Boo"] [data-player="Yoshi (Yellow)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="King Boo"] [data-player="Yoshi"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="King K. Rool"] [data-player="Baby DK"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="King K. Rool"] [data-player="Bowser"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="King K. Rool"] [data-player="Diddy Kong"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="King K. Rool"] [data-player="Dixie Kong"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="King K. Rool"] [data-player="Donkey Kong"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="King K. Rool"] [data-player="Funky Kong"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
 [data-player="King K. Rool"] [data-player="Green Mii (F)"] span {opacity: 1;}
 [data-player="King K. Rool"] [data-player="Green Mii"] span {opacity: 1;}
 [data-player="King K. Rool"] [data-player="King Boo"] span {opacity: 1;}
@@ -525,7 +525,7 @@
 [data-player="King K. Rool"] [data-player="Kritter (Brown)"] span {opacity: 1;}
 [data-player="King K. Rool"] [data-player="Kritter (Green)"] span {opacity: 1;}
 [data-player="King K. Rool"] [data-player="Kritter (Red)"] span {opacity: 1;}
-[data-player="King K. Rool"] [data-player="Tiny Kong"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
+[data-player="King K. Rool"] [data-player="Tiny Kong"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
 [data-player="Koopa Paratroopa (Green)"] [data-player="Bowser"] span {opacity: 1;}
 [data-player="Koopa Paratroopa (Green)"] [data-player="Green Mii (F)"] span {opacity: 1;}
 [data-player="Koopa Paratroopa (Green)"] [data-player="Green Mii"] span {opacity: 1;}
@@ -533,7 +533,7 @@
 [data-player="Koopa Paratroopa (Green)"] [data-player="Koopa Troopa (Green)"] span {opacity: 1;}
 [data-player="Koopa Paratroopa (Green)"] [data-player="Koopa Troopa (Red)"] span {opacity: 1;}
 [data-player="Koopa Paratroopa (Green)"] [data-player="Paragoomba"] span {opacity: 1;}
-[data-player="Koopa Paratroopa (Green)"] [data-player="Toadsworth"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
+[data-player="Koopa Paratroopa (Green)"] [data-player="Toadsworth"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
 [data-player="Koopa Paratroopa (Red)"] [data-player="Bowser"] span {opacity: 1;}
 [data-player="Koopa Paratroopa (Red)"] [data-player="Koopa Paratroopa (Green)"] span {opacity: 1;}
 [data-player="Koopa Paratroopa (Red)"] [data-player="Koopa Troopa (Green)"] span {opacity: 1;}
@@ -541,7 +541,7 @@
 [data-player="Koopa Paratroopa (Red)"] [data-player="Paragoomba"] span {opacity: 1;}
 [data-player="Koopa Paratroopa (Red)"] [data-player="Red Mii (F)"] span {opacity: 1;}
 [data-player="Koopa Paratroopa (Red)"] [data-player="Red Mii"] span {opacity: 1;}
-[data-player="Koopa Paratroopa (Red)"] [data-player="Toadsworth"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
+[data-player="Koopa Paratroopa (Red)"] [data-player="Toadsworth"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
 [data-player="Koopa Troopa (Green)"] [data-player="Bowser Jr."] span {opacity: 1;}
 [data-player="Koopa Troopa (Green)"] [data-player="Bowser"] span {opacity: 1;}
 [data-player="Koopa Troopa (Green)"] [data-player="Dark Bones (Red)"] span {opacity: 1;}
@@ -566,54 +566,54 @@
 [data-player="Koopa Troopa (Red)"] [data-player="Koopa Troopa (Green)"] span {opacity: 1;}
 [data-player="Koopa Troopa (Red)"] [data-player="Red Mii (F)"] span {opacity: 1;}
 [data-player="Koopa Troopa (Red)"] [data-player="Red Mii"] span {opacity: 1;}
-[data-player="Kritter (Blue)"] [data-player="Baby DK"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
+[data-player="Kritter (Blue)"] [data-player="Baby DK"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
 [data-player="Kritter (Blue)"] [data-player="Blue Mii (F)"] span {opacity: 1;}
 [data-player="Kritter (Blue)"] [data-player="Blue Mii"] span {opacity: 1;}
-[data-player="Kritter (Blue)"] [data-player="Diddy Kong"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Kritter (Blue)"] [data-player="Dixie Kong"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Kritter (Blue)"] [data-player="Donkey Kong"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Kritter (Blue)"] [data-player="Funky Kong"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
+[data-player="Kritter (Blue)"] [data-player="Diddy Kong"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Kritter (Blue)"] [data-player="Dixie Kong"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Kritter (Blue)"] [data-player="Donkey Kong"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Kritter (Blue)"] [data-player="Funky Kong"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
 [data-player="Kritter (Blue)"] [data-player="King K. Rool"] span {opacity: 1;}
 [data-player="Kritter (Blue)"] [data-player="Kritter (Brown)"] span {opacity: 1;}
 [data-player="Kritter (Blue)"] [data-player="Kritter (Green)"] span {opacity: 1;}
 [data-player="Kritter (Blue)"] [data-player="Kritter (Red)"] span {opacity: 1;}
-[data-player="Kritter (Blue)"] [data-player="Tiny Kong"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Kritter (Brown)"] [data-player="Baby DK"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
+[data-player="Kritter (Blue)"] [data-player="Tiny Kong"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Kritter (Brown)"] [data-player="Baby DK"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
 [data-player="Kritter (Brown)"] [data-player="Brown Mii (F)"] span {opacity: 1;}
 [data-player="Kritter (Brown)"] [data-player="Brown Mii"] span {opacity: 1;}
-[data-player="Kritter (Brown)"] [data-player="Diddy Kong"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Kritter (Brown)"] [data-player="Dixie Kong"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Kritter (Brown)"] [data-player="Donkey Kong"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Kritter (Brown)"] [data-player="Funky Kong"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
+[data-player="Kritter (Brown)"] [data-player="Diddy Kong"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Kritter (Brown)"] [data-player="Dixie Kong"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Kritter (Brown)"] [data-player="Donkey Kong"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Kritter (Brown)"] [data-player="Funky Kong"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
 [data-player="Kritter (Brown)"] [data-player="King K. Rool"] span {opacity: 1;}
 [data-player="Kritter (Brown)"] [data-player="Kritter (Blue)"] span {opacity: 1;}
 [data-player="Kritter (Brown)"] [data-player="Kritter (Green)"] span {opacity: 1;}
 [data-player="Kritter (Brown)"] [data-player="Kritter (Red)"] span {opacity: 1;}
-[data-player="Kritter (Brown)"] [data-player="Tiny Kong"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Kritter (Green)"] [data-player="Baby DK"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Kritter (Green)"] [data-player="Diddy Kong"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Kritter (Green)"] [data-player="Dixie Kong"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Kritter (Green)"] [data-player="Donkey Kong"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Kritter (Green)"] [data-player="Funky Kong"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
+[data-player="Kritter (Brown)"] [data-player="Tiny Kong"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Kritter (Green)"] [data-player="Baby DK"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Kritter (Green)"] [data-player="Diddy Kong"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Kritter (Green)"] [data-player="Dixie Kong"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Kritter (Green)"] [data-player="Donkey Kong"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Kritter (Green)"] [data-player="Funky Kong"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
 [data-player="Kritter (Green)"] [data-player="Green Mii (F)"] span {opacity: 1;}
 [data-player="Kritter (Green)"] [data-player="Green Mii"] span {opacity: 1;}
 [data-player="Kritter (Green)"] [data-player="King K. Rool"] span {opacity: 1;}
 [data-player="Kritter (Green)"] [data-player="Kritter (Blue)"] span {opacity: 1;}
 [data-player="Kritter (Green)"] [data-player="Kritter (Brown)"] span {opacity: 1;}
 [data-player="Kritter (Green)"] [data-player="Kritter (Red)"] span {opacity: 1;}
-[data-player="Kritter (Green)"] [data-player="Tiny Kong"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Kritter (Red)"] [data-player="Baby DK"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Kritter (Red)"] [data-player="Diddy Kong"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Kritter (Red)"] [data-player="Dixie Kong"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Kritter (Red)"] [data-player="Donkey Kong"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Kritter (Red)"] [data-player="Funky Kong"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
+[data-player="Kritter (Green)"] [data-player="Tiny Kong"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Kritter (Red)"] [data-player="Baby DK"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Kritter (Red)"] [data-player="Diddy Kong"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Kritter (Red)"] [data-player="Dixie Kong"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Kritter (Red)"] [data-player="Donkey Kong"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Kritter (Red)"] [data-player="Funky Kong"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
 [data-player="Kritter (Red)"] [data-player="King K. Rool"] span {opacity: 1;}
 [data-player="Kritter (Red)"] [data-player="Kritter (Blue)"] span {opacity: 1;}
 [data-player="Kritter (Red)"] [data-player="Kritter (Brown)"] span {opacity: 1;}
 [data-player="Kritter (Red)"] [data-player="Kritter (Green)"] span {opacity: 1;}
 [data-player="Kritter (Red)"] [data-player="Red Mii (F)"] span {opacity: 1;}
 [data-player="Kritter (Red)"] [data-player="Red Mii"] span {opacity: 1;}
-[data-player="Kritter (Red)"] [data-player="Tiny Kong"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
+[data-player="Kritter (Red)"] [data-player="Tiny Kong"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
 [data-player="Light Blue Mii (F)"] [data-player="Funky Kong"] span {opacity: 1;}
 [data-player="Light Blue Mii (F)"] [data-player="Light Blue Mii (F)"] span {opacity: 1;}
 [data-player="Light Blue Mii (F)"] [data-player="Light Blue Mii"] span {opacity: 1;}
@@ -640,20 +640,20 @@
 [data-player="Light Green Mii"] [data-player="Yoshi"] span {opacity: 1;}
 [data-player="Luigi"] [data-player="Blue Mii (F)"] span {opacity: 1;}
 [data-player="Luigi"] [data-player="Blue Mii"] span {opacity: 1;}
-[data-player="Luigi"] [data-player="Boo"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Luigi"] [data-player="Bowser"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
+[data-player="Luigi"] [data-player="Boo"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Luigi"] [data-player="Bowser"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
 [data-player="Luigi"] [data-player="Daisy"] span {opacity: 1;}
-[data-player="Luigi"] [data-player="Dark Bones (Red)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Luigi"] [data-player="Dry Bones (Blue)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Luigi"] [data-player="Dry Bones (Green)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Luigi"] [data-player="Dry Bones (White)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
+[data-player="Luigi"] [data-player="Dark Bones (Red)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Luigi"] [data-player="Dry Bones (Blue)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Luigi"] [data-player="Dry Bones (Green)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Luigi"] [data-player="Dry Bones (White)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
 [data-player="Luigi"] [data-player="Green Mii (F)"] span {opacity: 1;}
 [data-player="Luigi"] [data-player="Green Mii"] span {opacity: 1;}
-[data-player="Luigi"] [data-player="King Boo"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
+[data-player="Luigi"] [data-player="King Boo"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
 [data-player="Luigi"] [data-player="Mario"] span {opacity: 1;}
-[data-player="Luigi"] [data-player="Waluigi"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Magikoopa (Blue)"] [data-player="Baby Luigi"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Magikoopa (Blue)"] [data-player="Baby Mario"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
+[data-player="Luigi"] [data-player="Waluigi"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Magikoopa (Blue)"] [data-player="Baby Luigi"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Magikoopa (Blue)"] [data-player="Baby Mario"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
 [data-player="Magikoopa (Blue)"] [data-player="Blue Mii (F)"] span {opacity: 1;}
 [data-player="Magikoopa (Blue)"] [data-player="Blue Mii"] span {opacity: 1;}
 [data-player="Magikoopa (Blue)"] [data-player="Boo"] span {opacity: 1;}
@@ -666,14 +666,14 @@
 [data-player="Magikoopa (Blue)"] [data-player="Magikoopa (Red)"] span {opacity: 1;}
 [data-player="Magikoopa (Blue)"] [data-player="Magikoopa (Yellow)"] span {opacity: 1;}
 [data-player="Magikoopa (Blue)"] [data-player="Wario"] span {opacity: 1;}
-[data-player="Magikoopa (Blue)"] [data-player="Yoshi (Blue)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Magikoopa (Blue)"] [data-player="Yoshi (Light Blue)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Magikoopa (Blue)"] [data-player="Yoshi (Pink)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Magikoopa (Blue)"] [data-player="Yoshi (Red)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Magikoopa (Blue)"] [data-player="Yoshi (Yellow)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Magikoopa (Blue)"] [data-player="Yoshi"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Magikoopa (Green)"] [data-player="Baby Luigi"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Magikoopa (Green)"] [data-player="Baby Mario"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
+[data-player="Magikoopa (Blue)"] [data-player="Yoshi (Blue)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Magikoopa (Blue)"] [data-player="Yoshi (Light Blue)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Magikoopa (Blue)"] [data-player="Yoshi (Pink)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Magikoopa (Blue)"] [data-player="Yoshi (Red)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Magikoopa (Blue)"] [data-player="Yoshi (Yellow)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Magikoopa (Blue)"] [data-player="Yoshi"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Magikoopa (Green)"] [data-player="Baby Luigi"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Magikoopa (Green)"] [data-player="Baby Mario"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
 [data-player="Magikoopa (Green)"] [data-player="Boo"] span {opacity: 1;}
 [data-player="Magikoopa (Green)"] [data-player="Boomerang Bro."] span {opacity: 1;}
 [data-player="Magikoopa (Green)"] [data-player="Bowser Jr."] span {opacity: 1;}
@@ -686,14 +686,14 @@
 [data-player="Magikoopa (Green)"] [data-player="Magikoopa (Red)"] span {opacity: 1;}
 [data-player="Magikoopa (Green)"] [data-player="Magikoopa (Yellow)"] span {opacity: 1;}
 [data-player="Magikoopa (Green)"] [data-player="Wario"] span {opacity: 1;}
-[data-player="Magikoopa (Green)"] [data-player="Yoshi (Blue)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Magikoopa (Green)"] [data-player="Yoshi (Light Blue)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Magikoopa (Green)"] [data-player="Yoshi (Pink)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Magikoopa (Green)"] [data-player="Yoshi (Red)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Magikoopa (Green)"] [data-player="Yoshi (Yellow)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Magikoopa (Green)"] [data-player="Yoshi"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Magikoopa (Red)"] [data-player="Baby Luigi"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Magikoopa (Red)"] [data-player="Baby Mario"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
+[data-player="Magikoopa (Green)"] [data-player="Yoshi (Blue)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Magikoopa (Green)"] [data-player="Yoshi (Light Blue)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Magikoopa (Green)"] [data-player="Yoshi (Pink)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Magikoopa (Green)"] [data-player="Yoshi (Red)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Magikoopa (Green)"] [data-player="Yoshi (Yellow)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Magikoopa (Green)"] [data-player="Yoshi"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Magikoopa (Red)"] [data-player="Baby Luigi"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Magikoopa (Red)"] [data-player="Baby Mario"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
 [data-player="Magikoopa (Red)"] [data-player="Boo"] span {opacity: 1;}
 [data-player="Magikoopa (Red)"] [data-player="Boomerang Bro."] span {opacity: 1;}
 [data-player="Magikoopa (Red)"] [data-player="Bowser Jr."] span {opacity: 1;}
@@ -706,14 +706,14 @@
 [data-player="Magikoopa (Red)"] [data-player="Red Mii (F)"] span {opacity: 1;}
 [data-player="Magikoopa (Red)"] [data-player="Red Mii"] span {opacity: 1;}
 [data-player="Magikoopa (Red)"] [data-player="Wario"] span {opacity: 1;}
-[data-player="Magikoopa (Red)"] [data-player="Yoshi (Blue)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Magikoopa (Red)"] [data-player="Yoshi (Light Blue)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Magikoopa (Red)"] [data-player="Yoshi (Pink)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Magikoopa (Red)"] [data-player="Yoshi (Red)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Magikoopa (Red)"] [data-player="Yoshi (Yellow)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Magikoopa (Red)"] [data-player="Yoshi"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Magikoopa (Yellow)"] [data-player="Baby Luigi"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Magikoopa (Yellow)"] [data-player="Baby Mario"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
+[data-player="Magikoopa (Red)"] [data-player="Yoshi (Blue)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Magikoopa (Red)"] [data-player="Yoshi (Light Blue)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Magikoopa (Red)"] [data-player="Yoshi (Pink)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Magikoopa (Red)"] [data-player="Yoshi (Red)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Magikoopa (Red)"] [data-player="Yoshi (Yellow)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Magikoopa (Red)"] [data-player="Yoshi"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Magikoopa (Yellow)"] [data-player="Baby Luigi"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Magikoopa (Yellow)"] [data-player="Baby Mario"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
 [data-player="Magikoopa (Yellow)"] [data-player="Boo"] span {opacity: 1;}
 [data-player="Magikoopa (Yellow)"] [data-player="Boomerang Bro."] span {opacity: 1;}
 [data-player="Magikoopa (Yellow)"] [data-player="Bowser Jr."] span {opacity: 1;}
@@ -726,15 +726,15 @@
 [data-player="Magikoopa (Yellow)"] [data-player="Wario"] span {opacity: 1;}
 [data-player="Magikoopa (Yellow)"] [data-player="Yellow Mii (F)"] span {opacity: 1;}
 [data-player="Magikoopa (Yellow)"] [data-player="Yellow Mii"] span {opacity: 1;}
-[data-player="Magikoopa (Yellow)"] [data-player="Yoshi (Blue)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Magikoopa (Yellow)"] [data-player="Yoshi (Light Blue)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Magikoopa (Yellow)"] [data-player="Yoshi (Pink)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Magikoopa (Yellow)"] [data-player="Yoshi (Red)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Magikoopa (Yellow)"] [data-player="Yoshi (Yellow)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Magikoopa (Yellow)"] [data-player="Yoshi"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Mario"] [data-player="Bowser Jr."] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Mario"] [data-player="Bowser"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Mario"] [data-player="King Boo"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
+[data-player="Magikoopa (Yellow)"] [data-player="Yoshi (Blue)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Magikoopa (Yellow)"] [data-player="Yoshi (Light Blue)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Magikoopa (Yellow)"] [data-player="Yoshi (Pink)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Magikoopa (Yellow)"] [data-player="Yoshi (Red)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Magikoopa (Yellow)"] [data-player="Yoshi (Yellow)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Magikoopa (Yellow)"] [data-player="Yoshi"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Mario"] [data-player="Bowser Jr."] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Mario"] [data-player="Bowser"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Mario"] [data-player="King Boo"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
 [data-player="Mario"] [data-player="Light Blue Mii (F)"] span {opacity: 1;}
 [data-player="Mario"] [data-player="Light Blue Mii"] span {opacity: 1;}
 [data-player="Mario"] [data-player="Luigi"] span {opacity: 1;}
@@ -747,7 +747,7 @@
 [data-player="Mario"] [data-player="Pianta (Yellow)"] span {opacity: 1;}
 [data-player="Mario"] [data-player="Red Mii (F)"] span {opacity: 1;}
 [data-player="Mario"] [data-player="Red Mii"] span {opacity: 1;}
-[data-player="Mario"] [data-player="Wario"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
+[data-player="Mario"] [data-player="Wario"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
 [data-player="Mario"] [data-player="Yoshi (Blue)"] span {opacity: 1;}
 [data-player="Mario"] [data-player="Yoshi (Light Blue)"] span {opacity: 1;}
 [data-player="Mario"] [data-player="Yoshi (Pink)"] span {opacity: 1;}
@@ -765,40 +765,40 @@
 [data-player="Monty Mole"] [data-player="Shy Guy (Yellow)"] span {opacity: 1;}
 [data-player="Noki (Blue)"] [data-player="Blue Mii (F)"] span {opacity: 1;}
 [data-player="Noki (Blue)"] [data-player="Blue Mii"] span {opacity: 1;}
-[data-player="Noki (Blue)"] [data-player="Boomerang Bro."] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Noki (Blue)"] [data-player="Bowser Jr."] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Noki (Blue)"] [data-player="Fire Bro."] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Noki (Blue)"] [data-player="Hammer Bro."] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
+[data-player="Noki (Blue)"] [data-player="Boomerang Bro."] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Noki (Blue)"] [data-player="Bowser Jr."] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Noki (Blue)"] [data-player="Fire Bro."] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Noki (Blue)"] [data-player="Hammer Bro."] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
 [data-player="Noki (Blue)"] [data-player="Mario"] span {opacity: 1;}
 [data-player="Noki (Blue)"] [data-player="Noki (Green)"] span {opacity: 1;}
 [data-player="Noki (Blue)"] [data-player="Noki (Red)"] span {opacity: 1;}
-[data-player="Noki (Blue)"] [data-player="Petey Piranha"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
+[data-player="Noki (Blue)"] [data-player="Petey Piranha"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
 [data-player="Noki (Blue)"] [data-player="Pianta (Blue)"] span {opacity: 1;}
 [data-player="Noki (Blue)"] [data-player="Pianta (Red)"] span {opacity: 1;}
 [data-player="Noki (Blue)"] [data-player="Pianta (Yellow)"] span {opacity: 1;}
 [data-player="Noki (Blue)"] [data-player="Toadette"] span {opacity: 1;}
-[data-player="Noki (Green)"] [data-player="Boomerang Bro."] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Noki (Green)"] [data-player="Bowser Jr."] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Noki (Green)"] [data-player="Fire Bro."] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
+[data-player="Noki (Green)"] [data-player="Boomerang Bro."] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Noki (Green)"] [data-player="Bowser Jr."] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Noki (Green)"] [data-player="Fire Bro."] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
 [data-player="Noki (Green)"] [data-player="Green Mii (F)"] span {opacity: 1;}
 [data-player="Noki (Green)"] [data-player="Green Mii"] span {opacity: 1;}
-[data-player="Noki (Green)"] [data-player="Hammer Bro."] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
+[data-player="Noki (Green)"] [data-player="Hammer Bro."] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
 [data-player="Noki (Green)"] [data-player="Mario"] span {opacity: 1;}
 [data-player="Noki (Green)"] [data-player="Noki (Blue)"] span {opacity: 1;}
 [data-player="Noki (Green)"] [data-player="Noki (Red)"] span {opacity: 1;}
-[data-player="Noki (Green)"] [data-player="Petey Piranha"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
+[data-player="Noki (Green)"] [data-player="Petey Piranha"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
 [data-player="Noki (Green)"] [data-player="Pianta (Blue)"] span {opacity: 1;}
 [data-player="Noki (Green)"] [data-player="Pianta (Red)"] span {opacity: 1;}
 [data-player="Noki (Green)"] [data-player="Pianta (Yellow)"] span {opacity: 1;}
 [data-player="Noki (Green)"] [data-player="Toadette"] span {opacity: 1;}
-[data-player="Noki (Red)"] [data-player="Boomerang Bro."] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Noki (Red)"] [data-player="Bowser Jr."] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Noki (Red)"] [data-player="Fire Bro."] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Noki (Red)"] [data-player="Hammer Bro."] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
+[data-player="Noki (Red)"] [data-player="Boomerang Bro."] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Noki (Red)"] [data-player="Bowser Jr."] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Noki (Red)"] [data-player="Fire Bro."] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Noki (Red)"] [data-player="Hammer Bro."] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
 [data-player="Noki (Red)"] [data-player="Mario"] span {opacity: 1;}
 [data-player="Noki (Red)"] [data-player="Noki (Blue)"] span {opacity: 1;}
 [data-player="Noki (Red)"] [data-player="Noki (Green)"] span {opacity: 1;}
-[data-player="Noki (Red)"] [data-player="Petey Piranha"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
+[data-player="Noki (Red)"] [data-player="Petey Piranha"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
 [data-player="Noki (Red)"] [data-player="Pianta (Blue)"] span {opacity: 1;}
 [data-player="Noki (Red)"] [data-player="Pianta (Red)"] span {opacity: 1;}
 [data-player="Noki (Red)"] [data-player="Pianta (Yellow)"] span {opacity: 1;}
@@ -821,15 +821,15 @@
 [data-player="Paragoomba"] [data-player="Koopa Paratroopa (Green)"] span {opacity: 1;}
 [data-player="Paragoomba"] [data-player="Koopa Paratroopa (Red)"] span {opacity: 1;}
 [data-player="Paragoomba"] [data-player="Monty Mole"] span {opacity: 1;}
-[data-player="Paragoomba"] [data-player="Toad (Blue)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Paragoomba"] [data-player="Toad (Green)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Paragoomba"] [data-player="Toad (Purple)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Paragoomba"] [data-player="Toad (Red)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Paragoomba"] [data-player="Toad (Yellow)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Paragoomba"] [data-player="Toadette"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Paragoomba"] [data-player="Toadsworth"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Peach"] [data-player="Birdo"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Peach"] [data-player="Bowser"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
+[data-player="Paragoomba"] [data-player="Toad (Blue)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Paragoomba"] [data-player="Toad (Green)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Paragoomba"] [data-player="Toad (Purple)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Paragoomba"] [data-player="Toad (Red)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Paragoomba"] [data-player="Toad (Yellow)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Paragoomba"] [data-player="Toadette"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Paragoomba"] [data-player="Toadsworth"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Peach"] [data-player="Birdo"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Peach"] [data-player="Bowser"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
 [data-player="Peach"] [data-player="Daisy"] span {opacity: 1;}
 [data-player="Peach"] [data-player="Light Blue Mii (F)"] span {opacity: 1;}
 [data-player="Peach"] [data-player="Light Blue Mii"] span {opacity: 1;}
@@ -843,32 +843,32 @@
 [data-player="Peach"] [data-player="Toad (Yellow)"] span {opacity: 1;}
 [data-player="Peach"] [data-player="Toadette"] span {opacity: 1;}
 [data-player="Peach"] [data-player="Toadsworth"] span {opacity: 1;}
-[data-player="Petey Piranha"] [data-player="Baby DK"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Petey Piranha"] [data-player="Baby Daisy"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Petey Piranha"] [data-player="Baby Luigi"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Petey Piranha"] [data-player="Baby Mario"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Petey Piranha"] [data-player="Baby Peach"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
+[data-player="Petey Piranha"] [data-player="Baby DK"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Petey Piranha"] [data-player="Baby Daisy"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Petey Piranha"] [data-player="Baby Luigi"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Petey Piranha"] [data-player="Baby Mario"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Petey Piranha"] [data-player="Baby Peach"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
 [data-player="Petey Piranha"] [data-player="Birdo"] span {opacity: 1;}
 [data-player="Petey Piranha"] [data-player="Blooper"] span {opacity: 1;}
 [data-player="Petey Piranha"] [data-player="King Boo"] span {opacity: 1;}
 [data-player="Petey Piranha"] [data-player="Light Green Mii (F)"] span {opacity: 1;}
 [data-player="Petey Piranha"] [data-player="Light Green Mii"] span {opacity: 1;}
-[data-player="Petey Piranha"] [data-player="Noki (Blue)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Petey Piranha"] [data-player="Noki (Green)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Petey Piranha"] [data-player="Noki (Red)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Petey Piranha"] [data-player="Pianta (Blue)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Petey Piranha"] [data-player="Pianta (Red)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
+[data-player="Petey Piranha"] [data-player="Noki (Blue)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Petey Piranha"] [data-player="Noki (Green)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Petey Piranha"] [data-player="Noki (Red)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Petey Piranha"] [data-player="Pianta (Blue)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Petey Piranha"] [data-player="Pianta (Red)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
 [data-player="Petey Piranha"] [data-player="Wiggler"] span {opacity: 1;}
 [data-player="Pianta (Blue)"] [data-player="Blue Mii (F)"] span {opacity: 1;}
 [data-player="Pianta (Blue)"] [data-player="Blue Mii"] span {opacity: 1;}
-[data-player="Pianta (Blue)"] [data-player="Bowser Jr."] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Pianta (Blue)"] [data-player="Goomba"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
+[data-player="Pianta (Blue)"] [data-player="Bowser Jr."] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Pianta (Blue)"] [data-player="Goomba"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
 [data-player="Pianta (Blue)"] [data-player="Mario"] span {opacity: 1;}
 [data-player="Pianta (Blue)"] [data-player="Noki (Blue)"] span {opacity: 1;}
 [data-player="Pianta (Blue)"] [data-player="Noki (Green)"] span {opacity: 1;}
 [data-player="Pianta (Blue)"] [data-player="Noki (Red)"] span {opacity: 1;}
-[data-player="Pianta (Blue)"] [data-player="Paragoomba"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Pianta (Blue)"] [data-player="Petey Piranha"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
+[data-player="Pianta (Blue)"] [data-player="Paragoomba"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Pianta (Blue)"] [data-player="Petey Piranha"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
 [data-player="Pianta (Blue)"] [data-player="Pianta (Red)"] span {opacity: 1;}
 [data-player="Pianta (Blue)"] [data-player="Pianta (Yellow)"] span {opacity: 1;}
 [data-player="Pianta (Blue)"] [data-player="Toad (Blue)"] span {opacity: 1;}
@@ -877,14 +877,14 @@
 [data-player="Pianta (Blue)"] [data-player="Toad (Red)"] span {opacity: 1;}
 [data-player="Pianta (Blue)"] [data-player="Toad (Yellow)"] span {opacity: 1;}
 [data-player="Pianta (Blue)"] [data-player="Toadsworth"] span {opacity: 1;}
-[data-player="Pianta (Red)"] [data-player="Bowser Jr."] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Pianta (Red)"] [data-player="Goomba"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
+[data-player="Pianta (Red)"] [data-player="Bowser Jr."] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Pianta (Red)"] [data-player="Goomba"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
 [data-player="Pianta (Red)"] [data-player="Mario"] span {opacity: 1;}
 [data-player="Pianta (Red)"] [data-player="Noki (Blue)"] span {opacity: 1;}
 [data-player="Pianta (Red)"] [data-player="Noki (Green)"] span {opacity: 1;}
 [data-player="Pianta (Red)"] [data-player="Noki (Red)"] span {opacity: 1;}
-[data-player="Pianta (Red)"] [data-player="Paragoomba"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Pianta (Red)"] [data-player="Petey Piranha"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
+[data-player="Pianta (Red)"] [data-player="Paragoomba"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Pianta (Red)"] [data-player="Petey Piranha"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
 [data-player="Pianta (Red)"] [data-player="Pianta (Blue)"] span {opacity: 1;}
 [data-player="Pianta (Red)"] [data-player="Pianta (Yellow)"] span {opacity: 1;}
 [data-player="Pianta (Red)"] [data-player="Red Mii (F)"] span {opacity: 1;}
@@ -895,14 +895,14 @@
 [data-player="Pianta (Red)"] [data-player="Toad (Red)"] span {opacity: 1;}
 [data-player="Pianta (Red)"] [data-player="Toad (Yellow)"] span {opacity: 1;}
 [data-player="Pianta (Red)"] [data-player="Toadsworth"] span {opacity: 1;}
-[data-player="Pianta (Yellow)"] [data-player="Bowser Jr."] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Pianta (Yellow)"] [data-player="Goomba"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
+[data-player="Pianta (Yellow)"] [data-player="Bowser Jr."] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Pianta (Yellow)"] [data-player="Goomba"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
 [data-player="Pianta (Yellow)"] [data-player="Mario"] span {opacity: 1;}
 [data-player="Pianta (Yellow)"] [data-player="Noki (Blue)"] span {opacity: 1;}
 [data-player="Pianta (Yellow)"] [data-player="Noki (Green)"] span {opacity: 1;}
 [data-player="Pianta (Yellow)"] [data-player="Noki (Red)"] span {opacity: 1;}
-[data-player="Pianta (Yellow)"] [data-player="Paragoomba"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Pianta (Yellow)"] [data-player="Petey Piranha"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
+[data-player="Pianta (Yellow)"] [data-player="Paragoomba"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Pianta (Yellow)"] [data-player="Petey Piranha"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
 [data-player="Pianta (Yellow)"] [data-player="Pianta (Blue)"] span {opacity: 1;}
 [data-player="Pianta (Yellow)"] [data-player="Pianta (Red)"] span {opacity: 1;}
 [data-player="Pianta (Yellow)"] [data-player="Toad (Blue)"] span {opacity: 1;}
@@ -971,10 +971,10 @@
 [data-player="Red Mii"] [data-player="Shy Guy (Red)"] span {opacity: 1;}
 [data-player="Red Mii"] [data-player="Toad (Red)"] span {opacity: 1;}
 [data-player="Red Mii"] [data-player="Yoshi (Red)"] span {opacity: 1;}
-[data-player="Shy Guy (Blue)"] [data-player="Baby DK"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Shy Guy (Blue)"] [data-player="Baby Luigi"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Shy Guy (Blue)"] [data-player="Baby Mario"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Shy Guy (Blue)"] [data-player="Baby Peach"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
+[data-player="Shy Guy (Blue)"] [data-player="Baby DK"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Shy Guy (Blue)"] [data-player="Baby Luigi"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Shy Guy (Blue)"] [data-player="Baby Mario"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Shy Guy (Blue)"] [data-player="Baby Peach"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
 [data-player="Shy Guy (Blue)"] [data-player="Birdo"] span {opacity: 1;}
 [data-player="Shy Guy (Blue)"] [data-player="Blue Mii (F)"] span {opacity: 1;}
 [data-player="Shy Guy (Blue)"] [data-player="Blue Mii"] span {opacity: 1;}
@@ -984,16 +984,16 @@
 [data-player="Shy Guy (Blue)"] [data-player="Shy Guy (Green)"] span {opacity: 1;}
 [data-player="Shy Guy (Blue)"] [data-player="Shy Guy (Red)"] span {opacity: 1;}
 [data-player="Shy Guy (Blue)"] [data-player="Shy Guy (Yellow)"] span {opacity: 1;}
-[data-player="Shy Guy (Blue)"] [data-player="Yoshi (Blue)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Shy Guy (Blue)"] [data-player="Yoshi (Light Blue)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Shy Guy (Blue)"] [data-player="Yoshi (Pink)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Shy Guy (Blue)"] [data-player="Yoshi (Red)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Shy Guy (Blue)"] [data-player="Yoshi (Yellow)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Shy Guy (Blue)"] [data-player="Yoshi"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Shy Guy (Gray)"] [data-player="Baby DK"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Shy Guy (Gray)"] [data-player="Baby Luigi"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Shy Guy (Gray)"] [data-player="Baby Mario"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Shy Guy (Gray)"] [data-player="Baby Peach"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
+[data-player="Shy Guy (Blue)"] [data-player="Yoshi (Blue)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Shy Guy (Blue)"] [data-player="Yoshi (Light Blue)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Shy Guy (Blue)"] [data-player="Yoshi (Pink)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Shy Guy (Blue)"] [data-player="Yoshi (Red)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Shy Guy (Blue)"] [data-player="Yoshi (Yellow)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Shy Guy (Blue)"] [data-player="Yoshi"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Shy Guy (Gray)"] [data-player="Baby DK"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Shy Guy (Gray)"] [data-player="Baby Luigi"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Shy Guy (Gray)"] [data-player="Baby Mario"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Shy Guy (Gray)"] [data-player="Baby Peach"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
 [data-player="Shy Guy (Gray)"] [data-player="Birdo"] span {opacity: 1;}
 [data-player="Shy Guy (Gray)"] [data-player="Black Mii (F)"] span {opacity: 1;}
 [data-player="Shy Guy (Gray)"] [data-player="Black Mii"] span {opacity: 1;}
@@ -1003,16 +1003,16 @@
 [data-player="Shy Guy (Gray)"] [data-player="Shy Guy (Green)"] span {opacity: 1;}
 [data-player="Shy Guy (Gray)"] [data-player="Shy Guy (Red)"] span {opacity: 1;}
 [data-player="Shy Guy (Gray)"] [data-player="Shy Guy (Yellow)"] span {opacity: 1;}
-[data-player="Shy Guy (Gray)"] [data-player="Yoshi (Blue)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Shy Guy (Gray)"] [data-player="Yoshi (Light Blue)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Shy Guy (Gray)"] [data-player="Yoshi (Pink)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Shy Guy (Gray)"] [data-player="Yoshi (Red)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Shy Guy (Gray)"] [data-player="Yoshi (Yellow)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Shy Guy (Gray)"] [data-player="Yoshi"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Shy Guy (Green)"] [data-player="Baby DK"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Shy Guy (Green)"] [data-player="Baby Luigi"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Shy Guy (Green)"] [data-player="Baby Mario"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Shy Guy (Green)"] [data-player="Baby Peach"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
+[data-player="Shy Guy (Gray)"] [data-player="Yoshi (Blue)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Shy Guy (Gray)"] [data-player="Yoshi (Light Blue)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Shy Guy (Gray)"] [data-player="Yoshi (Pink)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Shy Guy (Gray)"] [data-player="Yoshi (Red)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Shy Guy (Gray)"] [data-player="Yoshi (Yellow)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Shy Guy (Gray)"] [data-player="Yoshi"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Shy Guy (Green)"] [data-player="Baby DK"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Shy Guy (Green)"] [data-player="Baby Luigi"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Shy Guy (Green)"] [data-player="Baby Mario"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Shy Guy (Green)"] [data-player="Baby Peach"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
 [data-player="Shy Guy (Green)"] [data-player="Birdo"] span {opacity: 1;}
 [data-player="Shy Guy (Green)"] [data-player="Boo"] span {opacity: 1;}
 [data-player="Shy Guy (Green)"] [data-player="Green Mii (F)"] span {opacity: 1;}
@@ -1022,16 +1022,16 @@
 [data-player="Shy Guy (Green)"] [data-player="Shy Guy (Gray)"] span {opacity: 1;}
 [data-player="Shy Guy (Green)"] [data-player="Shy Guy (Red)"] span {opacity: 1;}
 [data-player="Shy Guy (Green)"] [data-player="Shy Guy (Yellow)"] span {opacity: 1;}
-[data-player="Shy Guy (Green)"] [data-player="Yoshi (Blue)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Shy Guy (Green)"] [data-player="Yoshi (Light Blue)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Shy Guy (Green)"] [data-player="Yoshi (Pink)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Shy Guy (Green)"] [data-player="Yoshi (Red)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Shy Guy (Green)"] [data-player="Yoshi (Yellow)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Shy Guy (Green)"] [data-player="Yoshi"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Shy Guy (Red)"] [data-player="Baby DK"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Shy Guy (Red)"] [data-player="Baby Luigi"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Shy Guy (Red)"] [data-player="Baby Mario"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Shy Guy (Red)"] [data-player="Baby Peach"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
+[data-player="Shy Guy (Green)"] [data-player="Yoshi (Blue)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Shy Guy (Green)"] [data-player="Yoshi (Light Blue)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Shy Guy (Green)"] [data-player="Yoshi (Pink)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Shy Guy (Green)"] [data-player="Yoshi (Red)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Shy Guy (Green)"] [data-player="Yoshi (Yellow)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Shy Guy (Green)"] [data-player="Yoshi"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Shy Guy (Red)"] [data-player="Baby DK"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Shy Guy (Red)"] [data-player="Baby Luigi"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Shy Guy (Red)"] [data-player="Baby Mario"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Shy Guy (Red)"] [data-player="Baby Peach"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
 [data-player="Shy Guy (Red)"] [data-player="Birdo"] span {opacity: 1;}
 [data-player="Shy Guy (Red)"] [data-player="Boo"] span {opacity: 1;}
 [data-player="Shy Guy (Red)"] [data-player="Monty Mole"] span {opacity: 1;}
@@ -1041,16 +1041,16 @@
 [data-player="Shy Guy (Red)"] [data-player="Shy Guy (Gray)"] span {opacity: 1;}
 [data-player="Shy Guy (Red)"] [data-player="Shy Guy (Green)"] span {opacity: 1;}
 [data-player="Shy Guy (Red)"] [data-player="Shy Guy (Yellow)"] span {opacity: 1;}
-[data-player="Shy Guy (Red)"] [data-player="Yoshi (Blue)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Shy Guy (Red)"] [data-player="Yoshi (Light Blue)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Shy Guy (Red)"] [data-player="Yoshi (Pink)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Shy Guy (Red)"] [data-player="Yoshi (Red)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Shy Guy (Red)"] [data-player="Yoshi (Yellow)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Shy Guy (Red)"] [data-player="Yoshi"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Shy Guy (Yellow)"] [data-player="Baby DK"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Shy Guy (Yellow)"] [data-player="Baby Luigi"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Shy Guy (Yellow)"] [data-player="Baby Mario"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Shy Guy (Yellow)"] [data-player="Baby Peach"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
+[data-player="Shy Guy (Red)"] [data-player="Yoshi (Blue)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Shy Guy (Red)"] [data-player="Yoshi (Light Blue)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Shy Guy (Red)"] [data-player="Yoshi (Pink)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Shy Guy (Red)"] [data-player="Yoshi (Red)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Shy Guy (Red)"] [data-player="Yoshi (Yellow)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Shy Guy (Red)"] [data-player="Yoshi"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Shy Guy (Yellow)"] [data-player="Baby DK"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Shy Guy (Yellow)"] [data-player="Baby Luigi"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Shy Guy (Yellow)"] [data-player="Baby Mario"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Shy Guy (Yellow)"] [data-player="Baby Peach"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
 [data-player="Shy Guy (Yellow)"] [data-player="Birdo"] span {opacity: 1;}
 [data-player="Shy Guy (Yellow)"] [data-player="Boo"] span {opacity: 1;}
 [data-player="Shy Guy (Yellow)"] [data-player="Monty Mole"] span {opacity: 1;}
@@ -1060,31 +1060,31 @@
 [data-player="Shy Guy (Yellow)"] [data-player="Shy Guy (Red)"] span {opacity: 1;}
 [data-player="Shy Guy (Yellow)"] [data-player="Yellow Mii (F)"] span {opacity: 1;}
 [data-player="Shy Guy (Yellow)"] [data-player="Yellow Mii"] span {opacity: 1;}
-[data-player="Shy Guy (Yellow)"] [data-player="Yoshi (Blue)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Shy Guy (Yellow)"] [data-player="Yoshi (Light Blue)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Shy Guy (Yellow)"] [data-player="Yoshi (Pink)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Shy Guy (Yellow)"] [data-player="Yoshi (Red)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Shy Guy (Yellow)"] [data-player="Yoshi (Yellow)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Shy Guy (Yellow)"] [data-player="Yoshi"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
+[data-player="Shy Guy (Yellow)"] [data-player="Yoshi (Blue)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Shy Guy (Yellow)"] [data-player="Yoshi (Light Blue)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Shy Guy (Yellow)"] [data-player="Yoshi (Pink)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Shy Guy (Yellow)"] [data-player="Yoshi (Red)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Shy Guy (Yellow)"] [data-player="Yoshi (Yellow)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Shy Guy (Yellow)"] [data-player="Yoshi"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
 [data-player="Tiny Kong"] [data-player="Baby DK"] span {opacity: 1;}
-[data-player="Tiny Kong"] [data-player="Birdo"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
+[data-player="Tiny Kong"] [data-player="Birdo"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
 [data-player="Tiny Kong"] [data-player="Diddy Kong"] span {opacity: 1;}
 [data-player="Tiny Kong"] [data-player="Dixie Kong"] span {opacity: 1;}
 [data-player="Tiny Kong"] [data-player="Donkey Kong"] span {opacity: 1;}
 [data-player="Tiny Kong"] [data-player="Funky Kong"] span {opacity: 1;}
-[data-player="Tiny Kong"] [data-player="King K. Rool"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Tiny Kong"] [data-player="Kritter (Blue)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Tiny Kong"] [data-player="Kritter (Brown)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Tiny Kong"] [data-player="Kritter (Green)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Tiny Kong"] [data-player="Kritter (Red)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
+[data-player="Tiny Kong"] [data-player="King K. Rool"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Tiny Kong"] [data-player="Kritter (Blue)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Tiny Kong"] [data-player="Kritter (Brown)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Tiny Kong"] [data-player="Kritter (Green)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Tiny Kong"] [data-player="Kritter (Red)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
 [data-player="Tiny Kong"] [data-player="Light Blue Mii (F)"] span {opacity: 1;}
 [data-player="Tiny Kong"] [data-player="Light Blue Mii"] span {opacity: 1;}
 [data-player="Toad (Blue)"] [data-player="Baby Peach"] span {opacity: 1;}
 [data-player="Toad (Blue)"] [data-player="Blue Mii (F)"] span {opacity: 1;}
 [data-player="Toad (Blue)"] [data-player="Blue Mii"] span {opacity: 1;}
-[data-player="Toad (Blue)"] [data-player="Bowser"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Toad (Blue)"] [data-player="Goomba"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Toad (Blue)"] [data-player="Paragoomba"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
+[data-player="Toad (Blue)"] [data-player="Bowser"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Toad (Blue)"] [data-player="Goomba"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Toad (Blue)"] [data-player="Paragoomba"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
 [data-player="Toad (Blue)"] [data-player="Peach"] span {opacity: 1;}
 [data-player="Toad (Blue)"] [data-player="Pianta (Blue)"] span {opacity: 1;}
 [data-player="Toad (Blue)"] [data-player="Pianta (Red)"] span {opacity: 1;}
@@ -1096,11 +1096,11 @@
 [data-player="Toad (Blue)"] [data-player="Toadette"] span {opacity: 1;}
 [data-player="Toad (Blue)"] [data-player="Toadsworth"] span {opacity: 1;}
 [data-player="Toad (Green)"] [data-player="Baby Peach"] span {opacity: 1;}
-[data-player="Toad (Green)"] [data-player="Bowser"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Toad (Green)"] [data-player="Goomba"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
+[data-player="Toad (Green)"] [data-player="Bowser"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Toad (Green)"] [data-player="Goomba"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
 [data-player="Toad (Green)"] [data-player="Green Mii (F)"] span {opacity: 1;}
 [data-player="Toad (Green)"] [data-player="Green Mii"] span {opacity: 1;}
-[data-player="Toad (Green)"] [data-player="Paragoomba"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
+[data-player="Toad (Green)"] [data-player="Paragoomba"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
 [data-player="Toad (Green)"] [data-player="Peach"] span {opacity: 1;}
 [data-player="Toad (Green)"] [data-player="Pianta (Blue)"] span {opacity: 1;}
 [data-player="Toad (Green)"] [data-player="Pianta (Red)"] span {opacity: 1;}
@@ -1112,9 +1112,9 @@
 [data-player="Toad (Green)"] [data-player="Toadette"] span {opacity: 1;}
 [data-player="Toad (Green)"] [data-player="Toadsworth"] span {opacity: 1;}
 [data-player="Toad (Purple)"] [data-player="Baby Peach"] span {opacity: 1;}
-[data-player="Toad (Purple)"] [data-player="Bowser"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Toad (Purple)"] [data-player="Goomba"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Toad (Purple)"] [data-player="Paragoomba"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
+[data-player="Toad (Purple)"] [data-player="Bowser"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Toad (Purple)"] [data-player="Goomba"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Toad (Purple)"] [data-player="Paragoomba"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
 [data-player="Toad (Purple)"] [data-player="Peach"] span {opacity: 1;}
 [data-player="Toad (Purple)"] [data-player="Pianta (Blue)"] span {opacity: 1;}
 [data-player="Toad (Purple)"] [data-player="Pianta (Red)"] span {opacity: 1;}
@@ -1128,9 +1128,9 @@
 [data-player="Toad (Purple)"] [data-player="Toadette"] span {opacity: 1;}
 [data-player="Toad (Purple)"] [data-player="Toadsworth"] span {opacity: 1;}
 [data-player="Toad (Red)"] [data-player="Baby Peach"] span {opacity: 1;}
-[data-player="Toad (Red)"] [data-player="Bowser"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Toad (Red)"] [data-player="Goomba"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Toad (Red)"] [data-player="Paragoomba"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
+[data-player="Toad (Red)"] [data-player="Bowser"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Toad (Red)"] [data-player="Goomba"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Toad (Red)"] [data-player="Paragoomba"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
 [data-player="Toad (Red)"] [data-player="Peach"] span {opacity: 1;}
 [data-player="Toad (Red)"] [data-player="Pianta (Blue)"] span {opacity: 1;}
 [data-player="Toad (Red)"] [data-player="Pianta (Red)"] span {opacity: 1;}
@@ -1144,9 +1144,9 @@
 [data-player="Toad (Red)"] [data-player="Toadette"] span {opacity: 1;}
 [data-player="Toad (Red)"] [data-player="Toadsworth"] span {opacity: 1;}
 [data-player="Toad (Yellow)"] [data-player="Baby Peach"] span {opacity: 1;}
-[data-player="Toad (Yellow)"] [data-player="Bowser"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Toad (Yellow)"] [data-player="Goomba"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Toad (Yellow)"] [data-player="Paragoomba"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
+[data-player="Toad (Yellow)"] [data-player="Bowser"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Toad (Yellow)"] [data-player="Goomba"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Toad (Yellow)"] [data-player="Paragoomba"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
 [data-player="Toad (Yellow)"] [data-player="Peach"] span {opacity: 1;}
 [data-player="Toad (Yellow)"] [data-player="Pianta (Blue)"] span {opacity: 1;}
 [data-player="Toad (Yellow)"] [data-player="Pianta (Red)"] span {opacity: 1;}
@@ -1160,12 +1160,12 @@
 [data-player="Toad (Yellow)"] [data-player="Yellow Mii (F)"] span {opacity: 1;}
 [data-player="Toad (Yellow)"] [data-player="Yellow Mii"] span {opacity: 1;}
 [data-player="Toadette"] [data-player="Birdo"] span {opacity: 1;}
-[data-player="Toadette"] [data-player="Bowser"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Toadette"] [data-player="Goomba"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
+[data-player="Toadette"] [data-player="Bowser"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Toadette"] [data-player="Goomba"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
 [data-player="Toadette"] [data-player="Noki (Blue)"] span {opacity: 1;}
 [data-player="Toadette"] [data-player="Noki (Green)"] span {opacity: 1;}
 [data-player="Toadette"] [data-player="Noki (Red)"] span {opacity: 1;}
-[data-player="Toadette"] [data-player="Paragoomba"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
+[data-player="Toadette"] [data-player="Paragoomba"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
 [data-player="Toadette"] [data-player="Peach"] span {opacity: 1;}
 [data-player="Toadette"] [data-player="Pink Mii (F)"] span {opacity: 1;}
 [data-player="Toadette"] [data-player="Pink Mii"] span {opacity: 1;}
@@ -1176,13 +1176,13 @@
 [data-player="Toadette"] [data-player="Toad (Yellow)"] span {opacity: 1;}
 [data-player="Toadette"] [data-player="Toadsworth"] span {opacity: 1;}
 [data-player="Toadsworth"] [data-player="Baby Peach"] span {opacity: 1;}
-[data-player="Toadsworth"] [data-player="Bowser"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
+[data-player="Toadsworth"] [data-player="Bowser"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
 [data-player="Toadsworth"] [data-player="Brown Mii (F)"] span {opacity: 1;}
 [data-player="Toadsworth"] [data-player="Brown Mii"] span {opacity: 1;}
-[data-player="Toadsworth"] [data-player="Goomba"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Toadsworth"] [data-player="Koopa Paratroopa (Green)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Toadsworth"] [data-player="Koopa Paratroopa (Red)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Toadsworth"] [data-player="Paragoomba"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
+[data-player="Toadsworth"] [data-player="Goomba"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Toadsworth"] [data-player="Koopa Paratroopa (Green)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Toadsworth"] [data-player="Koopa Paratroopa (Red)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Toadsworth"] [data-player="Paragoomba"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
 [data-player="Toadsworth"] [data-player="Peach"] span {opacity: 1;}
 [data-player="Toadsworth"] [data-player="Pianta (Blue)"] span {opacity: 1;}
 [data-player="Toadsworth"] [data-player="Pianta (Red)"] span {opacity: 1;}
@@ -1193,20 +1193,20 @@
 [data-player="Toadsworth"] [data-player="Toad (Red)"] span {opacity: 1;}
 [data-player="Toadsworth"] [data-player="Toad (Yellow)"] span {opacity: 1;}
 [data-player="Toadsworth"] [data-player="Toadette"] span {opacity: 1;}
-[data-player="Waluigi"] [data-player="Birdo"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
+[data-player="Waluigi"] [data-player="Birdo"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
 [data-player="Waluigi"] [data-player="Blue Mii (F)"] span {opacity: 1;}
 [data-player="Waluigi"] [data-player="Blue Mii"] span {opacity: 1;}
 [data-player="Waluigi"] [data-player="Boo"] span {opacity: 1;}
-[data-player="Waluigi"] [data-player="Luigi"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
+[data-player="Waluigi"] [data-player="Luigi"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
 [data-player="Waluigi"] [data-player="Purple Mii (F)"] span {opacity: 1;}
 [data-player="Waluigi"] [data-player="Purple Mii"] span {opacity: 1;}
 [data-player="Waluigi"] [data-player="Wario"] span {opacity: 1;}
-[data-player="Wario"] [data-player="Birdo"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
+[data-player="Wario"] [data-player="Birdo"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
 [data-player="Wario"] [data-player="Magikoopa (Blue)"] span {opacity: 1;}
 [data-player="Wario"] [data-player="Magikoopa (Green)"] span {opacity: 1;}
 [data-player="Wario"] [data-player="Magikoopa (Red)"] span {opacity: 1;}
 [data-player="Wario"] [data-player="Magikoopa (Yellow)"] span {opacity: 1;}
-[data-player="Wario"] [data-player="Mario"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
+[data-player="Wario"] [data-player="Mario"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
 [data-player="Wario"] [data-player="Purple Mii (F)"] span {opacity: 1;}
 [data-player="Wario"] [data-player="Purple Mii"] span {opacity: 1;}
 [data-player="Wario"] [data-player="Waluigi"] span {opacity: 1;}
@@ -1329,22 +1329,22 @@
 [data-player="Yoshi"] [data-player="Baby Mario"] span {opacity: 1;}
 [data-player="Yoshi"] [data-player="Baby Peach"] span {opacity: 1;}
 [data-player="Yoshi"] [data-player="Birdo"] span {opacity: 1;}
-[data-player="Yoshi"] [data-player="Boo"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
+[data-player="Yoshi"] [data-player="Boo"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
 [data-player="Yoshi"] [data-player="Green Mii (F)"] span {opacity: 1;}
 [data-player="Yoshi"] [data-player="Green Mii"] span {opacity: 1;}
-[data-player="Yoshi"] [data-player="King Boo"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
+[data-player="Yoshi"] [data-player="King Boo"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
 [data-player="Yoshi"] [data-player="Light Green Mii (F)"] span {opacity: 1;}
 [data-player="Yoshi"] [data-player="Light Green Mii"] span {opacity: 1;}
-[data-player="Yoshi"] [data-player="Magikoopa (Blue)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Yoshi"] [data-player="Magikoopa (Green)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Yoshi"] [data-player="Magikoopa (Red)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Yoshi"] [data-player="Magikoopa (Yellow)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
+[data-player="Yoshi"] [data-player="Magikoopa (Blue)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Yoshi"] [data-player="Magikoopa (Green)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Yoshi"] [data-player="Magikoopa (Red)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Yoshi"] [data-player="Magikoopa (Yellow)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
 [data-player="Yoshi"] [data-player="Mario"] span {opacity: 1;}
-[data-player="Yoshi"] [data-player="Shy Guy (Blue)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Yoshi"] [data-player="Shy Guy (Gray)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Yoshi"] [data-player="Shy Guy (Green)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Yoshi"] [data-player="Shy Guy (Red)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
-[data-player="Yoshi"] [data-player="Shy Guy (Yellow)"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}
+[data-player="Yoshi"] [data-player="Shy Guy (Blue)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Yoshi"] [data-player="Shy Guy (Gray)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Yoshi"] [data-player="Shy Guy (Green)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Yoshi"] [data-player="Shy Guy (Red)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
+[data-player="Yoshi"] [data-player="Shy Guy (Yellow)"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}
 [data-player="Yoshi"] [data-player="Yoshi (Blue)"] span {opacity: 1;}
 [data-player="Yoshi"] [data-player="Yoshi (Light Blue)"] span {opacity: 1;}
 [data-player="Yoshi"] [data-player="Yoshi (Pink)"] span {opacity: 1;}

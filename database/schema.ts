@@ -4,6 +4,7 @@ import {
   integer,
   pgEnum,
   pgTable,
+  primaryKey,
   text,
   timestamp,
   type AnyPgColumn,
@@ -128,13 +129,7 @@ export const chemistry = pgTable(
       .references(() => stats.character, { onDelete: "cascade" }),
     relationship: chemistryRelationship("relationship").notNull(),
   },
-  (table) => ({
-    pk: {
-      primaryKey: {
-        columns: [table.character1, table.character2],
-      },
-    },
-  }),
+  (table) => [primaryKey({ columns: [table.character1, table.character2] })],
 );
 
 export type Chemistry = typeof chemistry.$inferSelect;
@@ -608,13 +603,9 @@ export const matchBattingOrders = pgTable(
     fieldingPosition: fieldingPositions("fielding_position"),
     isStarred: boolean("is_starred").notNull().default(false),
   },
-  (table) => ({
-    pk: {
-      primaryKey: {
-        columns: [table.matchId, table.teamId, table.playerId],
-      },
-    },
-  }),
+  (table) => [
+    primaryKey({ columns: [table.matchId, table.teamId, table.playerId] }),
+  ],
 );
 
 export type MatchBattingOrder = typeof matchBattingOrders.$inferSelect;
@@ -650,13 +641,7 @@ export const matchPlayerStats = pgTable(
     // Silly stats
     errors: integer("errors"),
   },
-  (table) => ({
-    pk: {
-      primaryKey: {
-        columns: [table.matchId, table.playerId],
-      },
-    },
-  }),
+  (table) => [primaryKey({ columns: [table.matchId, table.playerId] })],
 );
 
 export type MatchPlayerStats = typeof matchPlayerStats.$inferSelect;

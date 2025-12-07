@@ -12,6 +12,7 @@ import { Link, useRevalidator, Form, useActionData } from "react-router";
 import { useStream } from "~/utils/useStream";
 import { PlayerIcon } from "~/components/PlayerIcon";
 import { MentionDisplay } from "~/components/MentionEditor";
+import { Pagination } from "~/components/Pagination";
 import { useState } from "react";
 import { cn } from "~/utils/cn";
 import { broadcast } from "~/sse.server";
@@ -40,6 +41,9 @@ const getMyTeam = async (
 };
 
 export async function loader({ request }: Route.LoaderArgs) {
+  const url = new URL(request.url);
+  const page = Math.max(1, parseInt(url.searchParams.get("page") || "1", 10));
+
   const user = await getUser(request);
 
   const seasonState = await getSeasonState(db);
@@ -69,7 +73,7 @@ export async function loader({ request }: Route.LoaderArgs) {
   const pendingTrades =
     user !== null ? await getPendingTradesForUser(db, user.id) : [];
 
-  const paginatedTrades = await getTrades(db);
+  const paginatedTrades = await getTrades(db, { page, pageSize: 30 });
 
   const allTradeTexts = [
     ...pendingTrades.map((t) => t.proposalText),
@@ -504,12 +508,22 @@ export default function Trading({
           No trades have been made yet
         </div>
       ) : (
-        <TradeList
-          user={user}
-          trades={paginatedTrades?.trades ?? []}
-          showActions={false}
-          mentionContext={context}
-        />
+        <>
+          <Pagination
+            page={paginatedTrades?.page ?? 1}
+            totalPages={paginatedTrades?.totalPages ?? 1}
+          />
+          <TradeList
+            user={user}
+            trades={paginatedTrades?.trades ?? []}
+            showActions={false}
+            mentionContext={context}
+          />
+          <Pagination
+            page={paginatedTrades?.page ?? 1}
+            totalPages={paginatedTrades?.totalPages ?? 1}
+          />
+        </>
       )}
     </div>
   );

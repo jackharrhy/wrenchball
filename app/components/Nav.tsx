@@ -58,6 +58,11 @@ export function Nav({
               Players
             </Link>
           </li>
+          <li>
+            <Link to="/events" className={linkClassName("/events")}>
+              Events
+            </Link>
+          </li>
           {seasonState !== "pre-season" && (
             <li>
               <Link
@@ -88,19 +93,6 @@ export function Nav({
                 Admin
               </Link>
             </li>
-          )}
-          {team !== undefined && user && (
-            <>
-              <li className="text-gray-200">Logged in as {user.name}</li>
-              <li>
-                <Link
-                  to={`/team/${team.id}`}
-                  className={linkClassName(`/team/${team.id}`)}
-                >
-                  My Team
-                </Link>
-              </li>
-            </>
           )}
           {user !== undefined ? (
             <>

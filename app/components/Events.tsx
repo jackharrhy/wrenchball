@@ -6,6 +6,7 @@ import {
   createEmptyContext,
 } from "~/utils/mentions";
 import { formatTimeAgo } from "~/utils/time";
+import { TeamLogo } from "./TeamLogo";
 
 type EventWithRelations = Event & {
   user?: { id: number; name: string } | null;
@@ -38,13 +39,32 @@ type EventWithRelations = Event & {
       id: number;
       proposalText: string | null;
       responseText: string | null;
-      fromTeam: { id: number; name: string; abbreviation: string };
-      toTeam: { id: number; name: string; abbreviation: string };
+      fromTeam: {
+        id: number;
+        name: string;
+        abbreviation: string;
+        captain: {
+          statsCharacter: string | null;
+        } | null;
+      };
+      toTeam: {
+        id: number;
+        name: string;
+        abbreviation: string;
+        captain: {
+          statsCharacter: string | null;
+        } | null;
+      };
       tradePlayers: Array<{
         playerId: number;
         fromTeamId: number;
         toTeamId: number;
-        player: { id: number; name: string; imageUrl: string | null };
+        player: {
+          id: number;
+          name: string;
+          imageUrl: string | null;
+          statsCharacter: string | null;
+        };
       }>;
     };
   } | null;
@@ -244,9 +264,17 @@ export function Events({ events, mentionContext }: EventsProps) {
                     </span>
                   </a>
                   {": "}
+                  <br />
                   {fromPlayers.length > 0 && (
                     <>
-                      <span className="text-yellow-300">
+                      <span className="text-yellow-300 inline-flex gap-1">
+                        <TeamLogo
+                          captainStatsCharacter={
+                            trade.fromTeam.captain?.statsCharacter
+                          }
+                          size="xs"
+                          className="inline-flex"
+                        />
                         {trade.fromTeam.name}
                       </span>
                       {" sends "}
@@ -254,8 +282,13 @@ export function Events({ events, mentionContext }: EventsProps) {
                         <span key={tp.playerId}>
                           <a
                             href={`/player/${tp.player.id}`}
-                            className="hover:underline font-semibold"
+                            className="hover:underline font-semibold inline-flex gap-1.5"
                           >
+                            <PlayerIcon
+                              player={tp.player}
+                              size="xs"
+                              className="inline-flex"
+                            />
                             {tp.player.name}
                           </a>
                           {idx < fromPlayers.length - 1 ? ", " : ""}
@@ -263,10 +296,17 @@ export function Events({ events, mentionContext }: EventsProps) {
                       ))}
                     </>
                   )}
-                  {fromPlayers.length > 0 && toPlayers.length > 0 && " - "}
+                  {fromPlayers.length > 0 && toPlayers.length > 0 && <br />}
                   {toPlayers.length > 0 && (
                     <>
-                      <span className="text-yellow-300">
+                      <span className="text-yellow-300 inline-flex gap-1">
+                        <TeamLogo
+                          captainStatsCharacter={
+                            trade.toTeam.captain?.statsCharacter
+                          }
+                          size="xs"
+                          className="inline-flex"
+                        />
                         {trade.toTeam.name}
                       </span>
                       {" sends "}
@@ -274,8 +314,13 @@ export function Events({ events, mentionContext }: EventsProps) {
                         <span key={tp.playerId}>
                           <a
                             href={`/player/${tp.player.id}`}
-                            className="hover:underline font-semibold"
+                            className="hover:underline font-semibold inline-flex gap-1.5"
                           >
+                            <PlayerIcon
+                              player={tp.player}
+                              size="xs"
+                              className="inline-flex"
+                            />
                             {tp.player.name}
                           </a>
                           {idx < toPlayers.length - 1 ? ", " : ""}
@@ -403,12 +448,10 @@ export function Events({ events, mentionContext }: EventsProps) {
                     >
                       {match.teamA.name}
                     </span>
-                  </a>
-                  {" "}
+                  </a>{" "}
                   <span className="text-white font-bold">
                     {match.teamAScore ?? "?"} - {match.teamBScore ?? "?"}
-                  </span>
-                  {" "}
+                  </span>{" "}
                   <a
                     href={`/team/${match.teamB.id}`}
                     className="hover:underline"

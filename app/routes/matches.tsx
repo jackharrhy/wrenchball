@@ -6,6 +6,7 @@ import { cn } from "~/utils/cn";
 import { asc, desc, isNull } from "drizzle-orm";
 import { TeamLogo } from "~/components/TeamLogo";
 import { formatLocationName } from "~/utils/location";
+import { ConferencePin } from "~/components/ConferencePin";
 
 export async function loader({ request }: Route.LoaderArgs) {
   // Fetch match days with their matches
@@ -246,16 +247,6 @@ function MatchDayCard({ matchDay }: MatchDayCardProps) {
         ))}
       </div>
     </div>
-  );
-}
-
-function ConferencePin({ conference }: { conference: Conference }) {
-  return (
-    <span
-      className="inline-flex w-2.5 h-2.5 rounded-full opacity-40"
-      style={{ backgroundColor: conference.color ?? "#888" }}
-      title={conference.name}
-    />
   );
 }
 

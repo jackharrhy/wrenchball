@@ -24,7 +24,13 @@ export interface CreateMatchParams {
 
 export const createMatch = async (
   db: Database,
-  { teamAId, teamBId, matchDayId, scheduledDate, locationId }: CreateMatchParams,
+  {
+    teamAId,
+    teamBId,
+    matchDayId,
+    scheduledDate,
+    locationId,
+  }: CreateMatchParams,
 ) => {
   if (teamAId === teamBId) {
     throw new Error("Team A and Team B must be different teams");
@@ -373,11 +379,15 @@ export const getMatchWithStats = async (db: Database, matchId: number) => {
       teamA: {
         with: {
           captain: true,
+          user: true,
+          conference: true,
         },
       },
       teamB: {
         with: {
           captain: true,
+          user: true,
+          conference: true,
         },
       },
       location: true,

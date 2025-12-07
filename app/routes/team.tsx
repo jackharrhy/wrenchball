@@ -82,7 +82,10 @@ export default function Team({
 
   return (
     <div className="flex flex-col gap-4 items-center">
-      <h1 className="text-2xl font-rodin font-bold">{team.name}</h1>
+      <div className="flex flex-col items-center gap-1">
+        <h1 className="text-2xl font-rodin font-bold">{team.name}</h1>
+        <p className="text-gray-200/80">{team.user?.name}</p>
+      </div>
 
       {(team.lookingFor || team.willingToTrade) && (
         <div className="flex flex-col gap-4 border border-cell-gray/50 bg-cell-gray/30 rounded-lg p-4 w-full max-w-2xl">

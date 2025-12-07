@@ -4,6 +4,7 @@ import { db } from "~/database/db";
 import { getMatchWithStats } from "~/utils/matches.server";
 import { PlayerIcon } from "~/components/PlayerIcon";
 import { Lineup } from "~/components/Lineup";
+import { ConferencePin } from "~/components/ConferencePin";
 import { cn } from "~/utils/cn";
 import { formatLocationName } from "~/utils/location";
 
@@ -138,9 +139,15 @@ export default function Match({ loaderData }: Route.ComponentProps) {
         <div className="flex items-center justify-center gap-8">
           <Link
             to={`/team/${match.teamA.id}`}
-            className="text-2xl font-bold hover:underline"
+            className="flex flex-col items-end gap-0.5 hover:underline"
           >
-            {match.teamA.name}
+            <span className="text-2xl font-bold">{match.teamA.name}</span>
+            <span className="flex items-center justify-end gap-1 text-gray-200/80">
+              {match.teamA.conference && (
+                <ConferencePin conference={match.teamA.conference} />
+              )}
+              {match.teamA.user?.name}
+            </span>
           </Link>
           {showScore ? (
             <div className="flex items-center gap-4">
@@ -157,9 +164,15 @@ export default function Match({ loaderData }: Route.ComponentProps) {
           )}
           <Link
             to={`/team/${match.teamB.id}`}
-            className="text-2xl font-bold hover:underline"
+            className="flex flex-col items-start gap-0.5 hover:underline"
           >
-            {match.teamB.name}
+            <span className="text-2xl font-bold">{match.teamB.name}</span>
+            <span className="flex items-center gap-1 text-gray-200/80">
+              {match.teamB.user?.name}
+              {match.teamB.conference && (
+                <ConferencePin conference={match.teamB.conference} />
+              )}
+            </span>
           </Link>
         </div>
 

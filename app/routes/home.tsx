@@ -28,8 +28,16 @@ export async function loader({}: Route.LoaderArgs) {
           with: {
             trade: {
               with: {
-                fromTeam: true,
-                toTeam: true,
+                fromTeam: {
+                  with: {
+                    captain: true,
+                  },
+                },
+                toTeam: {
+                  with: {
+                    captain: true,
+                  },
+                },
                 tradePlayers: {
                   with: {
                     player: true,

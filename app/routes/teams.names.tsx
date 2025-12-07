@@ -13,6 +13,7 @@ export async function loader({ request }: Route.LoaderArgs) {
           lineup: true,
         },
       },
+      user: true,
       captain: true,
       conference: true,
     },
@@ -100,9 +101,10 @@ export default function TeamsNames({ loaderData }: Route.ComponentProps) {
                 className="flex flex-col items-center justify-center gap-4 group"
                 key={team.id}
               >
-                <p className="w-full text-lg font-rodin font-bold text-center">
-                  {team.name}
-                </p>
+                <div className="w-full flex flex-col items-center gap-1">
+                  <p className="text-lg font-rodin font-bold">{team.name}</p>
+                  <p className="text-sm text-gray-200/80">{team.user?.name}</p>
+                </div>
                 <div className="flex flex-col items-center justify-center gap-4 border-2 border-cell-gray/50 bg-cell-gray/40 rounded-lg p-4 w-60 max-w-full transition-colors group-hover:bg-cell-gray/60">
                   <TeamLogo
                     captainStatsCharacter={

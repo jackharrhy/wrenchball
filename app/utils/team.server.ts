@@ -18,6 +18,7 @@ export async function getTeamWithPlayers(teamId: string | number) {
           lineup: true,
         },
       },
+      user: true,
       captain: true,
     },
   });

@@ -7,12 +7,14 @@ export function PlayerIcon({
   isCaptain = false,
   isStarred = false,
   isQuestionMark = false,
+  className,
 }: {
   player?: Pick<Player, "imageUrl" | "name" | "statsCharacter"> | null;
   size?: "xs" | "sm" | "md" | "lg" | "xl";
   isStarred?: boolean;
   isQuestionMark?: boolean;
   isCaptain?: boolean;
+  className?: string;
 }) {
   let imageUrl = "/images/players/sideview/right/mario.png";
   if (isQuestionMark) {
@@ -48,7 +50,7 @@ export function PlayerIcon({
 
   return (
     <div
-      className={cn("relative shrink-0", sizeClasses[size])}
+      className={cn("relative shrink-0", sizeClasses[size], className)}
       data-player={player?.statsCharacter}
     >
       <img

@@ -5,6 +5,7 @@ import { matchDays, matches } from "~/database/schema";
 import { cn } from "~/utils/cn";
 import { asc, desc, isNull } from "drizzle-orm";
 import { TeamLogo } from "~/components/TeamLogo";
+import { formatLocationName } from "~/utils/location";
 
 export async function loader({ request }: Route.LoaderArgs) {
   // Fetch match days with their matches
@@ -24,6 +25,7 @@ export async function loader({ request }: Route.LoaderArgs) {
               conference: true,
             },
           },
+          location: true,
         },
         orderBy: [asc(matches.orderInDay), asc(matches.scheduledDate)],
       },
@@ -47,6 +49,7 @@ export async function loader({ request }: Route.LoaderArgs) {
           conference: true,
         },
       },
+      location: true,
     },
     orderBy: [asc(matches.scheduledDate), desc(matches.createdAt)],
   });
@@ -303,6 +306,12 @@ function MatchCard({ match, showDate }: MatchCardProps) {
           )}
         >
           {match.state}
+        </span>
+      )}
+
+      {"location" in match && match.location && (
+        <span className="absolute top-1 left-1.5 text-[10px] text-gray-400">
+          {formatLocationName(match.location.name)}
         </span>
       )}
 

@@ -5,6 +5,7 @@ import { getMatchWithStats } from "~/utils/matches.server";
 import { PlayerIcon } from "~/components/PlayerIcon";
 import { Lineup } from "~/components/Lineup";
 import { cn } from "~/utils/cn";
+import { formatLocationName } from "~/utils/location";
 
 export async function loader({ params: { matchId } }: Route.LoaderArgs) {
   const match = await getMatchWithStats(db, parseInt(matchId, 10));
@@ -162,7 +163,11 @@ export default function Match({ loaderData }: Route.ComponentProps) {
           </Link>
         </div>
 
-        {/* <p className="text-gray-400">{formatDate(match.scheduledDate)}</p> */}
+        {match.location && (
+          <p className="text-gray-400">
+            {formatLocationName(match.location.name)}
+          </p>
+        )}
       </div>
 
       {/* Lineups */}

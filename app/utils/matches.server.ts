@@ -1,4 +1,4 @@
-import { eq, asc, and, count } from "drizzle-orm";
+import { eq, asc, and, count, desc, max } from "drizzle-orm";
 import { type Database } from "~/database/db";
 import {
   matches,
@@ -16,12 +16,13 @@ import { createMatchStateChangeEvent } from "~/utils/events.server";
 export interface CreateMatchParams {
   teamAId: number;
   teamBId: number;
+  matchDayId: number;
   scheduledDate?: Date | null;
 }
 
 export const createMatch = async (
   db: Database,
-  { teamAId, teamBId, scheduledDate }: CreateMatchParams,
+  { teamAId, teamBId, matchDayId, scheduledDate }: CreateMatchParams,
 ) => {
   if (teamAId === teamBId) {
     throw new Error("Team A and Team B must be different teams");
@@ -59,17 +60,70 @@ export const createMatch = async (
     );
   }
 
+  // Get the next order position for this match day
+  const [maxOrder] = await db
+    .select({ maxOrder: max(matches.orderInDay) })
+    .from(matches)
+    .where(eq(matches.matchDayId, matchDayId));
+
+  const orderInDay = (maxOrder?.maxOrder ?? 0) + 1;
+
   const [match] = await db
     .insert(matches)
     .values({
       teamAId,
       teamBId,
+      matchDayId,
+      orderInDay,
       scheduledDate: scheduledDate ?? null,
       state: "upcoming",
     })
     .returning();
 
   return match;
+};
+
+/**
+ * Update the order of a match within its match day (swaps with adjacent match)
+ */
+export const updateMatchOrder = async (
+  db: Database,
+  matchId: number,
+  newOrder: number,
+): Promise<void> => {
+  await db.transaction(async (tx) => {
+    // Get the current match
+    const currentMatch = await tx.query.matches.findFirst({
+      where: eq(matches.id, matchId),
+    });
+
+    if (!currentMatch || !currentMatch.matchDayId) {
+      throw new Error("Match not found or not assigned to a match day");
+    }
+
+    const currentOrder = currentMatch.orderInDay ?? 0;
+
+    // Find the match at the target position
+    const targetMatch = await tx.query.matches.findFirst({
+      where: and(
+        eq(matches.matchDayId, currentMatch.matchDayId),
+        eq(matches.orderInDay, newOrder),
+      ),
+    });
+
+    // Swap orders
+    await tx
+      .update(matches)
+      .set({ orderInDay: newOrder })
+      .where(eq(matches.id, matchId));
+
+    if (targetMatch) {
+      await tx
+        .update(matches)
+        .set({ orderInDay: currentOrder })
+        .where(eq(matches.id, targetMatch.id));
+    }
+  });
 };
 
 export const freezeMatchLineups = async (
@@ -266,14 +320,12 @@ export const deleteMatch = async (db: Database, matchId: number) => {
 };
 
 export const getTeamsForMatchCreation = async (db: Database) => {
-  return await db
-    .select({
-      id: teams.id,
-      name: teams.name,
-      abbreviation: teams.abbreviation,
-    })
-    .from(teams)
-    .orderBy(asc(teams.name));
+  return await db.query.teams.findMany({
+    with: {
+      user: true,
+    },
+    orderBy: [asc(teams.name)],
+  });
 };
 
 export const getMatchWithStats = async (db: Database, matchId: number) => {

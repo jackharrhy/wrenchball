@@ -2,6 +2,8 @@ import { eq, isNull, and, asc } from "drizzle-orm";
 import { LINEUP_SIZE, TEAM_SIZE } from "~/consts";
 import { type Database } from "~/database/db";
 import {
+  conferences,
+  matchDays,
   players,
   season,
   stats,
@@ -11,6 +13,8 @@ import {
   tradePlayers,
   users,
   usersSeasons,
+  type Conference,
+  type MatchDay,
   type Season as SeasonType,
   type SeasonState,
 } from "~/database/schema";
@@ -631,4 +635,160 @@ export const getDraftTimerState = async (
       startedAt,
     };
   }
+};
+
+// Conference management functions
+
+/**
+ * Get all conferences for the current season
+ */
+export const getConferences = async (db: Database): Promise<Conference[]> => {
+  const currentSeason = await getSeasonState(db);
+  if (!currentSeason) {
+    return [];
+  }
+
+  return db
+    .select()
+    .from(conferences)
+    .where(eq(conferences.seasonId, currentSeason.id));
+};
+
+/**
+ * Create a new conference for the current season
+ */
+export const createConference = async (
+  db: Database,
+  name: string,
+  color: string | null,
+): Promise<Conference> => {
+  const currentSeason = await getSeasonState(db);
+  if (!currentSeason) {
+    throw new Error("No current season found");
+  }
+
+  const [conference] = await db
+    .insert(conferences)
+    .values({
+      name,
+      color,
+      seasonId: currentSeason.id,
+    })
+    .returning();
+
+  return conference;
+};
+
+/**
+ * Delete a conference
+ */
+export const deleteConference = async (
+  db: Database,
+  conferenceId: number,
+): Promise<void> => {
+  await db.transaction(async (tx) => {
+    // First, unassign any teams from this conference
+    await tx
+      .update(teams)
+      .set({ conferenceId: null })
+      .where(eq(teams.conferenceId, conferenceId));
+
+    // Then delete the conference
+    await tx.delete(conferences).where(eq(conferences.id, conferenceId));
+  });
+};
+
+/**
+ * Assign a team to a conference (or remove from conference if conferenceId is null)
+ */
+export const assignTeamToConference = async (
+  db: Database,
+  teamId: number,
+  conferenceId: number | null,
+): Promise<void> => {
+  await db
+    .update(teams)
+    .set({ conferenceId })
+    .where(eq(teams.id, teamId));
+};
+
+/**
+ * Update a conference's name and/or color
+ */
+export const updateConference = async (
+  db: Database,
+  conferenceId: number,
+  updates: { name?: string; color?: string | null },
+): Promise<void> => {
+  await db
+    .update(conferences)
+    .set(updates)
+    .where(eq(conferences.id, conferenceId));
+};
+
+// Match Day management functions
+
+/**
+ * Get all match days for the current season
+ */
+export const getMatchDays = async (db: Database): Promise<MatchDay[]> => {
+  const currentSeason = await getSeasonState(db);
+  if (!currentSeason) {
+    return [];
+  }
+
+  return db
+    .select()
+    .from(matchDays)
+    .where(eq(matchDays.seasonId, currentSeason.id))
+    .orderBy(asc(matchDays.date));
+};
+
+/**
+ * Create a new match day for the current season
+ */
+export const createMatchDay = async (
+  db: Database,
+  name: string | null,
+  date: Date,
+): Promise<MatchDay> => {
+  const currentSeason = await getSeasonState(db);
+  if (!currentSeason) {
+    throw new Error("No current season found");
+  }
+
+  const [matchDay] = await db
+    .insert(matchDays)
+    .values({
+      name,
+      date,
+      seasonId: currentSeason.id,
+    })
+    .returning();
+
+  return matchDay;
+};
+
+/**
+ * Update a match day's name and/or date
+ */
+export const updateMatchDay = async (
+  db: Database,
+  matchDayId: number,
+  updates: { name?: string | null; date?: Date },
+): Promise<void> => {
+  await db
+    .update(matchDays)
+    .set(updates)
+    .where(eq(matchDays.id, matchDayId));
+};
+
+/**
+ * Delete a match day (will cascade delete its matches)
+ */
+export const deleteMatchDay = async (
+  db: Database,
+  matchDayId: number,
+): Promise<void> => {
+  await db.delete(matchDays).where(eq(matchDays.id, matchDayId));
 };

@@ -61,6 +61,9 @@ export async function loader({ request }: Route.LoaderArgs) {
     where: (teams, { ne }) =>
       (user !== null && ne(teams.userId, user.id)) || undefined,
     orderBy: (teams, { asc }) => asc(teams.name),
+    with: {
+      user: true,
+    },
   });
 
   const pendingTrades =
@@ -457,13 +460,13 @@ export default function Trading({
               onChange={(e) => setSelectedTeamId(e.target.value)}
             >
               <option value="" disabled>
-                Select a player...
+                Select a team...
               </option>
               {allTeams
                 .filter((team) => myTeam?.id !== team.id)
                 .map((team) => (
                   <option key={team.id} value={team.id}>
-                    {team.name}
+                    {team.user ? `${team.name} (${team.user.name})` : team.name}
                   </option>
                 ))}
             </select>

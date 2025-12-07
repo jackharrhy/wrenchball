@@ -306,7 +306,7 @@ function MatchCard({ match, showDate }: MatchCardProps) {
     <Link
       to={`/match/${match.id}`}
       className={cn(
-        "relative grid grid-cols-[1fr_auto_1fr] items-center gap-3 px-4 py-3 rounded-lg bg-cell-gray/40 border border-cell-gray/50 hover:bg-cell-gray/60 transition-colors",
+        "min-h-24 lg:min-h-0 relative grid grid-cols-[1fr_auto_1fr] items-center gap-3 px-4 py-3 rounded-lg bg-cell-gray/40 border border-cell-gray/50 hover:bg-cell-gray/60 transition-colors",
       )}
     >
       {match.state !== "finished" && (
@@ -329,7 +329,9 @@ function MatchCard({ match, showDate }: MatchCardProps) {
       <div className="flex items-center justify-end gap-2 min-w-0">
         <div className="flex flex-col gap-0.5 font-semibold truncate text-sm">
           <p>{match.teamA.name}</p>
-          <p className="text-xs text-gray-200/80">{match.teamA.user?.name}</p>
+          <p className="text-right text-xs text-gray-200/80">
+            {match.teamA.user?.name}
+          </p>
         </div>
         <TeamLogo
           size="sm"
@@ -378,7 +380,9 @@ function MatchCard({ match, showDate }: MatchCardProps) {
         />
         <div className="flex flex-col gap-0.5 font-semibold truncate text-sm">
           <p>{match.teamB.name}</p>
-          <p className="text-xs text-gray-200/80">{match.teamB.user?.name}</p>
+          <p className="text-left text-xs text-gray-200/80">
+            {match.teamB.user?.name}
+          </p>
         </div>
         {showDate && (
           <span className="text-xs text-gray-400 ml-auto">

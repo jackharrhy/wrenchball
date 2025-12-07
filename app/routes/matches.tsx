@@ -1,7 +1,7 @@
 import { Link } from "react-router";
 import type { Route } from "./+types/matches";
 import { db } from "~/database/db";
-import { matchDays, matches } from "~/database/schema";
+import { matchDays, matches, type Conference } from "~/database/schema";
 import { cn } from "~/utils/cn";
 import { asc, desc, isNull } from "drizzle-orm";
 import { TeamLogo } from "~/components/TeamLogo";
@@ -249,6 +249,16 @@ function MatchDayCard({ matchDay }: MatchDayCardProps) {
   );
 }
 
+function ConferencePin({ conference }: { conference: Conference }) {
+  return (
+    <span
+      className="inline-flex w-2.5 h-2.5 rounded-full opacity-40"
+      style={{ backgroundColor: conference.color ?? "#888" }}
+      title={conference.name}
+    />
+  );
+}
+
 interface ConferenceBadgeProps {
   conferenceInfo: ReturnType<typeof getMatchDayConferenceInfo>;
 }
@@ -275,21 +285,9 @@ function ConferenceBadge({ conferenceInfo }: ConferenceBadgeProps) {
   }
 
   return (
-    <div className="flex items-center gap-2">
-      <span className="px-3 py-1 text-xs font-semibold rounded-full bg-yellow-500/20 text-yellow-300 border border-yellow-400/40">
-        Cross-Conference
-      </span>
-      <div className="flex gap-1">
-        {conferenceInfo.conferences.map((conf, i) => (
-          <span
-            key={i}
-            className="w-2.5 h-2.5 rounded-full"
-            style={{ backgroundColor: conf.color ?? "#888" }}
-            title={conf.name}
-          />
-        ))}
-      </div>
-    </div>
+    <span className="px-3 py-1 text-xs font-semibold rounded-full bg-yellow-500/20 text-yellow-300 border border-yellow-400/40">
+      Cross-Conference
+    </span>
   );
 }
 
@@ -331,8 +329,11 @@ function MatchCard({ match, showDate }: MatchCardProps) {
       <div className="flex items-center justify-end gap-2 min-w-0">
         <div className="flex flex-col gap-0.5 font-semibold truncate text-sm">
           <p>{match.teamA.name}</p>
-          <p className="text-right text-xs text-gray-200/80">
+          <p className="flex items-center gap-1 text-right text-xs text-gray-200/80">
             {match.teamA.user?.name}
+            {match.teamA.conference && (
+              <ConferencePin conference={match.teamA.conference} />
+            )}
           </p>
         </div>
         <TeamLogo
@@ -382,8 +383,11 @@ function MatchCard({ match, showDate }: MatchCardProps) {
         />
         <div className="flex flex-col gap-0.5 font-semibold truncate text-sm">
           <p>{match.teamB.name}</p>
-          <p className="text-left text-xs text-gray-200/80">
+          <p className="flex items-center gap-1 text-left text-xs text-gray-200/80">
             {match.teamB.user?.name}
+            {match.teamB.conference && (
+              <ConferencePin conference={match.teamB.conference} />
+            )}
           </p>
         </div>
         {showDate && (

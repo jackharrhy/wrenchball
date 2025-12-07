@@ -230,14 +230,15 @@ export const createTradeEvent = async (
       .join(", ");
 
     let actionPrefix: string;
+    const tradeLink = `${BASE_URL}/trade/${tradeId}`;
     if (action === "proposed") {
-      actionPrefix = "_Trade Proposed_";
+      actionPrefix = `_[Trade Proposed](${tradeLink})_`;
     } else if (action === "accepted") {
-      actionPrefix = "_Trade Accepted_";
+      actionPrefix = `_[Trade Accepted](${tradeLink})_`;
     } else if (action === "rejected") {
-      actionPrefix = "_Trade Rejected_";
+      actionPrefix = `_[Trade Rejected](${tradeLink})_`;
     } else {
-      actionPrefix = "_Trade Cancelled_";
+      actionPrefix = `_[Trade Cancelled](${tradeLink})_`;
     }
 
     let message = `${actionPrefix}: **[${trade.fromTeam.name}](${BASE_URL}/team/${trade.fromTeam.id})** `;
@@ -247,6 +248,36 @@ export const createTradeEvent = async (
     message += `↔ **[${trade.toTeam.name}](${BASE_URL}/team/${trade.toTeam.id})** `;
     if (toPlayers.length > 0) {
       message += `sends ${toPlayerLinks}`;
+    }
+
+    // Add proposal text if present (for proposed trades)
+    if (trade.proposalText && action === "proposed") {
+      const { context } = await resolveMentions(db, trade.proposalText);
+      const proposalMarkdown = mentionsToMarkdown(
+        trade.proposalText,
+        context,
+        BASE_URL,
+      );
+      if (proposalMarkdown) {
+        message += `\n\n**Message from ${trade.fromTeam.name}:** ${proposalMarkdown}`;
+      }
+    }
+
+    // Add response text if present (for accepted/rejected/cancelled trades)
+    if (trade.responseText && action !== "proposed") {
+      const { context } = await resolveMentions(db, trade.responseText);
+      const responseMarkdown = mentionsToMarkdown(
+        trade.responseText,
+        context,
+        BASE_URL,
+      );
+      if (responseMarkdown) {
+        const responseLabel =
+          action === "cancelled"
+            ? `**Cancellation reason from ${trade.fromTeam.name}:**`
+            : `**Response from ${trade.toTeam.name}:**`;
+        message += `\n\n${responseLabel} ${responseMarkdown}`;
+      }
     }
 
     await postEvent("trade", message);

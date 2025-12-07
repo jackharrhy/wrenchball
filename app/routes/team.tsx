@@ -1,6 +1,6 @@
 import type { Route } from "./+types/team";
 import { TeamPlayerList } from "~/components/TeamPlayerList";
-import { TradePreferencesDisplay } from "~/components/TradePreferencesEditor";
+import { MentionDisplay } from "~/components/MentionEditor";
 import { getUser } from "~/auth.server";
 import { Link } from "react-router";
 import { Lineup } from "~/components/Lineup";
@@ -88,18 +88,25 @@ export default function Team({
         <div className="flex flex-col gap-4 border border-cell-gray/50 bg-cell-gray/30 rounded-lg p-4 w-full max-w-2xl">
           <h2 className="text-lg font-bold text-center">Trade Preferences</h2>
           <div className="flex flex-col gap-4">
-            <TradePreferencesDisplay
-              content={team.lookingFor}
-              context={context}
-              label="Looking For"
-              labelColor="text-green-400"
-            />
-            <TradePreferencesDisplay
-              content={team.willingToTrade}
-              context={context}
-              label="Willing to Trade"
-              labelColor="text-orange-400"
-            />
+            {team.lookingFor && (
+              <div className="flex-1">
+                <p className="text-sm font-semibold text-green-400 mb-1">
+                  Looking For:
+                </p>
+                <MentionDisplay content={team.lookingFor} context={context} />
+              </div>
+            )}
+            {team.willingToTrade && (
+              <div className="flex-1">
+                <p className="text-sm font-semibold text-orange-400 mb-1">
+                  Willing to Trade:
+                </p>
+                <MentionDisplay
+                  content={team.willingToTrade}
+                  context={context}
+                />
+              </div>
+            )}
           </div>
           {team.tradePreferencesUpdatedAt && (
             <span className="text-sm text-gray-300/80 italic">

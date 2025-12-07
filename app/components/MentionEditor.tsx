@@ -206,25 +206,21 @@ function tiptapToPlainText(doc: JSONContent): string {
   return lines.join("\n");
 }
 
-interface TradePreferencesEditorProps {
+interface MentionEditorProps {
   content: string | null | undefined;
   onChange: (content: string) => void;
   placeholder?: string;
   teams: Array<{ id: number; name: string }>;
   players: Array<{ id: number; name: string }>;
-  label: string;
-  labelColor: string;
 }
 
-export function TradePreferencesEditor({
+export function MentionEditor({
   content,
   onChange,
   placeholder,
   teams,
   players,
-  label,
-  labelColor,
-}: TradePreferencesEditorProps) {
+}: MentionEditorProps) {
   const playerMap = new Map(players.map((p) => [p.id, p.name]));
   const teamMap = new Map(teams.map((t) => [t.id, t.name]));
 
@@ -359,41 +355,28 @@ export function TradePreferencesEditor({
   }
 
   return (
-    <div className="flex flex-col gap-2">
-      <label className={`text-sm font-semibold ${labelColor}`}>{label}:</label>
-      <div className="relative">
-        <EditorContent editor={editor} />
-        {editor.isEmpty && placeholder && (
-          <div className="absolute top-2 left-2 text-gray-300/40 text-sm pointer-events-none">
-            {placeholder}
-          </div>
-        )}
-      </div>
+    <div className="relative">
+      <EditorContent editor={editor} />
+      {editor.isEmpty && placeholder && (
+        <div className="absolute top-2 left-2 text-gray-300/40 text-sm pointer-events-none">
+          {placeholder}
+        </div>
+      )}
     </div>
   );
 }
 
-interface TradePreferencesDisplayProps {
+interface MentionDisplayProps {
   content: string | null | undefined;
   context: MentionContext;
-  label: string;
-  labelColor: string;
 }
 
-export function TradePreferencesDisplay({
-  content,
-  context,
-  label,
-  labelColor,
-}: TradePreferencesDisplayProps) {
+export function MentionDisplay({ content, context }: MentionDisplayProps) {
   if (!content) return null;
 
   return (
-    <div className="flex-1">
-      <p className={`text-sm font-semibold ${labelColor} mb-1`}>{label}:</p>
-      <div className="text-sm text-gray-200 whitespace-pre-wrap trade-block-content">
-        {renderMentionedText(content, context)}
-      </div>
+    <div className="text-sm text-gray-200 whitespace-pre-wrap trade-block-content">
+      {renderMentionedText(content, context)}
     </div>
   );
 }

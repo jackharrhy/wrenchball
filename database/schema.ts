@@ -181,7 +181,7 @@ export const players = pgTable("players", {
 
 export type Player = typeof players.$inferSelect;
 
-export const playerRelations = relations(players, ({ one }) => ({
+export const playerRelations = relations(players, ({ one, many }) => ({
   team: one(teams, {
     fields: [players.teamId],
     references: [teams.id],
@@ -197,6 +197,7 @@ export const playerRelations = relations(players, ({ one }) => ({
     references: [stats.character],
     relationName: "playerStats",
   }),
+  matchBattingOrders: many(matchBattingOrders),
 }));
 
 export const fieldingPositions = pgEnum("fielding_positions", [

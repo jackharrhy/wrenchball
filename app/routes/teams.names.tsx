@@ -76,10 +76,10 @@ export default function TeamsNames({ loaderData }: Route.ComponentProps) {
       {loaderData.groupedTeams.map((group) => (
         <div
           key={group.conference?.id ?? "no-conference"}
-          className="w-full flex flex-col gap-4 p-4 rounded-lg border"
+          className="w-full flex flex-col gap-4 p-4 rounded-lg border-4"
           style={{
             borderColor: group.conference?.color
-              ? `${group.conference.color}40`
+              ? `${group.conference.color}80`
               : "rgba(255,255,255,0.2)",
           }}
         >

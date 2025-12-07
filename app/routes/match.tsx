@@ -212,126 +212,124 @@ export default function Match({ loaderData }: Route.ComponentProps) {
       {match.state === "finished" && match.playerStats.length > 0 && (
         <div className="space-y-4">
           <h2 className="text-xl font-bold text-center">Player Stats</h2>
-          <div className="overflow-x-auto">
-            <table className="w-full border-collapse">
-              <thead>
-                <tr className="bg-cell-gray/60">
-                  <th className="sticky left-0 z-10 bg-cell-gray/80 p-2 text-left border border-cell-gray/50">
-                    Player
+          <table className="w-full border-collapse">
+            <thead>
+              <tr className="bg-cell-gray/60">
+                <th className="sticky left-0 z-10 bg-cell-gray/80 p-2 text-left border border-cell-gray/50">
+                  Player
+                </th>
+                <th className="p-2 text-left border border-cell-gray/50">
+                  Team
+                </th>
+                {STAT_COLUMNS.map((col) => (
+                  <th
+                    key={col.key}
+                    className="p-2 text-center border border-cell-gray/50 min-w-[3rem]"
+                    title={col.title}
+                  >
+                    {col.label}
                   </th>
-                  <th className="p-2 text-left border border-cell-gray/50">
-                    Team
-                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {/* Team A players */}
+              {teamALineup.map((bo) => (
+                <tr
+                  key={bo.playerId}
+                  className="hover:bg-cell-gray/40 transition-colors"
+                >
+                  <td className="sticky left-0 z-10 bg-cell-gray/60 p-2 border border-cell-gray/50">
+                    <div className="flex items-center gap-2">
+                      <PlayerIcon
+                        player={bo.player}
+                        size="sm"
+                        isStarred={bo.isStarred}
+                        isCaptain={
+                          bo.teamId === match.teamAId
+                            ? match.teamA.captainId !== null &&
+                              match.teamA.captainId !== undefined &&
+                              bo.playerId === match.teamA.captainId
+                            : match.teamB.captainId !== null &&
+                              match.teamB.captainId !== undefined &&
+                              bo.playerId === match.teamB.captainId
+                        }
+                      />
+                      <Link
+                        to={`/player/${bo.playerId}`}
+                        className="hover:underline"
+                      >
+                        {bo.player.name}
+                      </Link>
+                    </div>
+                  </td>
+                  <td className="p-2 border border-cell-gray/50 text-sm text-gray-400">
+                    {match.teamA.name}
+                  </td>
                   {STAT_COLUMNS.map((col) => (
-                    <th
+                    <td
                       key={col.key}
-                      className="p-2 text-center border border-cell-gray/50 min-w-[3rem]"
-                      title={col.title}
+                      className="p-2 text-center border border-cell-gray/50"
                     >
-                      {col.label}
-                    </th>
+                      {getStatValue(bo.playerId, col.key)}
+                    </td>
                   ))}
                 </tr>
-              </thead>
-              <tbody>
-                {/* Team A players */}
-                {teamALineup.map((bo) => (
-                  <tr
-                    key={bo.playerId}
-                    className="hover:bg-cell-gray/40 transition-colors"
-                  >
-                    <td className="sticky left-0 z-10 bg-cell-gray/60 p-2 border border-cell-gray/50">
-                      <div className="flex items-center gap-2">
-                        <PlayerIcon
-                          player={bo.player}
-                          size="sm"
-                          isStarred={bo.isStarred}
-                          isCaptain={
-                            bo.teamId === match.teamAId
-                              ? match.teamA.captainId !== null &&
-                                match.teamA.captainId !== undefined &&
-                                bo.playerId === match.teamA.captainId
-                              : match.teamB.captainId !== null &&
-                                match.teamB.captainId !== undefined &&
-                                bo.playerId === match.teamB.captainId
-                          }
-                        />
-                        <Link
-                          to={`/player/${bo.playerId}`}
-                          className="hover:underline"
-                        >
-                          {bo.player.name}
-                        </Link>
-                      </div>
-                    </td>
-                    <td className="p-2 border border-cell-gray/50 text-sm text-gray-400">
-                      {match.teamA.name}
-                    </td>
-                    {STAT_COLUMNS.map((col) => (
-                      <td
-                        key={col.key}
-                        className="p-2 text-center border border-cell-gray/50"
+              ))}
+              {/* Divider row */}
+              {teamALineup.length > 0 && teamBLineup.length > 0 && (
+                <tr>
+                  <td
+                    colSpan={STAT_COLUMNS.length + 2}
+                    className="h-8 bg-cell-gray/20"
+                  />
+                </tr>
+              )}
+              {/* Team B players */}
+              {teamBLineup.map((bo) => (
+                <tr
+                  key={bo.playerId}
+                  className="hover:bg-cell-gray/40 transition-colors"
+                >
+                  <td className="sticky left-0 z-10 bg-cell-gray/60 p-2 border border-cell-gray/50">
+                    <div className="flex items-center gap-2">
+                      <PlayerIcon
+                        player={bo.player}
+                        size="sm"
+                        isStarred={bo.isStarred}
+                        isCaptain={
+                          bo.teamId === match.teamAId
+                            ? match.teamA.captainId !== null &&
+                              match.teamA.captainId !== undefined &&
+                              bo.playerId === match.teamA.captainId
+                            : match.teamB.captainId !== null &&
+                              match.teamB.captainId !== undefined &&
+                              bo.playerId === match.teamB.captainId
+                        }
+                      />
+                      <Link
+                        to={`/player/${bo.playerId}`}
+                        className="hover:underline"
                       >
-                        {getStatValue(bo.playerId, col.key)}
-                      </td>
-                    ))}
-                  </tr>
-                ))}
-                {/* Divider row */}
-                {teamALineup.length > 0 && teamBLineup.length > 0 && (
-                  <tr>
+                        {bo.player.name}
+                      </Link>
+                    </div>
+                  </td>
+                  <td className="p-2 border border-cell-gray/50 text-sm text-gray-400">
+                    {match.teamB.name}
+                  </td>
+                  {STAT_COLUMNS.map((col) => (
                     <td
-                      colSpan={STAT_COLUMNS.length + 2}
-                      className="h-8 bg-cell-gray/20"
-                    />
-                  </tr>
-                )}
-                {/* Team B players */}
-                {teamBLineup.map((bo) => (
-                  <tr
-                    key={bo.playerId}
-                    className="hover:bg-cell-gray/40 transition-colors"
-                  >
-                    <td className="sticky left-0 z-10 bg-cell-gray/60 p-2 border border-cell-gray/50">
-                      <div className="flex items-center gap-2">
-                        <PlayerIcon
-                          player={bo.player}
-                          size="sm"
-                          isStarred={bo.isStarred}
-                          isCaptain={
-                            bo.teamId === match.teamAId
-                              ? match.teamA.captainId !== null &&
-                                match.teamA.captainId !== undefined &&
-                                bo.playerId === match.teamA.captainId
-                              : match.teamB.captainId !== null &&
-                                match.teamB.captainId !== undefined &&
-                                bo.playerId === match.teamB.captainId
-                          }
-                        />
-                        <Link
-                          to={`/player/${bo.playerId}`}
-                          className="hover:underline"
-                        >
-                          {bo.player.name}
-                        </Link>
-                      </div>
+                      key={col.key}
+                      className="p-2 text-center border border-cell-gray/50"
+                    >
+                      {getStatValue(bo.playerId, col.key)}
                     </td>
-                    <td className="p-2 border border-cell-gray/50 text-sm text-gray-400">
-                      {match.teamB.name}
-                    </td>
-                    {STAT_COLUMNS.map((col) => (
-                      <td
-                        key={col.key}
-                        className="p-2 text-center border border-cell-gray/50"
-                      >
-                        {getStatValue(bo.playerId, col.key)}
-                      </td>
-                    ))}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       )}
 

@@ -162,7 +162,7 @@ export default function Match({ loaderData }: Route.ComponentProps) {
           </Link>
         </div>
 
-        <p className="text-gray-400">{formatDate(match.scheduledDate)}</p>
+        {/* <p className="text-gray-400">{formatDate(match.scheduledDate)}</p> */}
       </div>
 
       {/* Lineups */}

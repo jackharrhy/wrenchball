@@ -1,7 +1,8 @@
 CREATE TABLE IF NOT EXISTS "match_days" (
 	"id" integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
 	"name" text,
-	"date" timestamp NOT NULL,
+	"date" timestamp,
+	"order_in_season" integer,
 	"season_id" integer NOT NULL
 );--> statement-breakpoint
 DO $$ BEGIN

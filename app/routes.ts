@@ -24,8 +24,15 @@ export default [
   route("trade/:tradeId", "routes/trade.tsx"),
   route("trade/with/:teamId", "routes/trade-with.tsx"),
   route("chemistry", "routes/chemistry.tsx"),
-  route("admin", "routes/admin.tsx"),
-  route("admin/match-track", "routes/admin-match-track.tsx"),
-  route("admin/match/:matchId/stats", "routes/admin-match-stats.tsx"),
+  route("admin", "routes/admin.tsx", [
+    index("routes/admin._index.tsx"),
+    route("drafting", "routes/admin.drafting.tsx"),
+    route("users", "routes/admin.users.tsx"),
+    route("conferences", "routes/admin.conferences.tsx"),
+    route("matches", "routes/admin.matches.tsx"),
+    route("debug", "routes/admin.debug.tsx"),
+    route("match-track", "routes/admin-match-track.tsx"),
+    route("match/:matchId/stats", "routes/admin-match-stats.tsx"),
+  ]),
   route("kitchen-sink", "routes/kitchen-sink.tsx"),
 ] satisfies RouteConfig;

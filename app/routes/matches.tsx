@@ -329,11 +329,11 @@ function MatchCard({ match, showDate }: MatchCardProps) {
       <div className="flex items-center justify-end gap-2 min-w-0">
         <div className="flex flex-col gap-0.5 font-semibold truncate text-sm">
           <p>{match.teamA.name}</p>
-          <p className="flex items-center gap-1 text-right text-xs text-gray-200/80">
-            {match.teamA.user?.name}
+          <p className="flex items-center justify-end gap-1 text-xs text-gray-200/80">
             {match.teamA.conference && (
               <ConferencePin conference={match.teamA.conference} />
             )}
+            {match.teamA.user?.name}
           </p>
         </div>
         <TeamLogo
@@ -383,7 +383,7 @@ function MatchCard({ match, showDate }: MatchCardProps) {
         />
         <div className="flex flex-col gap-0.5 font-semibold truncate text-sm">
           <p>{match.teamB.name}</p>
-          <p className="flex items-center gap-1 text-left text-xs text-gray-200/80">
+          <p className="flex items-center gap-1 text-xs text-gray-200/80">
             {match.teamB.user?.name}
             {match.teamB.conference && (
               <ConferencePin conference={match.teamB.conference} />

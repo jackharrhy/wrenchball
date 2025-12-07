@@ -57,86 +57,83 @@ type LeaderboardTableProps = {
 
 export function LeaderboardTable({ players }: LeaderboardTableProps) {
   return (
-    <div className="overflow-x-auto">
-      <table className="w-full border-collapse">
-        <thead>
-          <tr className="bg-cell-gray/60">
-            <th className="sticky left-0 z-10 bg-cell-gray/80 p-2 text-left border border-cell-gray/50">
-              Player
-            </th>
-            <th className="p-2 text-left border border-cell-gray/50">Team</th>
+    <table className="w-full border-collapse">
+      <thead>
+        <tr className="bg-cell-gray/60">
+          <th className="sticky left-0 z-10 bg-cell-gray/80 p-2 text-left border border-cell-gray/50">
+            Player
+          </th>
+          <th className="p-2 text-left border border-cell-gray/50">Team</th>
+          <th
+            className="p-2 text-center border border-cell-gray/50 min-w-[3rem]"
+            title="Matches Played"
+          >
+            GP
+          </th>
+          {STAT_COLUMNS.map((col) => (
             <th
+              key={col.key}
               className="p-2 text-center border border-cell-gray/50 min-w-[3rem]"
-              title="Matches Played"
+              title={col.title}
             >
-              GP
+              {col.label}
             </th>
+          ))}
+        </tr>
+      </thead>
+      <tbody>
+        {players.map((player) => (
+          <tr
+            key={player.id}
+            className="hover:bg-cell-gray/40 transition-colors"
+          >
+            <td className="sticky left-0 z-10 bg-cell-gray/60 p-2 border border-cell-gray/50">
+              <div className="flex items-center gap-2">
+                <PlayerIcon
+                  player={player}
+                  size="sm"
+                  isStarred={player.lineup?.isStarred ?? false}
+                  isCaptain={
+                    player.team?.captainId !== null &&
+                    player.team?.captainId !== undefined &&
+                    player.id === player.team.captainId
+                  }
+                />
+                <Link to={`/player/${player.id}`} className="hover:underline">
+                  {player.name}
+                </Link>
+              </div>
+            </td>
+            <td className="p-2 border border-cell-gray/50 text-sm text-gray-400">
+              {player.team ? (
+                <Link
+                  to={`/team/${player.team.id}`}
+                  className="flex items-center gap-1 hover:underline"
+                >
+                  <TeamLogo
+                    captainStatsCharacter={player.team.captain?.statsCharacter}
+                    size="xs"
+                  />
+                  {player.team.abbreviation}
+                </Link>
+              ) : (
+                <span className="text-green-300/50">Free</span>
+              )}
+            </td>
+            <td className="p-2 text-center border border-cell-gray/50">
+              {player.aggregatedStats?.matchCount ?? 0}
+            </td>
             {STAT_COLUMNS.map((col) => (
-              <th
+              <td
                 key={col.key}
-                className="p-2 text-center border border-cell-gray/50 min-w-[3rem]"
-                title={col.title}
+                className="p-2 text-center border border-cell-gray/50"
               >
-                {col.label}
-              </th>
+                {getStatValue(player, col.key)}
+              </td>
             ))}
           </tr>
-        </thead>
-        <tbody>
-          {players.map((player) => (
-            <tr
-              key={player.id}
-              className="hover:bg-cell-gray/40 transition-colors"
-            >
-              <td className="sticky left-0 z-10 bg-cell-gray/60 p-2 border border-cell-gray/50">
-                <div className="flex items-center gap-2">
-                  <PlayerIcon
-                    player={player}
-                    size="sm"
-                    isStarred={player.lineup?.isStarred ?? false}
-                    isCaptain={
-                      player.team?.captainId !== null &&
-                      player.team?.captainId !== undefined &&
-                      player.id === player.team.captainId
-                    }
-                  />
-                  <Link to={`/player/${player.id}`} className="hover:underline">
-                    {player.name}
-                  </Link>
-                </div>
-              </td>
-              <td className="p-2 border border-cell-gray/50 text-sm text-gray-400">
-                {player.team ? (
-                  <Link
-                    to={`/team/${player.team.id}`}
-                    className="flex items-center gap-1 hover:underline"
-                  >
-                    <TeamLogo
-                      captainStatsCharacter={player.team.captain?.statsCharacter}
-                      size="xs"
-                    />
-                    {player.team.abbreviation}
-                  </Link>
-                ) : (
-                  <span className="text-green-300/50">Free</span>
-                )}
-              </td>
-              <td className="p-2 text-center border border-cell-gray/50">
-                {player.aggregatedStats?.matchCount ?? 0}
-              </td>
-              {STAT_COLUMNS.map((col) => (
-                <td
-                  key={col.key}
-                  className="p-2 text-center border border-cell-gray/50"
-                >
-                  {getStatValue(player, col.key)}
-                </td>
-              ))}
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+        ))}
+      </tbody>
+    </table>
   );
 }
-

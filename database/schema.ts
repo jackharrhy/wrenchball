@@ -578,6 +578,21 @@ export const matchState = pgEnum("match_state", [
 
 export type MatchState = (typeof matchState.enumValues)[number];
 
+// Match Locations - stadiums where matches can be played
+export const matchLocations = pgTable("match_locations", {
+  id: integer().primaryKey().generatedAlwaysAsIdentity(),
+  name: text("name").notNull().unique(),
+});
+
+export type MatchLocation = typeof matchLocations.$inferSelect;
+
+export const matchLocationsRelations = relations(
+  matchLocations,
+  ({ many }) => ({
+    matches: many(matches),
+  }),
+);
+
 // Match Days - containers for matches on a specific date
 export const matchDays = pgTable("match_days", {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
@@ -638,6 +653,9 @@ export const matches = pgTable("matches", {
   teamBId: integer("team_b_id")
     .notNull()
     .references(() => teams.id, { onDelete: "cascade" }),
+  locationId: integer("location_id").references(() => matchLocations.id, {
+    onDelete: "set null",
+  }),
   state: matchState("state").notNull().default("upcoming"),
   scheduledDate: timestamp("scheduled_date"),
   teamAScore: integer("team_a_score"),
@@ -722,6 +740,10 @@ export const matchesRelations = relations(matches, ({ one, many }) => ({
     fields: [matches.teamBId],
     references: [teams.id],
     relationName: "teamB",
+  }),
+  location: one(matchLocations, {
+    fields: [matches.locationId],
+    references: [matchLocations.id],
   }),
   battingOrders: many(matchBattingOrders),
   playerStats: many(matchPlayerStats),

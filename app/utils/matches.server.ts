@@ -4,6 +4,7 @@ import {
   matches,
   matchBattingOrders,
   matchPlayerStats,
+  matchLocations,
   teamLineups,
   players,
   teams,
@@ -18,11 +19,12 @@ export interface CreateMatchParams {
   teamBId: number;
   matchDayId: number;
   scheduledDate?: Date | null;
+  locationId?: number | null;
 }
 
 export const createMatch = async (
   db: Database,
-  { teamAId, teamBId, matchDayId, scheduledDate }: CreateMatchParams,
+  { teamAId, teamBId, matchDayId, scheduledDate, locationId }: CreateMatchParams,
 ) => {
   if (teamAId === teamBId) {
     throw new Error("Team A and Team B must be different teams");
@@ -76,6 +78,7 @@ export const createMatch = async (
       matchDayId,
       orderInDay,
       scheduledDate: scheduledDate ?? null,
+      locationId: locationId ?? null,
       state: "upcoming",
     })
     .returning();
@@ -377,6 +380,7 @@ export const getMatchWithStats = async (db: Database, matchId: number) => {
           captain: true,
         },
       },
+      location: true,
       battingOrders: {
         with: {
           player: true,
@@ -395,6 +399,29 @@ export const getMatchWithStats = async (db: Database, matchId: number) => {
       },
     },
   });
+};
+
+export const getMatchLocations = async (db: Database) => {
+  return await db.query.matchLocations.findMany({
+    orderBy: [asc(matchLocations.name)],
+  });
+};
+
+export const updateMatchLocation = async (
+  db: Database,
+  matchId: number,
+  locationId: number | null,
+) => {
+  const [updated] = await db
+    .update(matches)
+    .set({
+      locationId,
+      updatedAt: new Date(),
+    })
+    .where(eq(matches.id, matchId))
+    .returning();
+
+  return updated;
 };
 
 export type PlayerStatInput = Omit<MatchPlayerStats, "matchId">;

@@ -343,7 +343,7 @@ function MatchCard({ match, showDate }: MatchCardProps) {
         />
       </div>
 
-      <div className="flex items-center justify-center gap-2 px-3 shrink-0">
+      <div className="flex items-center justify-center gap-2 px-3 shrink-0 w-18">
         {hasScore ? (
           <>
             <span

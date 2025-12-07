@@ -95,7 +95,7 @@ function getStateColor(state: string) {
 }
 
 function getMatchDayConferenceInfo(matchDay: MatchDayWithMatches) {
-  let hasCrossConferenceMatch = false;
+  let allMatchesCrossConference = true;
   const conferenceNames = new Map<
     number,
     { name: string; color: string | null }
@@ -119,10 +119,12 @@ function getMatchDayConferenceInfo(matchDay: MatchDayWithMatches) {
       });
     }
 
-    // Check if this specific match is cross-conference
-    // (two teams from different conferences playing against each other)
-    if (teamAConf && teamBConf && teamAConf.id !== teamBConf.id) {
-      hasCrossConferenceMatch = true;
+    // Check if this specific match is NOT cross-conference
+    // (both teams have conferences and they're the same)
+    const isSameConference =
+      teamAConf && teamBConf && teamAConf.id === teamBConf.id;
+    if (isSameConference) {
+      allMatchesCrossConference = false;
     }
   }
 
@@ -130,21 +132,21 @@ function getMatchDayConferenceInfo(matchDay: MatchDayWithMatches) {
     return { type: "none" as const };
   }
 
-  if (hasCrossConferenceMatch) {
+  // Only cross-conference if ALL matches are cross-conference
+  if (allMatchesCrossConference && matchDay.matches.length > 0) {
     return {
       type: "cross" as const,
       conferences: [...conferenceNames.values()],
     };
   }
 
-  // No cross-conference matches - check if all matches are from the same conference
+  // Check if all matches are from the same conference
   if (conferenceNames.size === 1) {
     const conf = [...conferenceNames.values()][0]!;
     return { type: "single" as const, conference: conf };
   }
 
-  // Multiple conferences but no cross-conference matches
-  // (e.g., A vs B from conf 1, C vs D from conf 2 on the same day)
+  // Mixed: some same-conference matches, multiple conferences represented
   return { type: "none" as const };
 }
 

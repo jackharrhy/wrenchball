@@ -94,6 +94,11 @@ export function Nav({
               </Link>
             </li>
           )}
+          {team !== undefined && user && (
+            <>
+              <li className="text-gray-200">Logged in as {user.name}</li>
+            </>
+          )}
           {user !== undefined ? (
             <>
               {impersonationInfo && (

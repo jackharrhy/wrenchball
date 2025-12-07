@@ -11,7 +11,8 @@
     "insert-data": "dotenv -- tsx --tsconfig tsconfig.scripts.json scripts/insert-data.ts",
     "create-random-data": "dotenv -- tsx --tsconfig tsconfig.scripts.json scripts/create-random-data.ts",
     "update-chemistry": "dotenv -- tsx --tsconfig tsconfig.scripts.json scripts/update-chemistry.ts",
-    "db:prod:backup": "dotenv -- tsx --tsconfig tsconfig.scripts.json scripts/db.ts backup-prod"
+    "db:prod:backup": "dotenv -- tsx --tsconfig tsconfig.scripts.json scripts/db.ts backup-prod",
+    "db:local:restore": "dotenv -- tsx --tsconfig tsconfig.scripts.json scripts/db.ts restore-local"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",

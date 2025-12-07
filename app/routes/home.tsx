@@ -58,10 +58,20 @@ export async function loader({}: Route.LoaderArgs) {
       return [lookingFor, willingToTrade];
     });
 
-  const { mergedContext } = await resolveMentionsMultiple(
-    db,
-    tradePreferencesTexts,
-  );
+  // Collect proposal and response texts from trade events
+  const tradeProposalTexts = allEvents
+    .filter((e) => e.trade?.trade?.proposalText)
+    .map((e) => e.trade!.trade!.proposalText);
+
+  const tradeResponseTexts = allEvents
+    .filter((e) => e.trade?.trade?.responseText)
+    .map((e) => e.trade!.trade!.responseText);
+
+  const { mergedContext } = await resolveMentionsMultiple(db, [
+    ...tradePreferencesTexts,
+    ...tradeProposalTexts,
+    ...tradeResponseTexts,
+  ]);
 
   return {
     events: allEvents,
@@ -90,7 +100,7 @@ export default function Home({ loaderData }: Route.ComponentProps) {
           <Events events={loaderData.events} mentionContext={mentionContext} />
         </div>
       </main>
-      <footer className="text-center">
+      <footer className="text-center py-4">
         <p>
           <a href="/kitchen-sink" className="underline hover:text-gray-200">
             Kitchen Sink

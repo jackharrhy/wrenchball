@@ -12,7 +12,7 @@
     {
       "idx": 1,
       "version": "7",
-      "when": 1732845878632,
+      "when": 1764378230955,
       "tag": "0001_add_team_trade_preferences",
       "breakpoints": true
     },
@@ -21,6 +21,13 @@
       "version": "7",
       "when": 1764378230956,
       "tag": "0002_add_cancelled_trade_status",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 17650784270000,
+      "tag": "0003_add_trade_messages",
       "breakpoints": true
     }
   ]

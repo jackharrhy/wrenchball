@@ -7,7 +7,10 @@ export default [
   route("return-to-original", "routes/return-to-original.tsx"),
   route("account", "routes/account.tsx"),
   route("auth/callback", "routes/auth-callback.ts"),
-  route("teams", "routes/teams.tsx"),
+  route("teams", "routes/teams.tsx", [
+    index("routes/teams._index.tsx"),
+    route("names", "routes/teams.names.tsx"),
+  ]),
   route("team/:teamId", "routes/team.tsx"),
   route("team/:teamId/edit", "routes/edit-team.tsx"),
   route("players", "routes/players.tsx", [

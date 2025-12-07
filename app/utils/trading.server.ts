@@ -17,6 +17,7 @@ export interface CreateTradeRequestParams {
   toUserId: number;
   fromPlayerIds: number[];
   toPlayerIds: number[];
+  proposalText?: string;
 }
 
 export const validateTradeRequest = async (
@@ -198,40 +199,35 @@ export const validateTradeRequest = async (
   }
 
   // 6. Check team sizes after trade
-  const [fromTeamPlayersAfterTrade, toTeamPlayersAfterTrade] =
-    await Promise.all([
-      db
-        .select({ id: players.id, teamId: players.teamId })
-        .from(players)
-        .where(eq(players.teamId, fromTeamId)),
-      db
-        .select({ id: players.id, teamId: players.teamId })
-        .from(players)
-        .where(eq(players.teamId, toTeamId)),
-    ]);
+  // fromTeam loses fromPlayerIds, gains toPlayerIds
+  const fromTeamSizeAfterTrade =
+    fromTeamPlayers.length - fromPlayerIds.length + toPlayerIds.length;
+  // toTeam loses toPlayerIds, gains fromPlayerIds
+  const toTeamSizeAfterTrade =
+    toTeamPlayers.length - toPlayerIds.length + fromPlayerIds.length;
 
-  if (fromTeamPlayersAfterTrade.length > TEAM_SIZE) {
+  if (fromTeamSizeAfterTrade > TEAM_SIZE) {
     return {
       valid: false,
       error: `Trade would exceed maximum team size of ${TEAM_SIZE}`,
     };
   }
 
-  if (toTeamPlayersAfterTrade.length > TEAM_SIZE) {
+  if (toTeamSizeAfterTrade > TEAM_SIZE) {
     return {
       valid: false,
       error: `Trade would exceed other team's maximum size of ${TEAM_SIZE}`,
     };
   }
 
-  if (fromTeamPlayersAfterTrade.length < LINEUP_SIZE) {
+  if (fromTeamSizeAfterTrade < LINEUP_SIZE) {
     return {
       valid: false,
       error: `Trade would leave your team with less than ${LINEUP_SIZE} players (minimum required for lineup)`,
     };
   }
 
-  if (toTeamPlayersAfterTrade.length < LINEUP_SIZE) {
+  if (toTeamSizeAfterTrade < LINEUP_SIZE) {
     return {
       valid: false,
       error: `Trade would leave other team with less than ${LINEUP_SIZE} players (minimum required for lineup)`,
@@ -250,7 +246,8 @@ export const createTradeRequest = async (
     return { success: false, error: validation.error };
   }
 
-  const { fromUserId, toUserId, fromPlayerIds, toPlayerIds } = params;
+  const { fromUserId, toUserId, fromPlayerIds, toPlayerIds, proposalText } =
+    params;
 
   const fromUserTeam = await db
     .select({ id: teams.id })
@@ -277,6 +274,7 @@ export const createTradeRequest = async (
         fromUserId,
         toUserId,
         status: "pending",
+        proposalText: proposalText || null,
       })
       .returning({ id: trades.id });
 
@@ -336,6 +334,7 @@ export const acceptTrade = async (
   db: Database,
   tradeId: number,
   userId: number,
+  responseText?: string,
 ): Promise<{ success: boolean; error?: string }> => {
   const trade = await db
     .select()
@@ -427,7 +426,11 @@ export const acceptTrade = async (
 
     await tx
       .update(trades)
-      .set({ status: "accepted", updatedAt: new Date() })
+      .set({
+        status: "accepted",
+        responseText: responseText || null,
+        updatedAt: new Date(),
+      })
       .where(eq(trades.id, tradeId));
 
     // Create trade acceptance event
@@ -459,6 +462,7 @@ export const denyTrade = async (
   db: Database,
   tradeId: number,
   userId: number,
+  responseText?: string,
 ): Promise<{ success: boolean; error?: string }> => {
   const trade = await db
     .select()
@@ -490,7 +494,7 @@ export const denyTrade = async (
 
   await db
     .update(trades)
-    .set({ status, updatedAt: new Date() })
+    .set({ status, responseText: responseText || null, updatedAt: new Date() })
     .where(eq(trades.id, tradeId));
 
   // Create trade rejection/cancellation event
@@ -613,4 +617,27 @@ export const getTrades = async (
     total,
     totalPages: Math.ceil(total / pageSize),
   };
+};
+
+export const getTradeById = async (db: Database, tradeId: number) => {
+  const trade = await db.query.trades.findFirst({
+    where: eq(trades.id, tradeId),
+    with: {
+      fromUser: true,
+      toUser: true,
+      fromTeam: true,
+      toTeam: true,
+      tradePlayers: {
+        with: {
+          player: {
+            with: {
+              lineup: true,
+            },
+          },
+        },
+      },
+    },
+  });
+
+  return trade;
 };

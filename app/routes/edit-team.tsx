@@ -4,7 +4,7 @@ import { getUser } from "~/auth.server";
 import { useSubmit, redirect } from "react-router";
 import { useRef, useState } from "react";
 import { LineupEditor } from "~/components/LineupEditor";
-import { TradePreferencesEditor } from "~/components/TradePreferencesEditor";
+import { MentionEditor } from "~/components/MentionEditor";
 import {
   getTeamWithPlayers,
   fillPlayersToTeamSize,
@@ -252,24 +252,30 @@ export default function EditTeam({
       <div className="flex flex-col gap-3 border border-cell-gray/50 bg-cell-gray/30 rounded-lg p-4 w-full max-w-2xl">
         <h2 className="text-lg font-bold text-center">Trade Preferences</h2>
         <div className="flex flex-col gap-4">
-          <TradePreferencesEditor
-            content={lookingFor}
-            onChange={setLookingFor}
-            placeholder="Describe what players you're looking for..."
-            teams={allTeams}
-            players={allPlayers}
-            label="Looking For"
-            labelColor="text-green-400"
-          />
-          <TradePreferencesEditor
-            content={willingToTrade}
-            onChange={setWillingToTrade}
-            placeholder="List players you're willing to trade..."
-            teams={allTeams}
-            players={allPlayers}
-            label="Willing to Trade"
-            labelColor="text-orange-400"
-          />
+          <div className="flex flex-col gap-2">
+            <label className="text-sm font-semibold text-green-400">
+              Looking For:
+            </label>
+            <MentionEditor
+              content={lookingFor}
+              onChange={setLookingFor}
+              placeholder="Describe what players you're looking for..."
+              teams={allTeams}
+              players={allPlayers}
+            />
+          </div>
+          <div className="flex flex-col gap-2">
+            <label className="text-sm font-semibold text-orange-400">
+              Willing to Trade:
+            </label>
+            <MentionEditor
+              content={willingToTrade}
+              onChange={setWillingToTrade}
+              placeholder="List players you're willing to trade..."
+              teams={allTeams}
+              players={allPlayers}
+            />
+          </div>
           <p className="text-xs text-gray-400">
             Type @ to mention teams or players
           </p>

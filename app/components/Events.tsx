@@ -36,6 +36,8 @@ type EventWithRelations = Event & {
     action: "proposed" | "accepted" | "rejected" | "cancelled";
     trade: {
       id: number;
+      proposalText: string | null;
+      responseText: string | null;
       fromTeam: { id: number; name: string; abbreviation: string };
       toTeam: { id: number; name: string; abbreviation: string };
       tradePlayers: Array<{
@@ -81,7 +83,7 @@ export function Events({ events, mentionContext }: EventsProps) {
               key={event.id}
               className="flex items-center gap-3 p-3 bg-cell-gray/40 border border-cell-gray/50 rounded-lg"
             >
-              <div className="flex-shrink-0">
+              <div className="shrink-0">
                 <PlayerIcon
                   player={event.draft.player}
                   size="sm"
@@ -93,7 +95,7 @@ export function Events({ events, mentionContext }: EventsProps) {
                   }
                 />
               </div>
-              <div className="flex-1 min-w-0">
+              <div className="flex-1 min-w-0 flex flex-col gap-2">
                 <div className="text-sm font-medium">
                   <span className="text-orange-300 font-bold">
                     Pick #{event.draft.pickNumber}
@@ -122,7 +124,7 @@ export function Events({ events, mentionContext }: EventsProps) {
                   </a>
                 </div>
                 <div
-                  className="text-xs text-gray-400 mt-1"
+                  className="text-xs text-gray-400"
                   title={event.createdAt.toLocaleString()}
                 >
                   {formatTimeAgo(new Date(event.createdAt))}
@@ -142,7 +144,7 @@ export function Events({ events, mentionContext }: EventsProps) {
               key={event.id}
               className="flex items-center gap-3 p-3 bg-cell-gray/40 border border-cell-gray/50 rounded-lg"
             >
-              <div className="flex-1 min-w-0">
+              <div className="flex-1 min-w-0 flex flex-col gap-2">
                 <div className="text-sm font-medium">
                   <span className="text-purple-300">Season State Change</span>
                   {": "}
@@ -163,7 +165,7 @@ export function Events({ events, mentionContext }: EventsProps) {
                   )}
                 </div>
                 <div
-                  className="text-xs text-gray-400 mt-1"
+                  className="text-xs text-gray-400"
                   title={event.createdAt.toLocaleString()}
                 >
                   {formatTimeAgo(new Date(event.createdAt))}
@@ -203,11 +205,14 @@ export function Events({ events, mentionContext }: EventsProps) {
               key={event.id}
               className="flex items-center gap-3 p-3 bg-cell-gray/40 border border-cell-gray/50 rounded-lg"
             >
-              <div className="flex-1 min-w-0">
+              <div className="flex-1 min-w-0 flex flex-col gap-2">
                 <div className="text-sm font-medium">
-                  <span className={`${actionColor} font-bold`}>
+                  <a
+                    href={`/trade/${trade.id}`}
+                    className={`${actionColor} font-bold hover:underline`}
+                  >
                     {actionText}
-                  </span>
+                  </a>
                   {" between "}
                   <a
                     href={`/team/${trade.fromTeam.id}`}
@@ -267,8 +272,26 @@ export function Events({ events, mentionContext }: EventsProps) {
                     </>
                   )}
                 </div>
+                {action === "proposed" && trade.proposalText && (
+                  <div className="text-sm text-gray-300">
+                    <span className="text-gray-400">
+                      Message from {trade.fromTeam.name}:{" "}
+                    </span>
+                    {renderMentionedText(trade.proposalText, context)}
+                  </div>
+                )}
+                {action !== "proposed" && trade.responseText && (
+                  <div className="text-sm text-gray-300">
+                    <span className="text-gray-400">
+                      {action === "cancelled"
+                        ? `Cancellation reason from ${trade.fromTeam.name}: `
+                        : `Response from ${trade.toTeam.name}: `}
+                    </span>
+                    {renderMentionedText(trade.responseText, context)}
+                  </div>
+                )}
                 <div
-                  className="text-xs text-gray-400 mt-1"
+                  className="text-xs text-gray-400"
                   title={event.createdAt.toLocaleString()}
                 >
                   {formatTimeAgo(new Date(event.createdAt))}
@@ -289,7 +312,7 @@ export function Events({ events, mentionContext }: EventsProps) {
               key={event.id}
               className="flex items-center gap-3 p-3 bg-cell-gray/40 border border-cell-gray/50 rounded-lg"
             >
-              <div className="flex-1 min-w-0">
+              <div className="flex-1 min-w-0 flex flex-col gap-2">
                 <div className="text-sm font-medium">
                   <span className="text-teal-300 font-bold">
                     Trade Preferences Updated

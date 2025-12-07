@@ -1031,7 +1031,7 @@ export default function Drafting({
                 Your Pre-Draft
               </h3>
               <div className="bg-cell-gray/40 border border-blue-400/50 rounded p-2 flex items-center gap-2">
-                <div className="flex-shrink-0">
+                <div className="shrink-0">
                   <PlayerIcon player={preDraftPlayer} size="sm" />
                 </div>
                 <div className="flex-1 min-w-0">
@@ -1046,7 +1046,7 @@ export default function Drafting({
                   <input type="hidden" name="intent" value="clear-pre-draft" />
                   <button
                     type="submit"
-                    className="flex-shrink-0 px-2 py-1 text-xs bg-red-600 hover:bg-red-700 text-white rounded transition-colors cursor-pointer"
+                    className="shrink-0 px-2 py-1 text-xs bg-red-600 hover:bg-red-700 text-white rounded transition-colors cursor-pointer"
                   >
                     Clear
                   </button>

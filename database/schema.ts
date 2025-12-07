@@ -307,6 +307,8 @@ export const trades = pgTable("trades", {
     .notNull()
     .references(() => users.id, { onDelete: "cascade" }),
   status: tradeStatus("status").notNull().default("pending"),
+  proposalText: text("proposal_text"),
+  responseText: text("response_text"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });

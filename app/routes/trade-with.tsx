@@ -4,8 +4,13 @@ import { requireUser } from "~/auth.server";
 import { getSeasonState } from "~/utils/admin.server";
 import { createTradeRequest } from "~/utils/trading.server";
 import { PlayerIcon } from "~/components/PlayerIcon";
+import { MentionEditor } from "~/components/MentionEditor";
 import { Form, redirect, useActionData, useNavigation } from "react-router";
 import { useState } from "react";
+import {
+  teams as teamsTable,
+  players as playersTable,
+} from "~/database/schema";
 
 export async function loader({
   params: { teamId },
@@ -66,12 +71,22 @@ export async function loader({
     throw new Response("Cannot trade with your own team", { status: 400 });
   }
 
+  // Fetch all teams and players for mention suggestions
+  const allTeams = await db
+    .select({ id: teamsTable.id, name: teamsTable.name })
+    .from(teamsTable);
+  const allPlayers = await db
+    .select({ id: playersTable.id, name: playersTable.name })
+    .from(playersTable);
+
   return {
     error: null,
     myTeam,
     otherTeam,
     myTeamCaptainId: myTeam.captainId,
     otherTeamCaptainId: otherTeam.captainId,
+    allTeams,
+    allPlayers,
   };
 }
 
@@ -85,6 +100,8 @@ export async function action({
 
   const fromPlayerIdsStr = formData.get("fromPlayerIds");
   const toPlayerIdsStr = formData.get("toPlayerIds");
+
+  const proposalText = formData.get("proposalText");
 
   const fromPlayerIds =
     fromPlayerIdsStr && typeof fromPlayerIdsStr === "string"
@@ -124,6 +141,7 @@ export async function action({
     toUserId: otherTeam.userId,
     fromPlayerIds,
     toPlayerIds,
+    proposalText: typeof proposalText === "string" ? proposalText : undefined,
   });
 
   if (result.success) {
@@ -194,7 +212,7 @@ function TeamPlayerSelection({
               type="button"
               onClick={() => !isCaptain && onTogglePlayer(player.id)}
               disabled={isCaptain}
-              className={`p-2 transition-all border-1 border-cell-gray/50 bg-cell-gray/40 rounded-md ${
+              className={`p-2 transition-all border border-cell-gray/50 bg-cell-gray/40 rounded-md ${
                 isCaptain
                   ? "opacity-50 cursor-not-allowed grayscale"
                   : isSelected
@@ -217,10 +235,19 @@ function TeamPlayerSelection({
 }
 
 export default function TradeWith({
-  loaderData: { error, myTeam, otherTeam, myTeamCaptainId, otherTeamCaptainId },
+  loaderData: {
+    error,
+    myTeam,
+    otherTeam,
+    myTeamCaptainId,
+    otherTeamCaptainId,
+    allTeams,
+    allPlayers,
+  },
 }: Route.ComponentProps) {
   const myTeamSelection = usePlayerSelection();
   const otherTeamSelection = usePlayerSelection();
+  const [proposalText, setProposalText] = useState("");
   const actionData = useActionData<typeof action>();
   const navigation = useNavigation();
   const isSubmitting = navigation.state === "submitting";
@@ -244,7 +271,7 @@ export default function TradeWith({
 
   return (
     <div className="flex flex-col gap-6 items-center">
-      <h1 className="text-2xl font-bold text-center">
+      <h1 className="text-xl font-bold text-center">
         Trading with {otherTeam.name}
       </h1>
 
@@ -254,47 +281,69 @@ export default function TradeWith({
         </div>
       )}
 
-      <div className="flex flex-col md:flex-row gap-12 items-start">
-        <TeamPlayerSelection
-          team={myTeam}
-          title="Your Team"
-          selectedPlayerIds={myTeamSelection.selectedPlayerIds}
-          onTogglePlayer={myTeamSelection.togglePlayer}
-          captainId={myTeamCaptainId}
-        />
+      <div className="flex flex-col gap-6 items-center max-w-full w-3xl mx-auto bg-cell-gray/40 border border-cell-gray/50 rounded-md p-6">
+        <div className="flex flex-col md:flex-row gap-12 items-stretch w-full">
+          <div className="w-full md:w-1/2 flex">
+            <TeamPlayerSelection
+              team={myTeam}
+              title="Your Team"
+              selectedPlayerIds={myTeamSelection.selectedPlayerIds}
+              onTogglePlayer={myTeamSelection.togglePlayer}
+              captainId={myTeamCaptainId}
+            />
+          </div>
+          <div className="w-full md:w-1/2 flex">
+            <TeamPlayerSelection
+              team={otherTeam}
+              title={otherTeam.name}
+              selectedPlayerIds={otherTeamSelection.selectedPlayerIds}
+              onTogglePlayer={otherTeamSelection.togglePlayer}
+              captainId={otherTeamCaptainId}
+            />
+          </div>
+        </div>
 
-        <TeamPlayerSelection
-          team={otherTeam}
-          title={otherTeam.name}
-          selectedPlayerIds={otherTeamSelection.selectedPlayerIds}
-          onTogglePlayer={otherTeamSelection.togglePlayer}
-          captainId={otherTeamCaptainId}
-        />
+        <div className="w-full flex flex-col gap-2">
+          <label className="text-sm font-semibold text-gray-300">
+            Message (optional):
+          </label>
+          <MentionEditor
+            content={proposalText}
+            onChange={setProposalText}
+            placeholder="Add a message to your trade proposal..."
+            teams={allTeams ?? []}
+            players={allPlayers ?? []}
+          />
+          <p className="text-xs text-gray-400">
+            Type @ to mention teams or players
+          </p>
+        </div>
+
+        <Form method="post">
+          <input
+            type="hidden"
+            name="fromPlayerIds"
+            value={myTeamSelection.selectedPlayerIds.join(",")}
+          />
+          <input
+            type="hidden"
+            name="toPlayerIds"
+            value={otherTeamSelection.selectedPlayerIds.join(",")}
+          />
+          <input type="hidden" name="proposalText" value={proposalText} />
+          <button
+            type="submit"
+            disabled={!canPropose}
+            className={`px-6 py-3 rounded-md font-semibold transition-all ${
+              canPropose
+                ? "bg-blue-800 hover:bg-blue-700 text-white cursor-pointer"
+                : "bg-gray-600 text-gray-400 cursor-not-allowed"
+            }`}
+          >
+            {isSubmitting ? "Proposing..." : "Propose Trade"}
+          </button>
+        </Form>
       </div>
-
-      <Form method="post">
-        <input
-          type="hidden"
-          name="fromPlayerIds"
-          value={myTeamSelection.selectedPlayerIds.join(",")}
-        />
-        <input
-          type="hidden"
-          name="toPlayerIds"
-          value={otherTeamSelection.selectedPlayerIds.join(",")}
-        />
-        <button
-          type="submit"
-          disabled={!canPropose}
-          className={`px-6 py-3 rounded-md font-semibold transition-all ${
-            canPropose
-              ? "bg-blue-800 hover:bg-blue-700 text-white cursor-pointer"
-              : "bg-gray-600 text-gray-400 cursor-not-allowed"
-          }`}
-        >
-          {isSubmitting ? "Proposing..." : "Propose Trade"}
-        </button>
-      </Form>
     </div>
   );
 }

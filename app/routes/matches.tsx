@@ -348,10 +348,10 @@ function MatchCard({ match, showDate }: MatchCardProps) {
           <>
             <span
               className={cn(
-                "text-lg font-bold",
+                "text-lg font-rodin",
                 match.teamAScore! > match.teamBScore!
                   ? "text-green-300"
-                  : "text-gray-300",
+                  : "text-gray-300/80",
               )}
             >
               {match.teamAScore}
@@ -359,10 +359,10 @@ function MatchCard({ match, showDate }: MatchCardProps) {
             <span className="text-gray-200/50 font-bold">-</span>
             <span
               className={cn(
-                "text-lg font-bold",
+                "text-lg font-rodin",
                 match.teamBScore! > match.teamAScore!
                   ? "text-green-300"
-                  : "text-gray-300",
+                  : "text-gray-300/80",
               )}
             >
               {match.teamBScore}

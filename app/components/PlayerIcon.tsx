@@ -87,7 +87,7 @@ export function PlayerIcon({
           ⭐
         </div>
       )}
-      <span className="opacity-0 transition-opacity duration-200 absolute right-[-0.5rem] bottom-[-0.7rem] text-pink-100 drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)] text-[1.4em] font-bold pointer-events-none select-none animate-[wiggle_0.5s_infinite]">
+      <span className="opacity-0 transition-opacity duration-200 absolute -right-2 bottom-[-0.7rem] text-pink-100 drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)] text-[1.4em] font-bold pointer-events-none select-none animate-[wiggle_0.5s_infinite]">
         ♪
       </span>
     </div>

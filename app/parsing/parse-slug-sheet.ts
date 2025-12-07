@@ -234,7 +234,7 @@ export function generateChemistryCss(chemistryLookup: ChemistryLookup): string {
   for (const [character, relationships] of chemistryLookup.entries()) {
     for (const otherCharacter of relationships.chemMinus) {
       cssLines.push(
-        `[data-player="${character}"] [data-player="${otherCharacter}"] span {filter: brightness(0.7) saturate(3) sepia(0.3) hue-rotate(-10deg);}`,
+        `[data-player="${character}"] [data-player="${otherCharacter}"] span {opacity: 1; filter: brightness(0.4) saturate(10) hue-rotate(-10deg);}`,
       );
     }
   }

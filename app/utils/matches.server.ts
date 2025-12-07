@@ -1,4 +1,4 @@
-import { eq, asc, and, count, desc, max } from "drizzle-orm";
+import { eq, asc, and, count, desc, max, gt } from "drizzle-orm";
 import { type Database } from "~/database/db";
 import {
   matches,
@@ -315,8 +315,43 @@ export const updateMatchScore = async (
 };
 
 export const deleteMatch = async (db: Database, matchId: number) => {
-  // Cascading delete will handle matchBattingOrders and matchPlayerStats
-  await db.delete(matches).where(eq(matches.id, matchId));
+  await db.transaction(async (tx) => {
+    // Get the match to find its matchDayId and orderInDay
+    const matchToDelete = await tx.query.matches.findFirst({
+      where: eq(matches.id, matchId),
+    });
+
+    if (!matchToDelete) {
+      return;
+    }
+
+    const { matchDayId, orderInDay } = matchToDelete;
+
+    // Delete the match
+    await tx.delete(matches).where(eq(matches.id, matchId));
+
+    // Reflow orderInDay for remaining matches in the same match day
+    if (matchDayId && orderInDay !== null) {
+      // Get all matches in the same match day with higher orderInDay
+      const matchesToUpdate = await tx
+        .select({ id: matches.id, orderInDay: matches.orderInDay })
+        .from(matches)
+        .where(
+          and(
+            eq(matches.matchDayId, matchDayId),
+            gt(matches.orderInDay, orderInDay),
+          ),
+        );
+
+      // Decrement each match's orderInDay by 1
+      for (const match of matchesToUpdate) {
+        await tx
+          .update(matches)
+          .set({ orderInDay: (match.orderInDay ?? 0) - 1 })
+          .where(eq(matches.id, match.id));
+      }
+    }
+  });
 };
 
 export const getTeamsForMatchCreation = async (db: Database) => {

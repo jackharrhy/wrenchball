@@ -21,14 +21,21 @@ export async function loader({ request }: Route.LoaderArgs) {
   }
 
   const allConferences = await getConferences(db);
-  const allTeams = await db
-    .select({
-      id: teams.id,
-      name: teams.name,
-      conferenceId: teams.conferenceId,
-    })
-    .from(teams)
-    .orderBy(asc(teams.name));
+  const allTeams = await db.query.teams.findMany({
+    columns: {
+      id: true,
+      name: true,
+      conferenceId: true,
+    },
+    with: {
+      user: {
+        columns: {
+          name: true,
+        },
+      },
+    },
+    orderBy: asc(teams.name),
+  });
 
   // Count teams per conference
   const conferencesWithCount = allConferences.map((conf) => ({
@@ -90,7 +97,9 @@ export async function action({ request }: Route.ActionArgs) {
       return {
         success: false,
         message:
-          error instanceof Error ? error.message : "Failed to create conference",
+          error instanceof Error
+            ? error.message
+            : "Failed to create conference",
       };
     }
   }
@@ -115,7 +124,9 @@ export async function action({ request }: Route.ActionArgs) {
       return {
         success: false,
         message:
-          error instanceof Error ? error.message : "Failed to delete conference",
+          error instanceof Error
+            ? error.message
+            : "Failed to delete conference",
       };
     }
   }
@@ -146,7 +157,9 @@ export async function action({ request }: Route.ActionArgs) {
       return {
         success: false,
         message:
-          error instanceof Error ? error.message : "Failed to update conference",
+          error instanceof Error
+            ? error.message
+            : "Failed to update conference",
       };
     }
   }
@@ -199,7 +212,12 @@ export async function action({ request }: Route.ActionArgs) {
 function ConferenceRow({
   conference,
 }: {
-  conference: { id: number; name: string; color: string | null; teamCount: number };
+  conference: {
+    id: number;
+    name: string;
+    color: string | null;
+    teamCount: number;
+  };
 }) {
   const fetcher = useFetcher();
   const [editingName, setEditingName] = useState(false);
@@ -265,7 +283,8 @@ function ConferenceRow({
           </span>
         )}
         <span className="text-sm text-gray-400 ml-2">
-          ({conference.teamCount} {conference.teamCount === 1 ? "team" : "teams"})
+          ({conference.teamCount}{" "}
+          {conference.teamCount === 1 ? "team" : "teams"})
         </span>
       </div>
       <input
@@ -369,9 +388,15 @@ export default function AdminConferences({
                 key={team.id}
                 className="flex items-center gap-4 p-3 border rounded bg-cell-gray/40 border-cell-gray/50"
               >
-                <span className="flex-1 font-medium">{team.name}</span>
+                <span className="flex-1 font-medium">
+                  {team.user ? `${team.name} (${team.user.name})` : team.name}
+                </span>
                 <Form method="post" className="flex items-center gap-2">
-                  <input type="hidden" name="intent" value="assign-team-conference" />
+                  <input
+                    type="hidden"
+                    name="intent"
+                    value="assign-team-conference"
+                  />
                   <input type="hidden" name="teamId" value={team.id} />
                   <select
                     name="conferenceId"
@@ -395,4 +420,3 @@ export default function AdminConferences({
     </div>
   );
 }
-

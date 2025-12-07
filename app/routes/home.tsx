@@ -90,11 +90,9 @@ export default function Home({ loaderData }: Route.ComponentProps) {
 
   return (
     <>
-      <main className="flex-1 flex flex-col gap-6">
-        <div className="text-center">
-          <h1 className="text-6xl font-bold font-happiness">Lil Slug Crew</h1>
-          <h2 className="text-2xl font-bold">Welcome to Season 3!</h2>
-        </div>
+      <main className="flex-1 flex flex-col gap-6 items-center">
+        <h1 className="text-6xl font-bold font-happiness">Lil Slug Crew</h1>
+        <h2 className="text-2xl font-bold">Welcome to Season 3!</h2>
         <div className="max-w-4xl mx-auto w-full">
           <h3 className="text-xl font-semibold mb-4">Recent Events</h3>
           <Events events={loaderData.events} mentionContext={mentionContext} />

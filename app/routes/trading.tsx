@@ -1,5 +1,5 @@
 import type { Route } from "./+types/trading";
-import { db } from "~/database/db";
+import { db, type Database } from "~/database/db";
 import { getSeasonState } from "~/utils/admin.server";
 import {
   getPendingTradesForUser,
@@ -7,7 +7,7 @@ import {
   acceptTrade,
   denyTrade,
 } from "~/utils/trading.server";
-import { requireUser } from "~/auth.server";
+import { getUser, requireUser } from "~/auth.server";
 import { Link, useRevalidator, Form, useActionData } from "react-router";
 import { useStream } from "~/utils/useStream";
 import { PlayerIcon } from "~/components/PlayerIcon";
@@ -19,8 +19,28 @@ import type { users } from "~/database/schema";
 import { resolveMentionsMultiple } from "~/utils/mentions.server";
 import type { MentionContext } from "~/utils/mentions";
 
+const getMyTeam = async (
+  db: Database,
+  user: Awaited<ReturnType<typeof getUser>>,
+) => {
+  if (!user) {
+    return null;
+  }
+
+  return await db.query.teams.findFirst({
+    where: (teams, { eq }) => eq(teams.userId, user.id),
+    with: {
+      players: {
+        with: {
+          lineup: true,
+        },
+      },
+    },
+  });
+};
+
 export async function loader({ request }: Route.LoaderArgs) {
-  const user = await requireUser(request);
+  const user = await getUser(request);
 
   const seasonState = await getSeasonState(db);
 
@@ -35,38 +55,19 @@ export async function loader({ request }: Route.LoaderArgs) {
     };
   }
 
-  const myTeam = await db.query.teams.findFirst({
-    where: (teams, { eq }) => eq(teams.userId, user.id),
-    with: {
-      players: {
-        with: {
-          lineup: true,
-        },
-      },
-    },
-  });
-
-  if (!myTeam) {
-    return {
-      error: "You do not have a team",
-      user,
-      myTeam: null,
-      allTeams: [],
-      pendingTrades: [],
-      tradeHistory: [],
-    };
-  }
+  const myTeam = await getMyTeam(db, user);
 
   const allTeams = await db.query.teams.findMany({
-    where: (teams, { ne }) => ne(teams.userId, user.id),
+    where: (teams, { ne }) =>
+      (user !== null && ne(teams.userId, user.id)) || undefined,
     orderBy: (teams, { asc }) => asc(teams.name),
   });
 
-  const pendingTrades = await getPendingTradesForUser(db, user.id);
+  const pendingTrades =
+    user !== null ? await getPendingTradesForUser(db, user.id) : [];
 
   const paginatedTrades = await getTrades(db);
 
-  // Collect all proposal and response texts from trades to resolve mentions
   const allTradeTexts = [
     ...pendingTrades.map((t) => t.proposalText),
     ...pendingTrades.map((t) => t.responseText),
@@ -350,7 +351,7 @@ const TradeList = ({
   showActions,
   mentionContext,
 }: {
-  user: typeof users.$inferSelect;
+  user: Awaited<ReturnType<typeof getUser>>;
   trades: Trade[];
   showActions: boolean;
   mentionContext: MentionContext;
@@ -358,12 +359,18 @@ const TradeList = ({
   return (
     <div className="w-full lg:w-auto items-center justify-stretch flex flex-col gap-3">
       {trades.map((trade) => {
-        const isOwnTrade = trade.fromUserId === user.id;
+        const isOwnTrade = user !== null && trade.fromUserId === user.id;
+
         const canAccept =
-          trade.toUserId === user.id && trade.status === "pending";
+          user !== null &&
+          trade.toUserId === user.id &&
+          trade.status === "pending";
+
         const canDeny =
+          user !== null &&
           (trade.fromUserId === user.id || trade.toUserId === user.id) &&
           trade.status === "pending";
+
         return (
           <TradeCard
             key={trade.id}
@@ -440,49 +447,53 @@ export default function Trading({
           {actionData.error}
         </div>
       )}
-      <div className="flex items-center gap-2 border border-cell-gray/50 rounded-md px-4 p-2 bg-cell-gray/40">
-        <span>Trade with:</span>
-        <select
-          className="rounded p-2 border border-cell-gray/50 bg-cell-gray/20 text-white"
-          value={selectedTeamId}
-          onChange={(e) => setSelectedTeamId(e.target.value)}
-        >
-          <option value="" disabled>
-            Select a player...
-          </option>
-          {allTeams
-            .filter((team) => myTeam?.id !== team.id)
-            .map((team) => (
-              <option key={team.id} value={team.id}>
-                {team.name}
+      {user !== null && (
+        <>
+          <div className="flex items-center gap-2 border border-cell-gray/50 rounded-md px-4 p-2 bg-cell-gray/40">
+            <span>Trade with:</span>
+            <select
+              className="rounded p-2 border border-cell-gray/50 bg-cell-gray/20 text-white"
+              value={selectedTeamId}
+              onChange={(e) => setSelectedTeamId(e.target.value)}
+            >
+              <option value="" disabled>
+                Select a player...
               </option>
-            ))}
-        </select>
-        {selectedTeamId ? (
-          <Link
-            to={`/trade/with/${selectedTeamId}`}
-            className="ml-2 px-3 py-1 rounded bg-blue-800 hover:bg-blue-700 text-white"
-          >
-            Trade
-          </Link>
-        ) : (
-          <span className="ml-2 px-3 py-1 rounded bg-gray-600/30 text-gray-400 cursor-not-allowed">
-            Trade
-          </span>
-        )}
-      </div>
-      <h2 className="text-xl font-bold text-center">Pending Trades</h2>
-      {pendingTrades.length === 0 ? (
-        <div className="italic text-gray-300 text-center">
-          You have no pending trades
-        </div>
-      ) : (
-        <TradeList
-          user={user}
-          trades={pendingTrades}
-          showActions={true}
-          mentionContext={context}
-        />
+              {allTeams
+                .filter((team) => myTeam?.id !== team.id)
+                .map((team) => (
+                  <option key={team.id} value={team.id}>
+                    {team.name}
+                  </option>
+                ))}
+            </select>
+            {selectedTeamId ? (
+              <Link
+                to={`/trade/with/${selectedTeamId}`}
+                className="ml-2 px-3 py-1 rounded bg-blue-800 hover:bg-blue-700 text-white"
+              >
+                Trade
+              </Link>
+            ) : (
+              <span className="ml-2 px-3 py-1 rounded bg-gray-600/30 text-gray-400 cursor-not-allowed">
+                Trade
+              </span>
+            )}
+          </div>
+          <h2 className="text-xl font-bold text-center">Pending Trades</h2>
+          {pendingTrades.length === 0 ? (
+            <div className="italic text-gray-300 text-center">
+              You have no pending trades
+            </div>
+          ) : (
+            <TradeList
+              user={user}
+              trades={pendingTrades}
+              showActions={true}
+              mentionContext={context}
+            />
+          )}
+        </>
       )}
       <h2 className="text-xl font-bold text-center">Trade History</h2>
       {paginatedTrades?.trades?.length === 0 ? (

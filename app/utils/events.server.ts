@@ -241,11 +241,11 @@ export const createTradeEvent = async (
       actionPrefix = `_[Trade Cancelled](${tradeLink})_`;
     }
 
-    let message = `${actionPrefix}: **[${trade.fromTeam.name}](${BASE_URL}/team/${trade.fromTeam.id})** `;
+    let message = `${actionPrefix}: **[${trade.fromTeam.name}](${BASE_URL}/team/${trade.fromTeam.id}) (<@${trade.fromUser.discordSnowflake}>)** `;
     if (fromPlayers.length > 0) {
       message += `sends ${fromPlayerLinks} `;
     }
-    message += `↔ **[${trade.toTeam.name}](${BASE_URL}/team/${trade.toTeam.id})** `;
+    message += `↔ **[${trade.toTeam.name}](${BASE_URL}/team/${trade.toTeam.id}) (<@${trade.toUser.discordSnowflake}>)** `;
     if (toPlayers.length > 0) {
       message += `sends ${toPlayerLinks}`;
     }

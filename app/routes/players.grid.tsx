@@ -1,0 +1,65 @@
+import { PlayerIcon } from "~/components/PlayerIcon";
+import type { Route } from "./+types/players.grid";
+import { db } from "~/database/db";
+import { cn } from "~/utils/cn";
+import { Link } from "react-router";
+import { TeamLogo } from "~/components/TeamLogo";
+
+export async function loader({ request }: Route.LoaderArgs) {
+  const allPlayers = await db.query.players.findMany({
+    with: {
+      team: {
+        with: {
+          captain: true,
+        },
+      },
+      lineup: true,
+    },
+    orderBy: (players, { asc }) => asc(players.sortPosition),
+  });
+
+  return { players: allPlayers };
+}
+
+export default function PlayersIndex({ loaderData }: Route.ComponentProps) {
+  return (
+    <div className="flex flex-wrap gap-4">
+      {loaderData.players.map((player) => (
+        <Link
+          key={player.id}
+          to={`/player/${player.id}`}
+          className="relative flex flex-col items-center gap-2 p-4 border-2 border-cell-gray/50 rounded-lg w-36 h-23 bg-cell-gray/40 hover:bg-cell-gray/60 transition-colors"
+        >
+          <PlayerIcon
+            player={player}
+            isStarred={player.lineup?.isStarred ?? false}
+            isCaptain={
+              player.team?.captainId !== null &&
+              player.team?.captainId !== undefined &&
+              player.id === player.team.captainId
+            }
+          />
+          <span className="text-xs text-center">{player.name}</span>
+          <span
+            className={cn(
+              "text-[0.6rem] absolute top-1 right-1.5 opacity-70 rotate-8",
+              player.team?.abbreviation ? "" : "text-green-300 opacity-50",
+            )}
+          >
+            {player.team?.abbreviation ? (
+              <div className="flex items-center gap-1">
+                <TeamLogo
+                  captainStatsCharacter={player.team.captain?.statsCharacter}
+                  size="xs"
+                />
+                {player.team?.abbreviation}
+              </div>
+            ) : (
+              "Free"
+            )}
+          </span>
+        </Link>
+      ))}
+    </div>
+  );
+}

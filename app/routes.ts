@@ -15,6 +15,7 @@ export default [
   route("team/:teamId/edit", "routes/edit-team.tsx"),
   route("players", "routes/players.tsx", [
     index("routes/players._index.tsx"),
+    route("grid", "routes/players.grid.tsx"),
     route("chemistry", "routes/players.chemistry.tsx"),
     route("chemistry-graph", "routes/players.chemistry-graph.tsx"),
   ]),

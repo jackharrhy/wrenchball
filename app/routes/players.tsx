@@ -4,7 +4,8 @@ import { cn } from "~/utils/cn";
 
 export default function Players({}: Route.ComponentProps) {
   const location = useLocation();
-  const isGrid = location.pathname === "/players";
+  const isLeaderboard = location.pathname === "/players";
+  const isGrid = location.pathname === "/players/grid";
   const isChemistry = location.pathname === "/players/chemistry";
   const isChemistryGraph = location.pathname === "/players/chemistry-graph";
 
@@ -13,6 +14,17 @@ export default function Players({}: Route.ComponentProps) {
       <div className="flex gap-2 shrink-0">
         <Link
           to="/players"
+          className={cn(
+            "px-4 py-2 rounded border-2 transition-colors",
+            isLeaderboard
+              ? "bg-cell-gray/60 border-cell-gray"
+              : "bg-cell-gray/40 border-cell-gray/50 hover:bg-cell-gray/60",
+          )}
+        >
+          Leaderboard
+        </Link>
+        <Link
+          to="/players/grid"
           className={cn(
             "px-4 py-2 rounded border-2 transition-colors",
             isGrid

@@ -58,6 +58,18 @@ type EventWithRelations = Event & {
       abbreviation: string;
     };
   } | null;
+  matchStateChange?: {
+    matchId: number;
+    fromState: string | null;
+    toState: string;
+    match: {
+      id: number;
+      teamAScore: number | null;
+      teamBScore: number | null;
+      teamA: { id: number; name: string; abbreviation: string };
+      teamB: { id: number; name: string; abbreviation: string };
+    };
+  } | null;
 };
 
 interface EventsProps {
@@ -341,6 +353,79 @@ export function Events({ events, mentionContext }: EventsProps) {
                 </div>
                 <div
                   className="text-xs text-gray-400 mt-1"
+                  title={event.createdAt.toLocaleString()}
+                >
+                  {formatTimeAgo(new Date(event.createdAt))}
+                </div>
+              </div>
+            </div>
+          );
+        }
+
+        if (
+          event.eventType === "match_state_change" &&
+          event.matchStateChange
+        ) {
+          const { match, toState } = event.matchStateChange;
+          const teamAWon =
+            match.teamAScore !== null &&
+            match.teamBScore !== null &&
+            match.teamAScore > match.teamBScore;
+          const teamBWon =
+            match.teamAScore !== null &&
+            match.teamBScore !== null &&
+            match.teamBScore > match.teamAScore;
+
+          return (
+            <div
+              key={event.id}
+              className="flex items-center gap-3 p-3 bg-cell-gray/40 border border-cell-gray/50 rounded-lg"
+            >
+              <div className="flex-1 min-w-0 flex flex-col gap-2">
+                <div className="text-sm font-medium">
+                  <a
+                    href={`/match/${match.id}`}
+                    className="text-blue-300 font-bold hover:underline"
+                  >
+                    {toState === "finished" ? "Match Finished" : "Match Update"}
+                  </a>
+                  {": "}
+                  <a
+                    href={`/team/${match.teamA.id}`}
+                    className="hover:underline"
+                  >
+                    <span
+                      className={
+                        teamAWon
+                          ? "text-green-300 font-bold"
+                          : "text-gray-300 font-semibold"
+                      }
+                    >
+                      {match.teamA.name}
+                    </span>
+                  </a>
+                  {" "}
+                  <span className="text-white font-bold">
+                    {match.teamAScore ?? "?"} - {match.teamBScore ?? "?"}
+                  </span>
+                  {" "}
+                  <a
+                    href={`/team/${match.teamB.id}`}
+                    className="hover:underline"
+                  >
+                    <span
+                      className={
+                        teamBWon
+                          ? "text-green-300 font-bold"
+                          : "text-gray-300 font-semibold"
+                      }
+                    >
+                      {match.teamB.name}
+                    </span>
+                  </a>
+                </div>
+                <div
+                  className="text-xs text-gray-400"
                   title={event.createdAt.toLocaleString()}
                 >
                   {formatTimeAgo(new Date(event.createdAt))}

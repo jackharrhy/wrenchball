@@ -430,7 +430,7 @@ export function Events({ events, mentionContext }: EventsProps) {
                 <div className="text-sm font-medium">
                   <a
                     href={`/match/${match.id}`}
-                    className="text-blue-300 font-bold hover:underline"
+                    className="text-purple-300 font-bold hover:underline"
                   >
                     {toState === "finished" ? "Match Finished" : "Match Update"}
                   </a>

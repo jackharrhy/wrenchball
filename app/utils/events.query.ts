@@ -46,6 +46,16 @@ export const eventsWithClause = {
       team: true,
     },
   },
+  matchStateChange: {
+    with: {
+      match: {
+        with: {
+          teamA: true,
+          teamB: true,
+        },
+      },
+    },
+  },
 } as const;
 
 export type EventWithRelations = Awaited<

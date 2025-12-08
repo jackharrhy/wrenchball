@@ -411,7 +411,7 @@ export function Events({ events, mentionContext }: EventsProps) {
           event.eventType === "match_state_change" &&
           event.matchStateChange
         ) {
-          const { match, toState } = event.matchStateChange;
+          const { match, fromState, toState } = event.matchStateChange;
           const teamAWon =
             match.teamAScore !== null &&
             match.teamBScore !== null &&
@@ -420,6 +420,19 @@ export function Events({ events, mentionContext }: EventsProps) {
             match.teamAScore !== null &&
             match.teamBScore !== null &&
             match.teamBScore > match.teamAScore;
+
+          let actionText: string;
+          let actionColor: string;
+          if (toState === "live") {
+            actionText = "Match Started";
+            actionColor = "text-orange-300";
+          } else if (toState === "finished") {
+            actionText = "Match Finished";
+            actionColor = "text-green-300";
+          } else {
+            actionText = "Match State Change";
+            actionColor = "text-purple-300";
+          }
 
           return (
             <div
@@ -430,9 +443,9 @@ export function Events({ events, mentionContext }: EventsProps) {
                 <div className="text-sm font-medium">
                   <a
                     href={`/match/${match.id}`}
-                    className="text-purple-300 font-bold hover:underline"
+                    className={`${actionColor} font-bold hover:underline`}
                   >
-                    {toState === "finished" ? "Match Finished" : "Match Update"}
+                    {actionText}
                   </a>
                   {": "}
                   <a
@@ -466,6 +479,17 @@ export function Events({ events, mentionContext }: EventsProps) {
                       {match.teamB.name}
                     </span>
                   </a>
+                  {toState === "live" && (
+                    <span className="text-green-400 font-bold ml-1">LIVE!</span>
+                  )}
+                  {toState !== "live" && toState !== "finished" && (
+                    <span className="text-gray-400 ml-1">
+                      {fromState ? `${fromState} → ` : ""}
+                      <span className="text-pink-300 font-semibold">
+                        {toState}
+                      </span>
+                    </span>
+                  )}
                 </div>
                 <div
                   className="text-xs text-gray-400"

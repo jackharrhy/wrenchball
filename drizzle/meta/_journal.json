@@ -50,6 +50,13 @@
       "when": 17650784300000,
       "tag": "0006_add_match_locations",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 17650784310000,
+      "tag": "0007_add_missing_primary_keys",
+      "breakpoints": true
     }
   ]
 }

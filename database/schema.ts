@@ -275,21 +275,25 @@ export const conferencesRelations = relations(conferences, ({ one, many }) => ({
   teams: many(teams),
 }));
 
-export const usersSeasons = pgTable("users_seasons", {
-  userId: integer("user_id")
-    .notNull()
-    .references(() => users.id, { onDelete: "cascade" }),
-  seasonId: integer("season_id")
-    .notNull()
-    .references(() => season.id),
-  draftingTurn: integer("drafting_turn").notNull(),
-  preDraftPlayerId: integer("pre_draft_player_id").references(
-    () => players.id,
-    {
-      onDelete: "set null",
-    },
-  ),
-});
+export const usersSeasons = pgTable(
+  "users_seasons",
+  {
+    userId: integer("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    seasonId: integer("season_id")
+      .notNull()
+      .references(() => season.id),
+    draftingTurn: integer("drafting_turn").notNull(),
+    preDraftPlayerId: integer("pre_draft_player_id").references(
+      () => players.id,
+      {
+        onDelete: "set null",
+      },
+    ),
+  },
+  (table) => [primaryKey({ columns: [table.userId, table.seasonId] })],
+);
 
 export type UsersSeason = typeof usersSeasons.$inferSelect;
 
@@ -349,20 +353,24 @@ export const trades = pgTable("trades", {
 
 export type Trade = typeof trades.$inferSelect;
 
-export const tradePlayers = pgTable("trade_players", {
-  tradeId: integer("trade_id")
-    .notNull()
-    .references(() => trades.id, { onDelete: "cascade" }),
-  playerId: integer("player_id")
-    .notNull()
-    .references(() => players.id, { onDelete: "cascade" }),
-  fromTeamId: integer("from_team_id")
-    .notNull()
-    .references(() => teams.id, { onDelete: "cascade" }),
-  toTeamId: integer("to_team_id")
-    .notNull()
-    .references(() => teams.id, { onDelete: "cascade" }),
-});
+export const tradePlayers = pgTable(
+  "trade_players",
+  {
+    tradeId: integer("trade_id")
+      .notNull()
+      .references(() => trades.id, { onDelete: "cascade" }),
+    playerId: integer("player_id")
+      .notNull()
+      .references(() => players.id, { onDelete: "cascade" }),
+    fromTeamId: integer("from_team_id")
+      .notNull()
+      .references(() => teams.id, { onDelete: "cascade" }),
+    toTeamId: integer("to_team_id")
+      .notNull()
+      .references(() => teams.id, { onDelete: "cascade" }),
+  },
+  (table) => [primaryKey({ columns: [table.tradeId, table.playerId] })],
+);
 
 export type TradePlayer = typeof tradePlayers.$inferSelect;
 

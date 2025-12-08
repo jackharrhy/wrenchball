@@ -135,12 +135,27 @@ export const updateMatchOrder = async (
   });
 };
 
+export interface FreezeMatchLineupsOptions {
+  /** Whether to delete existing lineup entries for this match before inserting. Defaults to true. */
+  overrideExisting?: boolean;
+}
+
 export const freezeMatchLineups = async (
   db: Database,
   matchId: number,
   teamAId: number,
   teamBId: number,
+  options: FreezeMatchLineupsOptions = {},
 ) => {
+  const { overrideExisting = true } = options;
+
+  // Delete existing lineup entries if overriding
+  if (overrideExisting) {
+    await db
+      .delete(matchBattingOrders)
+      .where(eq(matchBattingOrders.matchId, matchId));
+  }
+
   // Get all players with their lineups for both teams
   const teamAPlayers = await db
     .select({

@@ -109,10 +109,30 @@ const restoreLocal = async () => {
     process.exit(1);
   }
 
+  // Parse date from backup filename (e.g., backup-2025-12-07T20-20-16-489Z.sql)
+  function parseDateFromBackup(filename: string): Date | null {
+    const match = filename.match(
+      /^backup-(\d{4}-\d{2}-\d{2}T\d{2}-\d{2}-\d{2}-\d{3}Z)\.sql$/,
+    );
+    if (!match) return null;
+    // Convert back to ISO format: 2025-12-07T20-20-16-489Z -> 2025-12-07T20:20:16.489Z
+    const isoDate = match[1].replace(
+      /T(\d{2})-(\d{2})-(\d{2})-(\d{3})Z/,
+      "T$1:$2:$3.$4Z",
+    );
+    return new Date(isoDate);
+  }
+
   const backupFiles = readdirSync(backupsDir)
     .filter((f) => f.endsWith(".sql"))
-    .sort()
-    .reverse();
+    .map((f) => ({ filename: f, date: parseDateFromBackup(f) }))
+    .sort((a, b) => {
+      // Sort by date (newest first), files without parseable dates go last
+      if (!a.date && !b.date) return a.filename.localeCompare(b.filename);
+      if (!a.date) return 1;
+      if (!b.date) return -1;
+      return b.date.getTime() - a.date.getTime();
+    });
 
   if (backupFiles.length === 0) {
     console.error("ERROR: No backup files found in backups directory.");
@@ -122,12 +142,23 @@ const restoreLocal = async () => {
   console.log("");
   console.log("Available backups:");
   console.log("==================");
-  for (const file of backupFiles) {
-    console.log(`  ${file}`);
+  for (let i = 0; i < backupFiles.length; i++) {
+    const { filename, date } = backupFiles[i];
+    const dateStr = date ? date.toLocaleString() : "unknown date";
+    console.log(`  [${i + 1}] ${filename}  (${dateStr})`);
   }
   console.log("");
 
-  const backupName = await question("Paste the backup filename to restore: ");
+  const backupInput = await question("Enter backup number or filename: ");
+
+  // Check if input is a number
+  let backupName: string;
+  const num = parseInt(backupInput, 10);
+  if (!isNaN(num) && num >= 1 && num <= backupFiles.length) {
+    backupName = backupFiles[num - 1].filename;
+  } else {
+    backupName = backupInput;
+  }
 
   const backupPath = path.join(backupsDir, backupName);
   if (!existsSync(backupPath)) {

@@ -27,6 +27,10 @@ const MentionList = forwardRef<MentionListRef, MentionListProps>(
   ({ items, command }, ref) => {
     const [selectedIndex, setSelectedIndex] = useState(0);
 
+    // Derive a safe selected index - clamp it to valid range
+    const safeSelectedIndex =
+      items.length === 0 ? 0 : Math.min(selectedIndex, items.length - 1);
+
     const selectItem = useCallback(
       (index: number) => {
         const item = items[index];
@@ -36,12 +40,6 @@ const MentionList = forwardRef<MentionListRef, MentionListProps>(
       },
       [items, command],
     );
-
-    // Reset selected index when items change
-    const prevItemsLength = useState(items.length)[0];
-    if (items.length !== prevItemsLength && selectedIndex >= items.length) {
-      setSelectedIndex(0);
-    }
 
     useImperativeHandle(ref, () => ({
       onKeyDown: ({ event }) => {
@@ -60,7 +58,7 @@ const MentionList = forwardRef<MentionListRef, MentionListProps>(
         }
 
         if (event.key === "Enter") {
-          selectItem(selectedIndex);
+          selectItem(safeSelectedIndex);
           return true;
         }
 
@@ -70,7 +68,7 @@ const MentionList = forwardRef<MentionListRef, MentionListProps>(
 
     if (items.length === 0) {
       return (
-        <div className="bg-gray-800 border border-gray-600 rounded-md p-2 text-gray-400 text-sm">
+        <div className="bg-gray-800 border border-gray-600 rounded-md px-3 py-2 text-gray-400 text-sm">
           No results
         </div>
       );
@@ -83,7 +81,7 @@ const MentionList = forwardRef<MentionListRef, MentionListProps>(
             key={item.id}
             onClick={() => selectItem(index)}
             className={`block w-full text-left px-3 py-2 text-sm ${
-              index === selectedIndex
+              index === safeSelectedIndex
                 ? "bg-blue-600 text-white"
                 : "text-gray-200 hover:bg-gray-700"
             }`}

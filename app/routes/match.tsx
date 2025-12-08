@@ -122,9 +122,9 @@ export default function Match({ loaderData }: Route.ComponentProps) {
   };
 
   return (
-    <div className="space-y-8">
+    <div className="flex flex-col gap-8">
       {/* Match Header */}
-      <div className="text-center space-y-4">
+      <div className="flex flex-col gap-4 items-center">
         <div className="flex items-center justify-center gap-4">
           <span
             className={cn(
@@ -136,21 +136,23 @@ export default function Match({ loaderData }: Route.ComponentProps) {
           </span>
         </div>
 
-        <div className="flex items-center justify-center gap-8">
-          <Link
-            to={`/team/${match.teamA.id}`}
-            className="flex flex-col items-end gap-0.5 hover:underline"
-          >
-            <span className="text-2xl font-bold">{match.teamA.name}</span>
-            <span className="flex items-center justify-end gap-1 text-gray-200/80">
-              {match.teamA.conference && (
-                <ConferencePin conference={match.teamA.conference} />
-              )}
-              {match.teamA.user?.name}
-            </span>
-          </Link>
+        <div className="w-full flex items-center justify-center gap-8">
+          <div className="flex-1 flex justify-end">
+            <Link
+              to={`/team/${match.teamA.id}`}
+              className="flex flex-col items-end gap-0.5 hover:underline"
+            >
+              <span className="text-2xl font-bold">{match.teamA.name}</span>
+              <span className="flex items-center justify-end gap-1 text-gray-200/80">
+                {match.teamA.conference && (
+                  <ConferencePin conference={match.teamA.conference} />
+                )}
+                {match.teamA.user?.name}
+              </span>
+            </Link>
+          </div>
           {showScore ? (
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-4 shrink-0">
               <span className="text-4xl font-bold text-yellow-300">
                 {match.teamAScore}
               </span>
@@ -160,20 +162,22 @@ export default function Match({ loaderData }: Route.ComponentProps) {
               </span>
             </div>
           ) : (
-            <span className="text-2xl text-gray-400">vs</span>
+            <span className="text-2xl text-gray-400 shrink-0">vs</span>
           )}
-          <Link
-            to={`/team/${match.teamB.id}`}
-            className="flex flex-col items-start gap-0.5 hover:underline"
-          >
-            <span className="text-2xl font-bold">{match.teamB.name}</span>
-            <span className="flex items-center gap-1 text-gray-200/80">
-              {match.teamB.user?.name}
-              {match.teamB.conference && (
-                <ConferencePin conference={match.teamB.conference} />
-              )}
-            </span>
-          </Link>
+          <div className="flex-1 flex justify-start">
+            <Link
+              to={`/team/${match.teamB.id}`}
+              className="flex flex-col items-start gap-0.5 hover:underline"
+            >
+              <span className="text-2xl font-bold">{match.teamB.name}</span>
+              <span className="flex items-center gap-1 text-gray-200/80">
+                {match.teamB.user?.name}
+                {match.teamB.conference && (
+                  <ConferencePin conference={match.teamB.conference} />
+                )}
+              </span>
+            </Link>
+          </div>
         </div>
 
         {match.location && (

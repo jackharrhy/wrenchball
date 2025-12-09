@@ -57,6 +57,13 @@
       "when": 17650784310000,
       "tag": "0007_add_missing_primary_keys",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 17650784320000,
+      "tag": "0008_add_match_video_url",
+      "breakpoints": true
     }
   ]
 }

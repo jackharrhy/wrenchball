@@ -668,6 +668,7 @@ export const matches = pgTable("matches", {
   scheduledDate: timestamp("scheduled_date"),
   teamAScore: integer("team_a_score"),
   teamBScore: integer("team_b_score"),
+  videoUrl: text("video_url"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });

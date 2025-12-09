@@ -7,15 +7,28 @@ import { Lineup } from "~/components/Lineup";
 import { ConferencePin } from "~/components/ConferencePin";
 import { cn } from "~/utils/cn";
 import { formatLocationName } from "~/utils/location";
+import { getUser } from "~/auth.server";
 
-export async function loader({ params: { matchId } }: Route.LoaderArgs) {
-  const match = await getMatchWithStats(db, parseInt(matchId, 10));
+export async function loader({
+  request,
+  params: { matchId },
+}: Route.LoaderArgs) {
+  const [match, user] = await Promise.all([
+    getMatchWithStats(db, parseInt(matchId, 10)),
+    getUser(request),
+  ]);
 
   if (!match) {
     throw new Response("Match not found", { status: 404 });
   }
 
-  return { match };
+  // Only include videoUrl if user is logged in
+  return {
+    match: {
+      ...match,
+      videoUrl: user ? match.videoUrl : null,
+    },
+  };
 }
 
 function formatDate(date: Date | null) {
@@ -59,6 +72,67 @@ const STAT_COLUMNS = [
   { key: "triplePlays", label: "TP", title: "Triple Plays" },
   { key: "errors", label: "E", title: "Errors" },
 ] as const;
+
+/**
+ * Extract YouTube video ID from various YouTube URL formats
+ */
+function getYouTubeVideoId(url: string): string | null {
+  const patterns = [
+    // youtube.com/watch?v=VIDEO_ID
+    /(?:youtube\.com\/watch\?v=)([a-zA-Z0-9_-]{11})/,
+    // youtu.be/VIDEO_ID
+    /(?:youtu\.be\/)([a-zA-Z0-9_-]{11})/,
+    // youtube.com/embed/VIDEO_ID
+    /(?:youtube\.com\/embed\/)([a-zA-Z0-9_-]{11})/,
+    // youtube.com/v/VIDEO_ID
+    /(?:youtube\.com\/v\/)([a-zA-Z0-9_-]{11})/,
+    // youtube.com/shorts/VIDEO_ID
+    /(?:youtube\.com\/shorts\/)([a-zA-Z0-9_-]{11})/,
+  ];
+
+  for (const pattern of patterns) {
+    const match = url.match(pattern);
+    if (match) {
+      return match[1];
+    }
+  }
+
+  return null;
+}
+
+function VideoEmbed({ url }: { url: string }) {
+  const youtubeId = getYouTubeVideoId(url);
+
+  if (youtubeId) {
+    return (
+      <div className="flex justify-center">
+        <div className="w-full max-w-3xl aspect-video">
+          <iframe
+            src={`https://www.youtube.com/embed/${youtubeId}`}
+            title="Match Video"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+            className="w-full h-full rounded-lg"
+          />
+        </div>
+      </div>
+    );
+  }
+
+  // For non-YouTube URLs, show a link
+  return (
+    <div className="text-center">
+      <a
+        href={url}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="text-cyan-300 hover:underline"
+      >
+        Watch Video ↗
+      </a>
+    </div>
+  );
+}
 
 export default function Match({ loaderData }: Route.ComponentProps) {
   const { match } = loaderData;
@@ -186,6 +260,8 @@ export default function Match({ loaderData }: Route.ComponentProps) {
           </p>
         )}
       </div>
+
+      {match.videoUrl && <VideoEmbed url={match.videoUrl} />}
 
       {/* Lineups */}
       {(teamALineup.length > 0 || teamBLineup.length > 0) && (

@@ -449,6 +449,23 @@ export const updateMatchLocation = async (
   return updated;
 };
 
+export const updateMatchVideoUrl = async (
+  db: Database,
+  matchId: number,
+  videoUrl: string | null,
+) => {
+  const [updated] = await db
+    .update(matches)
+    .set({
+      videoUrl,
+      updatedAt: new Date(),
+    })
+    .where(eq(matches.id, matchId))
+    .returning();
+
+  return updated;
+};
+
 export type PlayerStatInput = Omit<MatchPlayerStats, "matchId">;
 
 export const upsertMatchPlayerStats = async (

@@ -20,6 +20,7 @@ import {
   updateMatchOrder,
   getMatchLocations,
   updateMatchLocation,
+  updateMatchVideoUrl,
 } from "~/utils/matches.server";
 import { useState } from "react";
 import type { MatchState } from "~/database/schema";
@@ -96,6 +97,21 @@ export async function clientAction({
   if (intent === "delete-match") {
     const confirmed = confirm(
       "Are you sure you want to delete this match? All match data will be lost.",
+    );
+    if (!confirmed) {
+      return { success: false, message: "Action cancelled" };
+    }
+  }
+
+  if (intent === "update-match-state") {
+    const newState = formData.get("state") as string;
+    const stateLabels: Record<string, string> = {
+      upcoming: "Upcoming",
+      live: "Live",
+      finished: "Finished",
+    };
+    const confirmed = confirm(
+      `Are you sure you want to change this match's state to "${stateLabels[newState] || newState}"?`,
     );
     if (!confirmed) {
       return { success: false, message: "Action cancelled" };
@@ -270,6 +286,33 @@ export async function action({ request }: Route.ActionArgs) {
         success: false,
         message:
           error instanceof Error ? error.message : "Failed to update location",
+      };
+    }
+  }
+
+  if (intent === "update-match-video-url") {
+    const matchIdStr = formData.get("matchId");
+    const videoUrl = formData.get("videoUrl") as string | null;
+
+    if (!matchIdStr) {
+      return { success: false, message: "Invalid parameters" };
+    }
+
+    const matchId = parseInt(matchIdStr as string, 10);
+
+    if (isNaN(matchId)) {
+      return { success: false, message: "Invalid match ID" };
+    }
+
+    try {
+      await updateMatchVideoUrl(db, matchId, videoUrl || null);
+      return { success: true, message: "Video URL updated" };
+    } catch (error) {
+      console.error("Error updating match video URL:", error);
+      return {
+        success: false,
+        message:
+          error instanceof Error ? error.message : "Failed to update video URL",
       };
     }
   }
@@ -519,6 +562,313 @@ export async function action({ request }: Route.ActionArgs) {
   return { success: false, message: "Invalid action" };
 }
 
+type MatchData = {
+  id: number;
+  orderInDay: number | null;
+  state: MatchState;
+  teamAScore: number | null;
+  teamBScore: number | null;
+  scheduledDate: Date | null;
+  locationId: number | null;
+  location: { id: number; name: string } | null;
+  videoUrl: string | null;
+  teamA: {
+    id: number;
+    name: string;
+    user: { id: number; name: string } | null;
+  };
+  teamB: {
+    id: number;
+    name: string;
+    user: { id: number; name: string } | null;
+  };
+};
+
+function Match({
+  match,
+  index,
+  totalMatches,
+  locations,
+}: {
+  match: MatchData;
+  index: number;
+  totalMatches: number;
+  locations: Array<{ id: number; name: string }>;
+}) {
+  const fetcher = useFetcher();
+
+  const formatTime = (date: Date) => {
+    return new Date(date).toLocaleTimeString("en-US", {
+      hour: "numeric",
+      minute: "2-digit",
+    });
+  };
+
+  const getTeamDisplay = (team: {
+    id: number;
+    name: string;
+    user: { id: number; name: string } | null;
+  }) => {
+    return team.user ? `${team.name} (${team.user.name})` : team.name;
+  };
+
+  const submitStateChange = (newState: MatchState) => {
+    fetcher.submit(
+      {
+        intent: "update-match-state",
+        matchId: match.id.toString(),
+        state: newState,
+      },
+      { method: "post" },
+    );
+  };
+
+  return (
+    <div className="p-4 bg-cell-gray/30 rounded space-y-3">
+      {/* Header row: Match number, teams, location */}
+      <div className="flex items-center gap-4">
+        <span className="text-sm text-gray-400 w-6">
+          #{match.orderInDay ?? index + 1}
+        </span>
+        <div className="flex-1">
+          <div className="font-medium text-lg">
+            {getTeamDisplay(match.teamA)} vs {getTeamDisplay(match.teamB)}
+          </div>
+          {match.scheduledDate && (
+            <div className="text-sm text-gray-400">
+              {formatTime(match.scheduledDate)}
+            </div>
+          )}
+        </div>
+
+        {/* Location selector */}
+        <fetcher.Form method="post" className="flex items-center gap-1">
+          <input type="hidden" name="intent" value="update-match-location" />
+          <input type="hidden" name="matchId" value={match.id} />
+          <select
+            name="locationId"
+            defaultValue={match.locationId ?? ""}
+            onChange={(e) => e.target.form?.requestSubmit()}
+            className="px-2 py-1 rounded border border-cell-gray bg-cell-gray/60 text-sm max-w-[180px]"
+          >
+            <option value="">No location</option>
+            {locations.map((loc) => (
+              <option key={loc.id} value={loc.id}>
+                {formatLocationName(loc.name)}
+              </option>
+            ))}
+          </select>
+        </fetcher.Form>
+
+        {/* Current state badge and score */}
+        <div className="flex items-center gap-2">
+          <span
+            className={`text-xs px-2 py-0.5 rounded font-medium ${
+              match.state === "upcoming"
+                ? "bg-blue-600"
+                : match.state === "live"
+                  ? "bg-green-600"
+                  : "bg-gray-600"
+            }`}
+          >
+            {match.state}
+          </span>
+          {match.teamAScore !== null && (
+            <span className="text-sm font-semibold">
+              {match.teamAScore} - {match.teamBScore}
+            </span>
+          )}
+        </div>
+      </div>
+
+      {/* Controls row: Reorder, state transitions, score, actions */}
+      <div className="flex items-center gap-3 flex-wrap border-t border-cell-gray/30 pt-3">
+        {/* Reorder buttons */}
+        <div className="flex gap-1">
+          <Form method="post" className="inline-block">
+            <input type="hidden" name="intent" value="update-match-order" />
+            <input type="hidden" name="matchId" value={match.id} />
+            <input type="hidden" name="direction" value="up" />
+            <input
+              type="hidden"
+              name="currentOrder"
+              value={match.orderInDay ?? index + 1}
+            />
+            <button
+              type="submit"
+              disabled={index === 0}
+              className={`px-2 py-1 rounded text-sm ${
+                index === 0
+                  ? "bg-gray-500 text-gray-300 cursor-not-allowed"
+                  : "bg-green-600 hover:bg-green-700 text-white"
+              }`}
+            >
+              ▲
+            </button>
+          </Form>
+          <Form method="post" className="inline-block">
+            <input type="hidden" name="intent" value="update-match-order" />
+            <input type="hidden" name="matchId" value={match.id} />
+            <input type="hidden" name="direction" value="down" />
+            <input
+              type="hidden"
+              name="currentOrder"
+              value={match.orderInDay ?? index + 1}
+            />
+            <button
+              type="submit"
+              disabled={index === totalMatches - 1}
+              className={`px-2 py-1 rounded text-sm ${
+                index === totalMatches - 1
+                  ? "bg-gray-500 text-gray-300 cursor-not-allowed"
+                  : "bg-red-600 hover:bg-red-700 text-white"
+              }`}
+            >
+              ▼
+            </button>
+          </Form>
+        </div>
+
+        <div className="h-6 w-px bg-cell-gray/50" />
+
+        <div className="flex gap-2">
+          {match.state === "upcoming" && (
+            <button
+              type="button"
+              onClick={() => submitStateChange("live")}
+              className="px-3 py-1.5 rounded bg-green-600 hover:bg-green-700 text-white text-sm font-medium transition-colors cursor-pointer"
+            >
+              Start Match (→ Live)
+            </button>
+          )}
+
+          {match.state === "live" && (
+            <>
+              <button
+                type="button"
+                onClick={() => submitStateChange("upcoming")}
+                className="px-3 py-1.5 rounded bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium transition-colors cursor-pointer"
+              >
+                ← Back to Upcoming
+              </button>
+              <button
+                type="button"
+                onClick={() => submitStateChange("finished")}
+                className="px-3 py-1.5 rounded bg-gray-600 hover:bg-gray-700 text-white text-sm font-medium transition-colors cursor-pointer"
+              >
+                Finish Match →
+              </button>
+            </>
+          )}
+
+          {match.state === "finished" && (
+            <>
+              <button
+                type="button"
+                onClick={() => submitStateChange("upcoming")}
+                className="px-3 py-1.5 rounded bg-blue-600/20 hover:bg-blue-700 text-white text-sm font-medium transition-colors cursor-pointer"
+              >
+                ← Reset to Upcoming
+              </button>
+              <button
+                type="button"
+                onClick={() => submitStateChange("live")}
+                className="px-3 py-1.5 rounded bg-green-600/20 hover:bg-green-700 text-white text-sm font-medium transition-colors cursor-pointer"
+              >
+                ← Reopen (→ Live)
+              </button>
+            </>
+          )}
+        </div>
+
+        {/* Score controls - shown for live or finished matches */}
+        {(match.state === "live" || match.state === "finished") && (
+          <>
+            <div className="h-6 w-px bg-cell-gray/50" />
+            <fetcher.Form method="post" className="flex items-center gap-1">
+              <input type="hidden" name="intent" value="update-match-score" />
+              <input type="hidden" name="matchId" value={match.id} />
+              <input
+                type="number"
+                name="teamAScore"
+                defaultValue={match.teamAScore ?? 0}
+                min="0"
+                className="w-12 px-1 py-1 rounded border border-cell-gray bg-cell-gray/60 text-sm text-center"
+              />
+              <span>-</span>
+              <input
+                type="number"
+                name="teamBScore"
+                defaultValue={match.teamBScore ?? 0}
+                min="0"
+                className="w-12 px-1 py-1 rounded border border-cell-gray bg-cell-gray/60 text-sm text-center"
+              />
+              <button
+                type="submit"
+                className="px-2 py-1 rounded bg-blue-600 hover:bg-blue-700 text-white text-sm"
+              >
+                Save
+              </button>
+            </fetcher.Form>
+          </>
+        )}
+
+        <div className="flex-1" />
+
+        <Link
+          to={`/admin/match/${match.id}/stats`}
+          className="px-2 py-1 rounded bg-purple-600 hover:bg-purple-700 text-white text-sm"
+        >
+          Stats
+        </Link>
+
+        <Form method="post" className="inline-block">
+          <input type="hidden" name="intent" value="delete-match" />
+          <input type="hidden" name="matchId" value={match.id} />
+          <button
+            type="submit"
+            className="px-2 py-1 rounded bg-red-600 hover:bg-red-700 text-white text-sm"
+          >
+            ×
+          </button>
+        </Form>
+      </div>
+
+      {/* Video URL row */}
+      <div className="flex items-center gap-3 border-t border-cell-gray/30 pt-3">
+        <span className="text-sm text-gray-400">Video URL:</span>
+        <fetcher.Form method="post" className="flex items-center gap-2">
+          <input type="hidden" name="intent" value="update-match-video-url" />
+          <input type="hidden" name="matchId" value={match.id} />
+          <input
+            type="url"
+            name="videoUrl"
+            defaultValue={match.videoUrl ?? ""}
+            placeholder="https://youtube.com/watch?v=..."
+            className="w-90 px-2 py-1 rounded border border-cell-gray bg-cell-gray/60 text-sm"
+          />
+          <button
+            type="submit"
+            className="px-2 py-1 rounded bg-blue-600 hover:bg-blue-700 text-white text-sm cursor-pointer"
+          >
+            Save
+          </button>
+        </fetcher.Form>
+        {match.videoUrl && (
+          <a
+            href={match.videoUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-gray-100 hover:text-gray-200 text-sm"
+          >
+            Open ↗
+          </a>
+        )}
+      </div>
+    </div>
+  );
+}
+
 function MatchDayRow({
   matchDay,
   teams,
@@ -531,26 +881,7 @@ function MatchDayRow({
     name: string | null;
     date: Date | null;
     orderInSeason: number | null;
-    matches: Array<{
-      id: number;
-      orderInDay: number | null;
-      state: MatchState;
-      teamAScore: number | null;
-      teamBScore: number | null;
-      scheduledDate: Date | null;
-      locationId: number | null;
-      location: { id: number; name: string } | null;
-      teamA: {
-        id: number;
-        name: string;
-        user: { id: number; name: string } | null;
-      };
-      teamB: {
-        id: number;
-        name: string;
-        user: { id: number; name: string } | null;
-      };
-    }>;
+    matches: Array<MatchData>;
   };
   teams: Array<{
     id: number;
@@ -573,13 +904,6 @@ function MatchDayRow({
       day: "numeric",
       year: "numeric",
       timeZone: "UTC",
-    });
-  };
-
-  const formatTime = (date: Date) => {
-    return new Date(date).toLocaleTimeString("en-US", {
-      hour: "numeric",
-      minute: "2-digit",
     });
   };
 
@@ -742,202 +1066,15 @@ function MatchDayRow({
         <div className="border-t border-cell-gray/50 p-4 space-y-4">
           {/* Matches List */}
           {matchDay.matches.length > 0 && (
-            <div className="space-y-2">
+            <div className="space-y-3">
               {matchDay.matches.map((match, index) => (
-                <div
+                <Match
                   key={match.id}
-                  className="flex items-center gap-4 p-3 bg-cell-gray/30 rounded"
-                >
-                  <span className="text-sm text-gray-400 w-6">
-                    #{match.orderInDay ?? index + 1}
-                  </span>
-                  <div className="flex-1">
-                    <div className="font-medium">
-                      {getTeamDisplay(match.teamA)} vs{" "}
-                      {getTeamDisplay(match.teamB)}
-                    </div>
-                    {match.scheduledDate && (
-                      <div className="text-sm text-gray-400">
-                        {formatTime(match.scheduledDate)}
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Location selector */}
-                  <fetcher.Form
-                    method="post"
-                    className="flex items-center gap-1"
-                  >
-                    <input
-                      type="hidden"
-                      name="intent"
-                      value="update-match-location"
-                    />
-                    <input type="hidden" name="matchId" value={match.id} />
-                    <select
-                      name="locationId"
-                      defaultValue={match.locationId ?? ""}
-                      onChange={(e) => e.target.form?.requestSubmit()}
-                      className="px-2 py-1 rounded border border-cell-gray bg-cell-gray/60 text-sm max-w-[180px]"
-                    >
-                      <option value="">No location</option>
-                      {locations.map((loc) => (
-                        <option key={loc.id} value={loc.id}>
-                          {formatLocationName(loc.name)}
-                        </option>
-                      ))}
-                    </select>
-                  </fetcher.Form>
-
-                  <div className="flex items-center gap-2">
-                    <span
-                      className={`text-xs px-2 py-0.5 rounded ${
-                        match.state === "upcoming"
-                          ? "bg-blue-600"
-                          : match.state === "live"
-                            ? "bg-green-600"
-                            : "bg-gray-600"
-                      }`}
-                    >
-                      {match.state}
-                    </span>
-                    {match.teamAScore !== null && (
-                      <span className="text-sm font-semibold">
-                        {match.teamAScore} - {match.teamBScore}
-                      </span>
-                    )}
-                  </div>
-
-                  {/* Reorder buttons */}
-                  <div className="flex gap-1">
-                    <Form method="post" className="inline-block">
-                      <input
-                        type="hidden"
-                        name="intent"
-                        value="update-match-order"
-                      />
-                      <input type="hidden" name="matchId" value={match.id} />
-                      <input type="hidden" name="direction" value="up" />
-                      <input
-                        type="hidden"
-                        name="currentOrder"
-                        value={match.orderInDay ?? index + 1}
-                      />
-                      <button
-                        type="submit"
-                        disabled={index === 0}
-                        className={`px-2 py-1 rounded text-sm ${
-                          index === 0
-                            ? "bg-gray-500 text-gray-300 cursor-not-allowed"
-                            : "bg-green-600 hover:bg-green-700 text-white"
-                        }`}
-                      >
-                        ▲
-                      </button>
-                    </Form>
-                    <Form method="post" className="inline-block">
-                      <input
-                        type="hidden"
-                        name="intent"
-                        value="update-match-order"
-                      />
-                      <input type="hidden" name="matchId" value={match.id} />
-                      <input type="hidden" name="direction" value="down" />
-                      <input
-                        type="hidden"
-                        name="currentOrder"
-                        value={match.orderInDay ?? index + 1}
-                      />
-                      <button
-                        type="submit"
-                        disabled={index === matchDay.matches.length - 1}
-                        className={`px-2 py-1 rounded text-sm ${
-                          index === matchDay.matches.length - 1
-                            ? "bg-gray-500 text-gray-300 cursor-not-allowed"
-                            : "bg-red-600 hover:bg-red-700 text-white"
-                        }`}
-                      >
-                        ▼
-                      </button>
-                    </Form>
-                  </div>
-
-                  {/* State and score controls */}
-                  <fetcher.Form
-                    method="post"
-                    className="flex items-center gap-2"
-                  >
-                    <input
-                      type="hidden"
-                      name="intent"
-                      value="update-match-state"
-                    />
-                    <input type="hidden" name="matchId" value={match.id} />
-                    <select
-                      name="state"
-                      defaultValue={match.state}
-                      onChange={(e) => e.target.form?.requestSubmit()}
-                      className="px-2 py-1 rounded border border-cell-gray bg-cell-gray/60 text-sm"
-                    >
-                      <option value="upcoming">Upcoming</option>
-                      <option value="live">Live</option>
-                      <option value="finished">Finished</option>
-                    </select>
-                  </fetcher.Form>
-
-                  {(match.state === "live" || match.state === "finished") && (
-                    <fetcher.Form
-                      method="post"
-                      className="flex items-center gap-1"
-                    >
-                      <input
-                        type="hidden"
-                        name="intent"
-                        value="update-match-score"
-                      />
-                      <input type="hidden" name="matchId" value={match.id} />
-                      <input
-                        type="number"
-                        name="teamAScore"
-                        defaultValue={match.teamAScore ?? 0}
-                        min="0"
-                        className="w-12 px-1 py-1 rounded border border-cell-gray bg-cell-gray/60 text-sm text-center"
-                      />
-                      <span>-</span>
-                      <input
-                        type="number"
-                        name="teamBScore"
-                        defaultValue={match.teamBScore ?? 0}
-                        min="0"
-                        className="w-12 px-1 py-1 rounded border border-cell-gray bg-cell-gray/60 text-sm text-center"
-                      />
-                      <button
-                        type="submit"
-                        className="px-2 py-1 rounded bg-blue-600 hover:bg-blue-700 text-white text-sm"
-                      >
-                        Save
-                      </button>
-                    </fetcher.Form>
-                  )}
-
-                  <Link
-                    to={`/admin/match/${match.id}/stats`}
-                    className="px-2 py-1 rounded bg-purple-600 hover:bg-purple-700 text-white text-sm"
-                  >
-                    Stats
-                  </Link>
-
-                  <Form method="post" className="inline-block">
-                    <input type="hidden" name="intent" value="delete-match" />
-                    <input type="hidden" name="matchId" value={match.id} />
-                    <button
-                      type="submit"
-                      className="px-2 py-1 rounded bg-red-600 hover:bg-red-700 text-white text-sm"
-                    >
-                      ×
-                    </button>
-                  </Form>
-                </div>
+                  match={match}
+                  index={index}
+                  totalMatches={matchDay.matches.length}
+                  locations={locations}
+                />
               ))}
             </div>
           )}
